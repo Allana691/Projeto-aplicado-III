@@ -49,7 +49,7 @@ A aplicação busca facilitar o acesso a oportunidades gratuitas de capacitaçã
 - Nicole Fernandes Moreira
 - Tawany Nascimento Santos
 
-## Organização do repositório
+## Organização
 
 O repositório será atualizado ao longo das etapas do projeto e reunirá a documentação, códigos, análises, apresentações e demais artefatos desenvolvidos pelo grupo.
 
