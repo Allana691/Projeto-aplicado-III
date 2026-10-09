@@ -71,35 +71,30 @@ O cronograma está dividido em duas partes:
 
 ---
 
-## Etapa 3 – Desenvolvimento do Sistema Híbrido
+
+## Etapa 3 – Desenvolvimento do Sistema Híbrido e Metodologia
+
+**Planejamento revisado em 08/10/2026:** a implementação técnica dos modelos foi antecipada e concluída por Allana até 02/10. As atividades restantes foram redistribuídas entre as integrantes, com foco na elaboração da metodologia acadêmica, avaliação comparativa e documentação dos resultados.
 
 | Atividade | Responsável | Prazo | Marco / Resultado esperado |
 |---|---|---|---|
-| Analisar retorno da Etapa 2 e planejar a Etapa 3 | Allana e Tawany | 05/10 | Ajustes e atividades da nova etapa definidos |
-| Planejar evolução do sistema e critérios de análise | Tawany, Allana e Erika | 06/10 | Estratégia de desenvolvimento acordada |
-| Desenvolvimento/aprimoramento da abordagem baseada em conteúdo | Erika | 08/10 | Componente Content-Based implementado |
-| Testes da abordagem baseada em conteúdo | Allana | 09/10 | Funcionamento e resultados conferidos |
-| Desenvolvimento/aprimoramento da abordagem colaborativa | Erika | 11/10 | Componente colaborativo implementado |
-| Testes da abordagem colaborativa | Allana | 12/10 | Funcionamento e resultados conferidos |
-| Análise conceitual dos resultados das duas abordagens | Tawany | 13/10 | Pontos fortes, limitações e possibilidades de integração identificados |
-| Preparação da documentação parcial | Nicole | 13/10 | Evolução técnica registrada |
-| Definição da estratégia de integração híbrida | Allana, Erika e Tawany | 13/10 | Forma de combinação das abordagens definida |
-| Preparação dos slides de acompanhamento | Allana e Nicole | 14/10 | Evolução e resultados organizados para apresentação |
-| Revisão da apresentação | Grupo | 14/10 | Material conferido |
-| **Apresentação de acompanhamento** | **Integrante disponível no horário** | **15/10** | **Evolução apresentada à professora para validação e orientação** |
-| Registrar orientações e distribuir ajustes | Allana e Tawany | 16/10 | Feedback transformado em tarefas |
-| Integração da abordagem híbrida | Erika | 19/10 | Primeira versão integrada do sistema |
-| Testes técnicos do sistema híbrido | Allana | 20/10 | Fluxo e resultados conferidos |
-| Avaliação das abordagens e do modelo | Erika e Allana | 22/10 | Resultados quantitativos obtidos |
-| Interpretação e análise dos resultados | Tawany | 23/10 | Resultados analisados em relação aos objetivos do projeto |
-| Redação da implementação e dos resultados | Nicole | 24/10 | Parte textual correspondente preparada |
-| Revisão técnica da documentação | Allana e Erika | 25/10 | Texto compatível com a implementação realizada |
-| Consolidação do documento da Etapa 3 | Allana | 26/10 | Documento completo reunido |
-| Atualização dos códigos no GitHub | Erika | 27/10 | Implementação atualizada no repositório |
-| Atualização da documentação no GitHub | Allana | 27/10 | Documentação atualizada |
-| Revisão geral da Etapa 3 | Grupo | 28/10 | Documento e artefatos conferidos |
-| Correções finais e submissão | Allana | 29/10 | Documento final submetido |
+| Analisar o feedback da Etapa 2 | Grupo | 05/10 | Orientações da professora identificadas |
+| Consolidar o desenvolvimento técnico realizado | Allana | 08/10 | Implementações e resultados disponíveis para documentação |
+| Parte A – Descrever as bases de dados, coleta e preparação (seções 3.2 e 3.3) | Tawany | 18/10 | Metodologia de aquisição, tratamento e análise dos dados documentada |
+| Parte B – Descrever a divisão temporal, os algoritmos e o treinamento (seções 3.4, 3.5 e 3.6) | Nicole | 18/10 | Estratégias de modelagem e treinamento documentadas |
+| Parte C – Elaborar a avaliação comparativa, incluindo baseline de popularidade (seções 3.7 e parte de 3.8) | Erika | 18/10 | Comparação entre abordagens, métricas e resultados documentados |
+| Parte D – Elaborar problema e objetivos metodológicos, fluxograma, ajustes e implantação (seções 3.1, parte de 3.8 e 3.9) | Allana | 18/10 | Estrutura geral da metodologia e planejamento da aplicação documentados |
+| Preparar apresentação de acompanhamento | Allana, com contribuições do grupo | 14/10 | Slides com a evolução técnica, resultados e proposta extensionista |
+| Revisar apresentação | Grupo | 14/10 | Conteúdo conferido |
+| **Apresentação de acompanhamento** | **Integrante disponível no horário** | **15/10** | **Avanços e resultados apresentados à professora** |
+| Registrar orientações da apresentação | Grupo | 16/10 | Ajustes necessários identificados |
+| Integrar as partes da metodologia | Grupo | 20/10 | Primeira versão consolidada do documento |
+| Revisar coerência entre metodologia e implementação | Grupo | 25/10 | Descrição acadêmica compatível com os notebooks |
+| Atualizar códigos e documentação no GitHub | Responsáveis pelos respectivos arquivos | 27/10 | Repositório atualizado |
+| Revisão geral da Etapa 3 | Grupo | 28/10 | Documento, referências, fluxograma e resultados conferidos |
+| Correções finais e submissão | Grupo | 29/10 | Documento final submetido |
 | **Entrega oficial da Etapa 3** | **Grupo** | **29/10** | **Etapa 3 concluída** |
+
 
 ---
 
@@ -136,6 +131,17 @@ O cronograma está dividido em duas partes:
 | Revisão geral do projeto | Grupo | 18/11 | Relatório, código, evidências e demais artefatos conferidos |
 | Correções finais | Allana e responsáveis pelas correções | 19/11 | Pendências finais resolvidas |
 | **Entrega final da Etapa 4** | **Grupo** | **19/11** | **Projeto Aplicado III concluído** |
+
+
+### Atividades complementares previstas para a Etapa 4
+
+| Atividade | Responsável | Prazo | Marco / Resultado esperado |
+|---|---|---|---|
+| Definição da arquitetura da aplicação web | Grupo | A definir | Tecnologia e fluxo de utilização definidos |
+| Preparação dos dados e artefatos para recomendação online | A definir | A definir | Sistema adaptado para recomendações a novos usuários |
+| Desenvolvimento da interface de recomendação | A definir | A definir | Interface com perguntas de perfil e apresentação dos cursos |
+| Publicação e testes de acesso à aplicação | A definir | A definir | Aplicação acessível aos participantes |
+| Definição do armazenamento das avaliações | Grupo | A definir | Estratégia de coleta e organização do feedback estabelecida |
 
 ---
 
@@ -190,22 +196,29 @@ O cronograma real registra as atividades conforme foram efetivamente executadas.
 | **Feedback da Etapa 2** | **Professora** | **05/10** | **Nota máxima, sem correções solicitadas; orientações para detalhamento da metodologia na Etapa 3** |
 
 
-## Etapa 3 – Desenvolvimento do Sistema Híbrido
+
+## Etapa 3 – Desenvolvimento do Sistema Híbrido e Metodologia
 
 | Atividade realizada | Responsável | Data realizada | Resultado / Marco |
 |---|---|---|---|
+| Preparação e integração das bases de dados da EV.G | Allana | Até 02/10 | Dados do catálogo e histórico de matrículas tratados e integrados |
+| Desenvolvimento da análise exploratória dos dados (EDA) | Allana | Até 02/10 | Distribuições, interações e características das bases analisadas |
+| Organização e documentação dos notebooks | Allana | Até 02/10 | Etapas de preparação, análise exploratória e modelagem organizadas |
+| Definição da divisão temporal dos dados | Allana | Até 02/10 | Conjuntos de treinamento, validação e teste estabelecidos |
+| Implementação da abordagem baseada em conteúdo (Content-Based) | Allana | Até 02/10 | Recomendações geradas a partir das características dos cursos |
+| Implementação da abordagem colaborativa (Collaborative Filtering) | Allana | Até 02/10 | Recomendações geradas a partir do histórico de interações |
+| Implementação do sistema híbrido | Allana | Até 02/10 | Abordagens integradas para geração de recomendações |
+| Ajuste e validação dos parâmetros do modelo híbrido | Allana | Até 02/10 | Parâmetros de combinação avaliados com dados de validação |
+| Avaliação inicial do sistema híbrido | Allana | Até 02/10 | Resultados obtidos com Recall@10, Hit Rate@10 e NDCG@10 |
 | Análise do feedback da Etapa 2 | Grupo | 05/10 | Orientações da professora identificadas para elaboração da metodologia |
-| Organização dos notebooks de preparação e análise exploratória | A confirmar | A confirmar | Processamento dos dados e resultados da EDA documentados |
-| Implementação da abordagem baseada em conteúdo (Content-Based) | A confirmar | A confirmar | Recomendações geradas a partir das características dos cursos |
-| Implementação da abordagem colaborativa (Collaborative Filtering) | A confirmar | A confirmar | Recomendações geradas a partir do histórico de interações |
-| Implementação do sistema híbrido | A confirmar | A confirmar | Abordagens integradas para geração de recomendações |
-| Definição da divisão temporal dos dados | A confirmar | A confirmar | Conjuntos de treinamento, validação e teste estabelecidos |
-| Avaliação inicial do sistema híbrido | A confirmar | A confirmar | Resultados obtidos com Recall@10, Hit Rate@10 e NDCG@10 |
+| Definição da divisão de responsabilidades da Etapa 3 | Grupo | 08/10 | Partes A, B, C e D distribuídas entre Tawany, Nicole, Erika e Allana |
 
 ---
 
-## Atualizações futuras
+## Observações sobre o acompanhamento do projeto
 
-As próximas atividades serão adicionadas ao **Cronograma Real** conforme forem executadas.
+O Cronograma Planejado foi preservado como registro da organização inicial do grupo. O Cronograma Real apresenta as atividades efetivamente executadas, considerando as datas, os responsáveis e os resultados alcançados.
 
-Caso ocorram alterações de prazo, responsáveis ou estratégia após os acompanhamentos com a professora, o Cronograma Real será atualizado para refletir a execução efetiva do projeto, mantendo o Cronograma Planejado como referência do planejamento original.
+As diferenças entre os dois cronogramas refletem a evolução do projeto, incluindo a antecipação de atividades técnicas, os ajustes metodológicos e a redistribuição de responsabilidades ao longo do desenvolvimento.
+
+As próximas atividades serão registradas conforme sua execução, mantendo a rastreabilidade das contribuições e dos resultados obtidos.
