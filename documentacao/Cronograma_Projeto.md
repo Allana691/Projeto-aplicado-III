@@ -190,6 +190,18 @@ O cronograma real registra as atividades conforme foram efetivamente executadas.
 | **Feedback da Etapa 2** | **Professora** | **05/10** | **Nota máxima, sem correções solicitadas; orientações para detalhamento da metodologia na Etapa 3** |
 
 
+## Etapa 3 – Desenvolvimento do Sistema Híbrido
+
+| Atividade realizada | Responsável | Data realizada | Resultado / Marco |
+|---|---|---|---|
+| Análise do feedback da Etapa 2 | Grupo | 05/10 | Orientações da professora identificadas para elaboração da metodologia |
+| Organização dos notebooks de preparação e análise exploratória | A confirmar | A confirmar | Processamento dos dados e resultados da EDA documentados |
+| Implementação da abordagem baseada em conteúdo (Content-Based) | A confirmar | A confirmar | Recomendações geradas a partir das características dos cursos |
+| Implementação da abordagem colaborativa (Collaborative Filtering) | A confirmar | A confirmar | Recomendações geradas a partir do histórico de interações |
+| Implementação do sistema híbrido | A confirmar | A confirmar | Abordagens integradas para geração de recomendações |
+| Definição da divisão temporal dos dados | A confirmar | A confirmar | Conjuntos de treinamento, validação e teste estabelecidos |
+| Avaliação inicial do sistema híbrido | A confirmar | A confirmar | Resultados obtidos com Recall@10, Hit Rate@10 e NDCG@10 |
+
 ---
 
 ## Atualizações futuras
