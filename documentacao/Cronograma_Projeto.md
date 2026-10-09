@@ -174,6 +174,22 @@ O cronograma real registra as atividades conforme foram efetivamente executadas.
 | Revisão final da apresentação e dos resultados | Grupo | 16/09 | Conteúdo e resultados conferidos antes da apresentação |
 | Apresentação de acompanhamento | Integrante disponível no horário | 17/09 | Apresentação da concepção e da prova de conceito à professora para validação e orientações |
 
+
+## Etapa 2 – Desenvolvimento Inicial e Fundamentação Teórica
+
+| Atividade realizada | Responsável | Data realizada | Resultado / Marco |
+|---|---|---|---|
+| Análise das orientações recebidas na apresentação de acompanhamento | Grupo | Após 17/09 | Orientações consideradas na continuidade do desenvolvimento |
+| Preparação e integração das bases da EV.G | Erika e Allana | A confirmar | Dados do catálogo e histórico de matrículas preparados para análise |
+| Desenvolvimento da análise exploratória dos dados (EDA) | Erika e Allana | A confirmar | Características dos usuários, cursos e interações analisadas |
+| Desenvolvimento e documentação da modelagem inicial | Erika e Allana | A confirmar | Técnicas de recomendação exploradas e resultados técnicos registrados |
+| Levantamento e organização do referencial teórico | Nicole e grupo | Setembro/2026 | Fundamentação sobre sistemas de recomendação e avaliação organizada |
+| Consolidação da introdução e do referencial teórico | Grupo | Até 02/10 | Documento da Etapa 2 estruturado conforme o template |
+| Revisão e padronização do documento | Grupo | Até 02/10 | Texto e referências revisados para entrega |
+| **Entrega oficial da Etapa 2** | **Grupo** | **02/10** | **Documento submetido para avaliação** |
+| **Feedback da Etapa 2** | **Professora** | **05/10** | **Nota máxima, sem correções solicitadas; orientações para detalhamento da metodologia na Etapa 3** |
+
+
 ---
 
 ## Atualizações futuras
