@@ -71,7 +71,6 @@ O cronograma está dividido em duas partes:
 
 ---
 
-
 ## Etapa 3 – Desenvolvimento do Sistema Híbrido e Metodologia
 
 **Planejamento revisado em 08/10/2026:** a implementação técnica dos modelos foi antecipada e concluída por Allana até 02/10. As atividades restantes foram redistribuídas entre as integrantes, com foco na elaboração da metodologia acadêmica, avaliação comparativa e documentação dos resultados.
@@ -94,7 +93,6 @@ O cronograma está dividido em duas partes:
 | Revisão geral da Etapa 3 | Grupo | 28/10 | Documento, referências, fluxograma e resultados conferidos |
 | Correções finais e submissão | Grupo | 29/10 | Documento final submetido |
 | **Entrega oficial da Etapa 3** | **Grupo** | **29/10** | **Etapa 3 concluída** |
-
 
 ---
 
@@ -132,7 +130,6 @@ O cronograma está dividido em duas partes:
 | Correções finais | Allana e responsáveis pelas correções | 19/11 | Pendências finais resolvidas |
 | **Entrega final da Etapa 4** | **Grupo** | **19/11** | **Projeto Aplicado III concluído** |
 
-
 ### Atividades complementares previstas para a Etapa 4
 
 | Atividade | Responsável | Prazo | Marco / Resultado esperado |
@@ -147,7 +144,7 @@ O cronograma está dividido em duas partes:
 
 # 2. Cronograma Real
 
-O cronograma real registra as atividades conforme foram efetivamente executadas. Esta seção será atualizada ao longo do projeto para permitir a comparação entre o planejamento inicial e a execução das atividades.
+O cronograma real registra as atividades conforme foram efetivamente executadas. As datas e responsabilidades são apresentadas de acordo com o desenvolvimento do projeto, distinguindo as atividades realizadas individualmente daquelas executadas em conjunto.
 
 ## Etapa 1 – Concepção do Projeto
 
@@ -180,7 +177,6 @@ O cronograma real registra as atividades conforme foram efetivamente executadas.
 | Revisão final da apresentação e dos resultados | Grupo | 16/09 | Conteúdo e resultados conferidos antes da apresentação |
 | Apresentação de acompanhamento | Integrante disponível no horário | 17/09 | Apresentação da concepção e da prova de conceito à professora para validação e orientações |
 
-
 ## Etapa 2 – Desenvolvimento Inicial e Fundamentação Teórica
 
 | Atividade realizada | Responsável | Data realizada | Resultado / Marco |
@@ -194,8 +190,6 @@ O cronograma real registra as atividades conforme foram efetivamente executadas.
 | Revisão e padronização do documento | Grupo | Até 02/10 | Texto e referências revisados para entrega |
 | **Entrega oficial da Etapa 2** | **Grupo** | **02/10** | **Documento submetido para avaliação** |
 | **Feedback da Etapa 2** | **Professora** | **05/10** | **Nota máxima, sem correções solicitadas; orientações para detalhamento da metodologia na Etapa 3** |
-
-
 
 ## Etapa 3 – Desenvolvimento do Sistema Híbrido e Metodologia
 
@@ -211,7 +205,30 @@ O cronograma real registra as atividades conforme foram efetivamente executadas.
 | Ajuste e validação dos parâmetros do modelo híbrido | Allana | Até 02/10 | Parâmetros de combinação avaliados com dados de validação |
 | Avaliação inicial do sistema híbrido | Allana | Até 02/10 | Resultados obtidos com Recall@10, Hit Rate@10 e NDCG@10 |
 | Análise do feedback da Etapa 2 | Grupo | 05/10 | Orientações da professora identificadas para elaboração da metodologia |
-| Definição da divisão de responsabilidades da Etapa 3 | Grupo | 08/10 | Partes A, B, C e D distribuídas entre Tawany, Nicole, Erika e Allana |
+| Definição da divisão de responsabilidades da Etapa 3 | Grupo | 08/10 | Responsabilidades da implementação técnica e da elaboração textual organizadas entre as integrantes |
+| Conclusão da primeira versão do código do sistema de recomendação | Allana | 07/10 | Primeira versão da implementação técnica do sistema híbrido concluída |
+| Envio dos resumos das respectivas partes para a apresentação | Grupo | Até 14/10 | Contribuições das integrantes reunidas para preparação dos slides |
+| Preparação dos slides da apresentação | Nicole | 15/10 | Slides organizados com base nos resumos enviados pelas integrantes e nos resultados do projeto |
+| Apresentação de acompanhamento | Allana e Tawany | 15/10 | Evolução técnica, resultados e proposta do projeto apresentados à professora |
+| Revisão e ajustes pendentes no código | Allana | 17–18/10 | Correções e ajustes técnicos realizados na implementação |
+| Elaboração da seção 3.7 – Avaliação do Desempenho e parte da seção 3.8 – Otimização e Ajustes | Allana | Até 18/10 | Métricas, resultados do modelo, comparação com o baseline de popularidade e escolha do parâmetro alpha documentados |
+| Elaboração das seções 3.2 – Coleta de Dados e 3.3 – Pré-processamento e Limpeza | Tawany | Até 28/10 | Bases utilizadas, integração do catálogo com o histórico, variáveis e tratamentos dos dados documentados |
+| Elaboração das seções 3.4 – Divisão dos Dados, 3.5 – Seleção e Implementação dos Algoritmos e 3.6 – Treinamento | Erika | Até 28/10 | Estratégia de divisão temporal, algoritmos utilizados e processo de treinamento documentados |
+| Elaboração da seção 3.1 – Definição do Problema e Objetivos, parte da seção 3.8 e seção 3.9 – Implantação e Monitoramento, incluindo o fluxograma | Nicole | Até 29/10 | Problema, objetivos, ajustes, implantação, monitoramento e fluxo do sistema documentados |
+| Consolidação das contribuições da Etapa 3 com o conteúdo da etapa anterior | Nicole | 29/10 | Documento consolidado e disponibilizado para revisão final |
+| Revisão final do documento e submissão no AVA | Erika | 29/10 | Documento revisado e submetido dentro do prazo |
+| Atualização do repositório com o documento final da Etapa 3 | Allana | 30/10 | PDF final disponibilizado no GitHub |
+| **Entrega oficial da Etapa 3** | **Grupo** | **29/10** | **Etapa 3 concluída e submetida para avaliação** |
+
+## Etapa 4 – Aplicação Extensionista e Finalização
+
+| Atividade realizada | Responsável | Data realizada | Resultado / Marco |
+|---|---|---|---|
+| Início da exploração e do planejamento da aplicação web | Allana | A partir de 18/10 | Estudos iniciais sobre a estrutura da aplicação, a experiência do usuário e a organização das informações necessárias para as recomendações |
+| Levantamento de possibilidades para organização dos cursos por área de conhecimento | Allana | Outubro/2026 | Estrutura inicial de classificação e organização do catálogo para apoiar a aplicação |
+| Planejamento inicial do questionário de perfil dos participantes | Allana | Outubro/2026 | Ideias iniciais para perguntas, alternativas e direcionamento do fluxo de interação |
+| Organização das possibilidades de integração entre questionário e sistema de recomendação | Allana | Outubro/2026 | Separação conceitual entre coleta de informações do usuário e funcionamento do algoritmo de recomendação |
+| **Início do planejamento técnico da aplicação com Streamlit** | **Allana** | **30/10** | **Tecnologia definida como alternativa para construção da interface; implementação ainda não iniciada** |
 
 ---
 
@@ -221,4 +238,8 @@ O Cronograma Planejado foi preservado como registro da organização inicial do 
 
 As diferenças entre os dois cronogramas refletem a evolução do projeto, incluindo a antecipação de atividades técnicas, os ajustes metodológicos e a redistribuição de responsabilidades ao longo do desenvolvimento.
 
-As próximas atividades serão registradas conforme sua execução, mantendo a rastreabilidade das contribuições e dos resultados obtidos.
+Na Etapa 3, a implementação técnica do sistema híbrido foi conduzida por Allana, enquanto a elaboração da documentação acadêmica foi distribuída entre as integrantes conforme as seções atribuídas a cada uma. Todas participaram das atividades relacionadas à conclusão e entrega da etapa.
+
+As atividades da Etapa 4 registradas no cronograma real correspondem ao planejamento e à estruturação inicial da aplicação. O desenvolvimento da interface, a integração com o sistema de recomendação e a realização dos testes ainda serão registrados conforme forem efetivamente executados.
+
+As próximas atividades serão acrescentadas ao cronograma real à medida que forem realizadas, mantendo a rastreabilidade das contribuições e dos resultados obtidos.
