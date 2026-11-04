@@ -64,3 +64,51 @@ Alguns cursos aparecem no catálogo com mais de um `id_curso`, com títulos que 
 Os identificadores originais são preservados. Nos cursos que reúnem mais de um registro, os valores diferentes de um mesmo campo são combinados em um único texto, separados por ` | `.
 
 A versão em espanhol do curso "Inteligência Emocional" (`id_curso` 627) é mantida como um curso distinto da versão em português (`id_curso` 318).
+
+## Matriz Preliminar de Classificação do Catálogo
+
+**Arquivo:** `matriz_preliminar_classificacao_catalogo_EVG.xlsx`
+
+Planilha desenvolvida como material complementar à análise e estruturação do catálogo de cursos da Escola Virtual de Governo (EV.G).
+
+A matriz contempla os 1.030 cursos canônicos identificados no catálogo e apresenta uma classificação temática preliminar, com o objetivo de ampliar a organização das informações e apoiar o desenvolvimento do sistema de recomendação.
+
+### Informações contempladas
+
+A classificação considera informações disponíveis no catálogo original, incluindo:
+
+- Identificação dos cursos por ID canônico e ID da EV.G;
+- Nome dos cursos;
+- Eixos temáticos;
+- Grandes áreas de conhecimento;
+- Assuntos e temas relacionados;
+- Público-alvo;
+- Tipo de oferta;
+- Critérios de elegibilidade;
+- Evidências utilizadas para fundamentar a classificação.
+
+### Metodologia
+
+A classificação preliminar foi elaborada a partir da análise dos nomes dos cursos, eixos temáticos, apresentações e conteúdos programáticos disponíveis.
+
+Um mesmo curso pode estar associado a mais de uma grande área ou assunto, considerando a possibilidade de abrangência temática e interdisciplinaridade.
+
+As informações de público-alvo e elegibilidade são tratadas separadamente, evitando interpretar automaticamente o público indicado como uma restrição obrigatória de acesso.
+
+### Finalidade no projeto
+
+A matriz tem como finalidade apoiar:
+
+- A identificação dos temas e áreas de conhecimento presentes no catálogo;
+- A estruturação de perfis e interesses dos usuários;
+- A elaboração das perguntas do questionário de perfil;
+- A definição de critérios e regras para o sistema de recomendação;
+- A validação e interpretação das recomendações geradas.
+
+### Observações
+
+Esta matriz possui caráter preliminar e complementar. Ela não substitui nem altera o arquivo `catalogo_canonico.parquet`, que permanece como referência estruturada do catálogo para as análises e cruzamentos de dados.
+
+As classificações estão sujeitas a revisões e validações posteriores, especialmente quanto à coerência temática, elegibilidade e adequação das categorias utilizadas.
+
+A matriz deve ser considerada um instrumento auxiliar de trabalho e documentação metodológica do projeto.
