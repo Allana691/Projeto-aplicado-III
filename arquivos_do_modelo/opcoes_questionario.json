@@ -1,0 +1,274 @@
+{
+  "versao": "questionario_simplificado_2026-11-07",
+  "grupos": [
+    {
+      "nome": "Administração e finanças",
+      "areas_cursos": [
+        "Administração pública",
+        "Finanças e contabilidade",
+        "Impostos e tributação",
+        "Compras e contratos",
+        "Leis, ética e fiscalização"
+      ],
+      "experiencia": [
+        {
+          "nome": "Administração e escritório",
+          "areas_cursos": [
+            "Administração pública"
+          ]
+        },
+        {
+          "nome": "Finanças e contabilidade",
+          "areas_cursos": [
+            "Finanças e contabilidade"
+          ]
+        },
+        {
+          "nome": "Impostos e tributação",
+          "areas_cursos": [
+            "Impostos e tributação"
+          ]
+        },
+        {
+          "nome": "Compras e contratos",
+          "areas_cursos": [
+            "Compras e contratos"
+          ]
+        },
+        {
+          "nome": "Direito e fiscalização",
+          "areas_cursos": [
+            "Leis, ética e fiscalização"
+          ]
+        }
+      ],
+      "assuntos_p05": [
+        "Planejamento e gestão de projetos",
+        "Orçamento e finanças públicas",
+        "Contabilidade e prestação de contas",
+        "Impostos e tributos",
+        "Reforma tributária",
+        "Licitações e contratos",
+        "Ética e transparência",
+        "Fiscalização e controle"
+      ]
+    },
+    {
+      "nome": "Pessoas e educação",
+      "areas_cursos": [
+        "Recursos humanos",
+        "Educação e ensino",
+        "Desenvolvimento pessoal"
+      ],
+      "experiencia": [
+        {
+          "nome": "Recursos humanos",
+          "areas_cursos": [
+            "Recursos humanos"
+          ]
+        },
+        {
+          "nome": "Educação",
+          "areas_cursos": [
+            "Educação e ensino"
+          ]
+        }
+      ],
+      "assuntos_p05": [
+        "Liderança e trabalho em equipe",
+        "Gestão de pessoas",
+        "Ensino e aprendizagem",
+        "Produtividade e organização",
+        "Inteligência emocional e autoconhecimento",
+        "Saúde e segurança no trabalho",
+        "Diversidade e inclusão"
+      ]
+    },
+    {
+      "nome": "Tecnologia e dados",
+      "areas_cursos": [
+        "Tecnologia e informática",
+        "Dados e inteligência artificial",
+        "Proteção de dados e segurança digital"
+      ],
+      "experiencia": [
+        {
+          "nome": "Tecnologia e informática",
+          "areas_cursos": [
+            "Tecnologia e informática",
+            "Proteção de dados e segurança digital"
+          ]
+        },
+        {
+          "nome": "Dados e análise",
+          "areas_cursos": [
+            "Dados e inteligência artificial"
+          ]
+        }
+      ],
+      "assuntos_p05": [
+        "Python",
+        "Programação",
+        "Análise de dados",
+        "Inteligência artificial",
+        "Excel e planilhas",
+        "Segurança digital e proteção de dados",
+        "Transformação digital",
+        "Visualização de dados e Power BI"
+      ]
+    },
+    {
+      "nome": "Sociedade e serviços",
+      "areas_cursos": [
+        "Comunicação e atendimento",
+        "Direitos e serviços públicos",
+        "Defesa civil e emergências"
+      ],
+      "experiencia": [
+        {
+          "nome": "Comunicação e atendimento",
+          "areas_cursos": [
+            "Comunicação e atendimento"
+          ]
+        },
+        {
+          "nome": "Serviços públicos e assistência",
+          "areas_cursos": [
+            "Direitos e serviços públicos"
+          ]
+        },
+        {
+          "nome": "Segurança e emergências",
+          "areas_cursos": [
+            "Defesa civil e emergências"
+          ]
+        }
+      ],
+      "assuntos_p05": [
+        "Atendimento e comunicação com o cidadão",
+        "Direitos humanos e cidadania",
+        "Saúde pública e assistência social",
+        "Políticas públicas e avaliação",
+        "Defesa civil e prevenção de desastres",
+        "Documentos e processos eletrônicos",
+        "Cultura e patrimônio"
+      ]
+    },
+    {
+      "nome": "Meio ambiente e infraestrutura",
+      "areas_cursos": [
+        "Meio ambiente e sustentabilidade",
+        "Inovação",
+        "Cidades e infraestrutura"
+      ],
+      "experiencia": [
+        {
+          "nome": "Meio ambiente",
+          "areas_cursos": [
+            "Meio ambiente e sustentabilidade"
+          ]
+        },
+        {
+          "nome": "Engenharia, obras e transportes",
+          "areas_cursos": [
+            "Cidades e infraestrutura"
+          ]
+        },
+        {
+          "nome": "Projetos e inovação",
+          "areas_cursos": [
+            "Inovação"
+          ]
+        }
+      ],
+      "assuntos_p05": [
+        "Sustentabilidade e meio ambiente",
+        "Mudanças climáticas",
+        "Água e saneamento",
+        "Cidades, mobilidade e transportes",
+        "Obras e infraestrutura",
+        "Inovação e criatividade",
+        "Métodos ágeis para projetos"
+      ]
+    }
+  ],
+  "max_experiencia": 3,
+  "max_formacao": 3,
+  "max_interesses": 3,
+  "opcao_experiencia_outras": "Outras áreas",
+  "opcao_formacao_nenhuma": "Nenhuma das opções acima",
+  "opcao_formacao_privacidade": "Prefiro não informar",
+  "opcao_interesses_nao_sei": "Ainda não sei quais temas escolher",
+  "situacoes_p01": [
+    {
+      "codigo": "trabalho",
+      "texto": "Estou trabalhando"
+    },
+    {
+      "codigo": "trabalho_estudo",
+      "texto": "Trabalho e estudo"
+    },
+    {
+      "codigo": "estudo",
+      "texto": "Estou estudando"
+    },
+    {
+      "codigo": "primeiro",
+      "texto": "Estou procurando meu primeiro emprego"
+    },
+    {
+      "codigo": "oportunidade",
+      "texto": "Estou procurando uma nova oportunidade"
+    },
+    {
+      "codigo": "transicao",
+      "texto": "Quero mudar de área profissional"
+    },
+    {
+      "codigo": "outra",
+      "texto": "Outra situação / Prefiro não informar"
+    }
+  ],
+  "objetivos_p06": [
+    {
+      "codigo": "melhorar",
+      "texto": "Melhorar minhas habilidades no trabalho",
+      "codigo_modelo": "E"
+    },
+    {
+      "codigo": "crescer",
+      "texto": "Crescer profissionalmente",
+      "codigo_modelo": "C"
+    },
+    {
+      "codigo": "emprego",
+      "texto": "Conseguir um emprego ou uma nova oportunidade",
+      "codigo_modelo": "B"
+    },
+    {
+      "codigo": "mudar",
+      "texto": "Mudar de área profissional",
+      "codigo_modelo": "D"
+    },
+    {
+      "codigo": "novo",
+      "texto": "Aprender algo novo ou explorar outros assuntos",
+      "codigo_modelo": "G"
+    },
+    {
+      "codigo": "pessoal",
+      "texto": "Aprender por interesse pessoal",
+      "codigo_modelo": "F"
+    },
+    {
+      "codigo": "indefinido",
+      "texto": "Ainda não sei",
+      "codigo_modelo": "H"
+    },
+    {
+      "codigo": "privacidade",
+      "texto": "Prefiro não informar",
+      "codigo_modelo": "I"
+    }
+  ]
+}
