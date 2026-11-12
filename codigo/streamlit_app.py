@@ -454,6 +454,46 @@ def validar_etapa(etapa):
     return None
 
 
+def solicitar_rolagem_topo():
+    """Marca uma mudança real de etapa, não uma simples interação com widgets."""
+    st.session_state["evg_rolagem_pendente"] = True
+    st.session_state["evg_rolagem_versao"] = (
+        st.session_state.get("evg_rolagem_versao", 0) + 1
+    )
+
+
+def aplicar_rolagem_topo():
+    """Reposiciona a página após renderizar a nova etapa no Streamlit.
+
+    No Streamlit 1.67, st.html executa JS confiável quando explicitamente
+    habilitado. O HTML é estático; só o identificador numérico muda para
+    garantir a execução em cada navegação. Não interfere nos reruns comuns.
+    """
+    if not st.session_state.pop("evg_rolagem_pendente", False):
+        return
+    versao = st.session_state["evg_rolagem_versao"]
+    st.html(
+        f"""
+        <span style="display:none" data-evg-scroll="{versao}"></span>
+        <script>
+        (() => {{
+            const toTop = () => {{
+                const main = document.querySelector('section[data-testid="stMain"]');
+                const alternative = document.querySelector('[data-testid="stAppViewContainer"]');
+                if (main) main.scrollTop = 0;
+                if (alternative && alternative !== main) alternative.scrollTop = 0;
+                window.scrollTo(0, 0);
+            }};
+            requestAnimationFrame(() => requestAnimationFrame(toTop));
+            setTimeout(toTop, 100);
+            setTimeout(toTop, 250);
+        }})();
+        </script>
+        """,
+        unsafe_allow_javascript=True,
+    )
+
+
 def avancar(etapa):
     guardar_respostas()
     problema = validar_etapa(etapa)
@@ -485,12 +525,14 @@ def avancar(etapa):
                     st.session_state.pop(chave, None)
             st.session_state["evg_interesses_salvos"] = {}
             st.session_state["evg_tela"] = "resultado"
+            solicitar_rolagem_topo()
             st.rerun()
         except (ValueError, KeyError, FileNotFoundError) as erro:
             st.error(str(erro))
         return
     etapas = sequencia()
     st.session_state["evg_tela"] = etapas[etapas.index(etapa) + 1]
+    solicitar_rolagem_topo()
     st.rerun()
 
 
@@ -502,6 +544,7 @@ def voltar(etapa):
         etapas = sequencia()
         posicao = etapas.index(etapa)
         st.session_state["evg_tela"] = etapas[posicao - 1] if posicao else "inicio"
+    solicitar_rolagem_topo()
     st.rerun()
 
 
@@ -579,6 +622,7 @@ def reiniciar():
             del st.session_state[chave]
     st.session_state["evg_nome"] = nome
     st.session_state["evg_tela"] = "inicio"
+    solicitar_rolagem_topo()
     st.rerun()
 
 
@@ -773,6 +817,7 @@ def main():
             disabled=not st.session_state.get("evg_ciente_registro", False),
         ):
             st.session_state["evg_tela"] = "p01"
+            solicitar_rolagem_topo()
             st.rerun()
     elif tela in ("p01", "p02", "p04", "p05", "p06"):
         restaurar_etapa(tela)
@@ -865,6 +910,7 @@ def main():
         "Protótipo acadêmico independente. Cursos e links da EV.G. "
         "As sugestões são calculadas com um modelo híbrido e respostas ao questionário."
     )
+    aplicar_rolagem_topo()
 
 
 if __name__ == "__main__":
