@@ -6,6 +6,7 @@ Execute na raiz do projeto:
 O aplicativo usa o motor híbrido já validado e não altera suas matrizes.
 """
 from pathlib import Path
+from urllib.parse import quote
 import unicodedata
 from datetime import datetime, timezone
 from uuid import uuid4
@@ -231,13 +232,167 @@ st.markdown(
     div[data-testid="stRadio"] label, div[data-testid="stCheckbox"] label {
         line-height: 1.5;
     }
-    /* Alternativas das perguntas de escolha unica: mais area de clique e
-       espaco vertical, sem afetar os radios compactos dos cinco cards. */
+    /* P01 e P06: radios nativos apresentados como cards de selecao unica.
+       As respostas e as teclas de navegacao seguem as do Streamlit. */
     :is(.st-key-evg_pergunta_p01, .st-key-evg_pergunta_p06)
-    [data-testid="stRadio"] [role="radiogroup"] > label {
-        min-height: 2.35rem;
-        padding: 0.42rem 0.25rem;
-        align-items: center;
+    [data-testid="stRadio"],
+    :is(.st-key-evg_pergunta_p01, .st-key-evg_pergunta_p06)
+    [role="radiogroup"] {
+        width: 100%;
+    }
+    :is(.st-key-evg_pergunta_p01, .st-key-evg_pergunta_p06)
+    [role="radiogroup"] {
+        display: flex;
+        flex-direction: column;
+        gap: 0.75rem;
+    }
+    :is(.st-key-evg_pergunta_p01, .st-key-evg_pergunta_p06)
+    [role="radiogroup"] > label {
+        display: flex !important;
+        align-items: center !important;
+        width: 100%;
+        box-sizing: border-box;
+        min-height: 95px;
+        padding: 1rem 1.15rem !important;
+        gap: 0.95rem;
+        border: 1.5px solid #E7D8EF;
+        border-radius: 16px;
+        background: #FFFFFF;
+        color: #2F2336;
+        cursor: pointer;
+        box-shadow: 0 2px 9px rgba(48, 34, 53, 0.045);
+        transition: border-color 150ms ease, background-color 150ms ease,
+                    box-shadow 150ms ease, transform 150ms ease;
+    }
+    /* Ocultar apenas o circulo visual do radio. O input continua no
+       documento, acessivel ao teclado e a leitores de tela. */
+    :is(.st-key-evg_pergunta_p01, .st-key-evg_pergunta_p06)
+    [role="radiogroup"] > label > div:first-child:has(input[type="radio"]) {
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        opacity: 0;
+        pointer-events: none;
+    }
+    :is(.st-key-evg_pergunta_p01, .st-key-evg_pergunta_p06)
+    [role="radiogroup"] > label::before {
+        content: "";
+        display: inline-block;
+        flex: 0 0 52px;
+        width: 52px;
+        height: 52px;
+        border-radius: 12px;
+        background-color: #F1E8F6;
+        background-image: var(--evg-card-icone-claro, none);
+        background-position: center;
+        background-repeat: no-repeat;
+        background-size: 25px 25px;
+    }
+    :is(.st-key-evg_pergunta_p01, .st-key-evg_pergunta_p06)
+    [role="radiogroup"] > label > div:last-child {
+        min-width: 0;
+        flex: 1 1 auto;
+    }
+    :is(.st-key-evg_pergunta_p01, .st-key-evg_pergunta_p06)
+    [role="radiogroup"] > label [data-testid="stMarkdownContainer"] p {
+        color: #2F2336;
+        font-size: 1rem;
+        line-height: 1.4;
+        font-weight: 700;
+        margin: 0;
+    }
+    :is(.st-key-evg_pergunta_p01, .st-key-evg_pergunta_p06)
+    [role="radiogroup"] > label [data-testid="stCaptionContainer"] {
+        color: #5E4C68 !important;
+        font-size: 0.9rem !important;
+        opacity: 1;
+        line-height: 1.5;
+    }
+    :is(.st-key-evg_pergunta_p01, .st-key-evg_pergunta_p06)
+    [role="radiogroup"] > label:has(input:checked) {
+        border: 2px solid #74258F;
+        background: #F1E8F6;
+        box-shadow: 0 4px 14px rgba(116, 37, 143, 0.12);
+    }
+    :is(.st-key-evg_pergunta_p01, .st-key-evg_pergunta_p06)
+    [role="radiogroup"] > label:has(input:focus-visible) {
+        outline: 3px solid #C7A6D8;
+        outline-offset: 2px;
+    }
+    @media (hover: hover) and (pointer: fine) {
+        :is(.st-key-evg_pergunta_p01, .st-key-evg_pergunta_p06)
+        [role="radiogroup"] > label:hover {
+            transform: translateY(-2px);
+            border-color: #C7A6D8;
+            box-shadow: 0 7px 16px rgba(48, 34, 53, 0.10);
+        }
+        :is(.st-key-evg_pergunta_p01, .st-key-evg_pergunta_p06)
+        [role="radiogroup"] > label:has(input:checked):hover {
+            border-color: #74258F;
+        }
+    }
+    html.evg-tema-escuro .stApp
+    :is(.st-key-evg_pergunta_p01, .st-key-evg_pergunta_p06)
+    [role="radiogroup"] > label {
+        background: #2B2233;
+        border-color: #584365;
+        color: #F4ECF7;
+        box-shadow: 0 2px 9px rgba(0, 0, 0, 0.14);
+    }
+    html.evg-tema-escuro .stApp
+    :is(.st-key-evg_pergunta_p01, .st-key-evg_pergunta_p06)
+    [role="radiogroup"] > label::before {
+        background-color: #3A2944;
+        background-image: var(--evg-card-icone-escuro, none);
+    }
+    html.evg-tema-escuro .stApp
+    :is(.st-key-evg_pergunta_p01, .st-key-evg_pergunta_p06)
+    [role="radiogroup"] > label [data-testid="stMarkdownContainer"] p {
+        color: #F4ECF7;
+    }
+    html.evg-tema-escuro .stApp
+    :is(.st-key-evg_pergunta_p01, .st-key-evg_pergunta_p06)
+    [role="radiogroup"] > label [data-testid="stCaptionContainer"] {
+        color: #D7C6DE !important;
+    }
+    html.evg-tema-escuro .stApp
+    :is(.st-key-evg_pergunta_p01, .st-key-evg_pergunta_p06)
+    [role="radiogroup"] > label:has(input:checked) {
+        background: #3A2944;
+        border: 2px solid #DDB5EE;
+        box-shadow: 0 4px 15px rgba(221, 181, 238, 0.13);
+    }
+    html.evg-tema-escuro .stApp
+    :is(.st-key-evg_pergunta_p01, .st-key-evg_pergunta_p06)
+    [role="radiogroup"] > label:has(input:focus-visible) {
+        outline-color: #DDB5EE;
+    }
+    @media (hover: hover) and (pointer: fine) {
+        html.evg-tema-escuro .stApp
+        :is(.st-key-evg_pergunta_p01, .st-key-evg_pergunta_p06)
+        [role="radiogroup"] > label:hover {
+            border-color: #DDB5EE;
+            box-shadow: 0 7px 17px rgba(0, 0, 0, 0.25);
+        }
+    }
+    @media (max-width: 560px) {
+        :is(.st-key-evg_pergunta_p01, .st-key-evg_pergunta_p06)
+        [role="radiogroup"] > label {
+            padding: 0.9rem !important;
+            gap: 0.75rem;
+            min-height: 85px;
+        }
+        :is(.st-key-evg_pergunta_p01, .st-key-evg_pergunta_p06)
+        [role="radiogroup"] > label::before {
+            flex-basis: 44px;
+            width: 44px;
+            height: 44px;
+            background-size: 22px 22px;
+        }
+    }
+    @media (prefers-reduced-motion: reduce) {
+        :is(.st-key-evg_pergunta_p01, .st-key-evg_pergunta_p06)
+        [role="radiogroup"] > label {transition: none; transform: none !important;}
     }
     /* Hover usa a variante mais profunda; o tema escuro ajusta o tom. */
     :root {--evg-hover: #5F1E74;}
@@ -482,6 +637,74 @@ ROTULOS_P01 = {
     "transicao": "Quero mudar de área profissional",
     "outra": "Outra situação / Prefiro não informar",
 }
+
+# Cards de escolha unica: descricoes informativas, sem alterar as opcoes.
+# O rotulo e o valor selecionado continuam vindo de ROTULOS_P01 e OBJETIVOS.
+CARDS_P01 = {
+    "trabalho": ("briefcase", "Atualmente exerço uma atividade profissional."),
+    "trabalho_estudo": ("book-open", "Divido meu tempo entre trabalho e estudos."),
+    "estudo": ("graduation-cap", "Atualmente me dedico aos estudos."),
+    "primeiro": ("search", "Estou buscando minha primeira oportunidade profissional."),
+    "oportunidade": ("trending-up", "Busco novas oportunidades de trabalho."),
+    "transicao": ("refresh-cw", "Quero começar uma trajetória em outra área."),
+    "outra": ("circle-help", "Minha situação não está listada ou prefiro não responder."),
+}
+CARDS_P06 = {
+    "melhorar": ("target", "Aprimorar conhecimentos que já utilizo no trabalho."),
+    "crescer": ("trending-up", "Desenvolver competências para avançar na carreira."),
+    "emprego": ("briefcase", "Preparar-me para conquistar uma oportunidade."),
+    "mudar": ("refresh-cw", "Adquirir conhecimentos para atuar em outra área."),
+    "novo": ("compass", "Conhecer temas e possibilidades que ainda não explorei."),
+    "pessoal": ("heart", "Estudar por curiosidade e desenvolvimento pessoal."),
+    "indefinido": ("circle-help", "Explorar possibilidades antes de decidir."),
+    "privacidade": ("shield", "Continuar sem informar um objetivo específico."),
+}
+
+# Traçados SVG leves, sem bibliotecas extras ou caracteres decorativos.
+ICONES_CARDS = {
+    "briefcase": '<rect x="3" y="7" width="18" height="14" rx="2"/><path d="M8 7V5a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2M3 12h18"/>',
+    "book-open": '<path d="M12 7v14M3 18V5a2 2 0 0 1 2-2h3a4 4 0 0 1 4 4 4 4 0 0 1 4-4h3a2 2 0 0 1 2 2v13h-5a4 4 0 0 0-4 3 4 4 0 0 0-4-3H3Z"/>',
+    "graduation-cap": '<path d="m2 10 10-5 10 5-10 5-10-5ZM6 12v5c3 3 9 3 12 0v-5M22 10v7"/>',
+    "search": '<circle cx="10.5" cy="10.5" r="6.5"/><path d="m16 16 5 5"/>',
+    "trending-up": '<path d="m3 17 7-7 4 4 7-7M15 7h6v6"/>',
+    "refresh-cw": '<path d="M20 11a8 8 0 0 0-14-5L4 8M4 4v4h4M4 13a8 8 0 0 0 14 5l2-2M16 16h4v4"/>',
+    "circle-help": '<circle cx="12" cy="12" r="9"/><path d="M9.5 9a2.7 2.7 0 0 1 5.3.7c0 2-2.8 2.3-2.8 4.3M12 17.5h.01"/>',
+    "target": '<circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1"/>',
+    "compass": '<circle cx="12" cy="12" r="9"/><path d="m16 8-2 6-6 2 2-6 6-2Z"/>',
+    "heart": '<path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.7l-1.1-1.1a5.5 5.5 0 0 0-7.8 7.8L12 21l8.8-8.6a5.5 5.5 0 0 0 0-7.8Z"/>',
+    "shield": '<path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10Z"/><path d="M9 12h6"/>',
+}
+
+
+def estilos_icones_cards():
+    """Adiciona ícones SVG aos rádios sem modificar seu comportamento."""
+    estilos = []
+    for etapa, opcoes, metadados in (
+        ("p01", ROTULOS_P01, CARDS_P01),
+        ("p06", OBJETIVOS, CARDS_P06),
+    ):
+        for indice, codigo in enumerate(opcoes, start=1):
+            nome_icone, _descricao = metadados[codigo]
+            traçado = ICONES_CARDS[nome_icone]
+            urls = []
+            for cor in ("#74258F", "#DDB5EE"):
+                svg = (
+                    '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" '
+                    f'fill="none" stroke="{cor}" stroke-width="1.8" '
+                    'stroke-linecap="round" stroke-linejoin="round">'
+                    f'{traçado}</svg>'
+                )
+                urls.append('url("data:image/svg+xml,' + quote(svg, safe="") + '")')
+            seletor = (
+                f'.st-key-evg_pergunta_{etapa} [role="radiogroup"] '
+                f'> label:nth-child({indice})'
+            )
+            estilos.append(
+                f'{seletor}{{--evg-card-icone-claro:{urls[0]};'
+                f'--evg-card-icone-escuro:{urls[1]};}}'
+            )
+    return "<style>" + "".join(estilos) + "</style>"
+
 
 # P02 é pertinente para quem trabalha, trabalhou ou está mudando de carreira.
 # Quem está apenas estudando ou procurando o primeiro emprego vai direto à P04.
@@ -1227,9 +1450,11 @@ def main():
         with st.container(key=f"evg_pergunta_{tela}"):
             cabecalho_da_pergunta(tela)
             if tela == "p01":
+                st.markdown(estilos_icones_cards(), unsafe_allow_html=True)
                 st.radio(
                     PERGUNTAS["p01"][0],
                     options=list(ROTULOS_P01.values()),
+                    captions=[descricao for _, descricao in CARDS_P01.values()],
                     index=None,
                     label_visibility="collapsed",
                     key="evg_p01",
@@ -1246,10 +1471,12 @@ def main():
                 if not st.session_state.get("evg_p05_nao_sei", False):
                     menus_de_opcoes("p05", "assuntos_p05", 3)
             elif tela == "p06":
+                st.markdown(estilos_icones_cards(), unsafe_allow_html=True)
                 st.radio(
                     PERGUNTAS["p06"][0],
                     options=list(OBJETIVOS),
                     format_func=lambda codigo: OBJETIVOS[codigo],
+                    captions=[descricao for _, descricao in CARDS_P06.values()],
                     index=None,
                     label_visibility="collapsed",
                     key="evg_p06",
