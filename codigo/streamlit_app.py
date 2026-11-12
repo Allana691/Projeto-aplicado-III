@@ -32,7 +32,7 @@ MODELO = RAIZ / "arquivos_do_modelo"
 
 st.set_page_config(
     page_title="Encontre cursos na EV.G",
-    page_icon="📚",
+    page_icon=None,
     layout="centered",
     initial_sidebar_state="collapsed",
 )
@@ -124,7 +124,15 @@ st.markdown(
     }
     [data-testid="stAlert"] {border-radius: 10px;}
     div[data-testid="stRadio"] label, div[data-testid="stCheckbox"] label {
-        line-height: 1.4;
+        line-height: 1.5;
+    }
+    /* Alternativas das perguntas de escolha unica: mais area de clique e
+       espaco vertical, sem afetar os radios compactos dos cinco cards. */
+    :is(.st-key-evg_pergunta_p01, .st-key-evg_pergunta_p06)
+    [data-testid="stRadio"] [role="radiogroup"] > label {
+        min-height: 2.35rem;
+        padding: 0.42rem 0.25rem;
+        align-items: center;
     }
     .evg-lead {opacity: .9; font-size: 1.08rem; font-weight: 500; line-height: 1.65;}
 
@@ -281,7 +289,7 @@ def cabecalho_da_pergunta(etapa):
     titulo = TITULOS_DAS_ETAPAS[etapa]
     st.markdown(f'<h2 class="evg-titulo">{titulo}</h2>', unsafe_allow_html=True)
     st.markdown(
-        f'<div class="evg-orientacao">👉 <strong>Orientação:</strong> {orientacao}</div>',
+        f'<div class="evg-orientacao"><strong>Orientação:</strong> {orientacao}</div>',
         unsafe_allow_html=True,
     )
     st.markdown(
@@ -398,7 +406,7 @@ def menus_de_opcoes(tipo, campo, limite):
             [item["nome"] for item in grupo[campo]]
             if campo == "experiencia" else grupo[campo]
         )
-        with st.expander(f"📁 {grupo['nome']}"):
+        with st.expander(grupo["nome"]):
             for indice, item in enumerate(itens):
                 st.checkbox(item, key=f"evg_{tipo}_{numero}_{indice}")
     quantidade = len(marcadas((tipo, campo)))
@@ -574,12 +582,12 @@ def voltar(etapa):
 def botoes_navegacao(etapa):
     esquerda, direita = st.columns([1, 3], gap="medium")
     with esquerda:
-        if st.button("← Voltar"):
+        if st.button("Voltar"):
             voltar(etapa)
     with direita:
         texto = (
             "Gerar Recomendações Personalizadas"
-            if etapa == "p06" else "Avançar ➡️"
+            if etapa == "p06" else "Avançar"
         )
         if st.button(texto, type="primary"):
             avancar(etapa)
@@ -694,7 +702,7 @@ def mostrar_curso(posicao, curso, matriz, respostas):
 
         st.markdown("**Por que apareceu para você?**")
         st.caption(explicar_recomendacao(curso, linha, respostas))
-        st.link_button("Abrir curso na EV.G ↗", curso["link_do_curso"], use_container_width=True)
+        st.link_button("Abrir curso na EV.G", curso["link_do_curso"], use_container_width=True)
 
         st.caption("Esta recomendação despertou seu interesse? (opcional)")
         interesse = st.radio(
@@ -721,7 +729,7 @@ def mostrar_curso(posicao, curso, matriz, respostas):
                 else:
                     salvos[posicao] = interesse
             if salvos.get(posicao) == interesse:
-                st.caption("✓ Opinião registrada.")
+                st.caption("Opinião registrada.")
 
         # Acesso restrito é um alerta, não um detalhe escondido.
         # O filtro do motor já impede recomendar cursos marcados como restritos,
@@ -731,7 +739,7 @@ def mostrar_curso(posicao, curso, matriz, respostas):
             if restrito:
                 requisito = str(linha.get("vinculo_exigido", "")).strip()
                 st.warning(
-                    "⚠️ Atenção: este curso possui requisitos de acesso "
+                    ""Atenção: este curso possui requisitos de acesso "
                     "e pode não estar disponível ao público em geral. "
                     "Confira as condições de matrícula na EV.G."
                 )
@@ -829,9 +837,9 @@ def main():
         st.info(APRESENTACAO_AVISO)
         st.markdown('<div class="evg-subtitulo">Como funciona</div>', unsafe_allow_html=True)
         st.markdown(APRESENTACAO_COMO_FUNCIONA)
-        with st.expander("🔎 Como o modelo escolhe os cursos"):
+        with st.expander("Como o modelo escolhe os cursos"):
             st.markdown(APRESENTACAO_MODELO)
-        with st.expander("🔒 Sobre os seus dados"):
+        with st.expander("Sobre os seus dados"):
             st.markdown(APRESENTACAO_DADOS)
         st.text_input("Como gostaria de ser chamado(a)? (opcional)", key="evg_nome")
         st.checkbox(
@@ -840,7 +848,7 @@ def main():
             key="evg_ciente_registro",
         )
         if st.button(
-            "Começar questionário ➡️", type="primary",
+            "Começar questionário", type="primary",
             disabled=not st.session_state.get("evg_ciente_registro", False),
         ):
             st.session_state["evg_tela"] = "p01"
@@ -925,10 +933,10 @@ def main():
         st.divider()
         esquerda, direita = st.columns(2, gap="medium")
         with esquerda:
-            if st.button("← Alterar minhas respostas"):
+            if st.button("Alterar minhas respostas"):
                 voltar("resultado")
         with direita:
-            if st.button("🔄 Reiniciar e Fazer Novo Teste"):
+            if st.button("Reiniciar e fazer novo teste"):
                 reiniciar()
     st.divider()
     st.caption(
