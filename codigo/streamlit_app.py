@@ -91,6 +91,30 @@ st.markdown(
         line-height: 1.4;
     }
     .evg-lead {opacity: .8; font-size: 1.08rem;}
+
+    /* Elevação discreta somente nos cinco cards dos cursos.
+       Os seletores st-key são gerados pelo key= do st.container. */
+    @media (hover: hover) and (pointer: fine) {
+        :is(.st-key-evg_curso_card_1, .st-key-evg_curso_card_2,
+            .st-key-evg_curso_card_3, .st-key-evg_curso_card_4,
+            .st-key-evg_curso_card_5) {
+            transition: transform 180ms ease, box-shadow 180ms ease;
+        }
+        :is(.st-key-evg_curso_card_1, .st-key-evg_curso_card_2,
+            .st-key-evg_curso_card_3, .st-key-evg_curso_card_4,
+            .st-key-evg_curso_card_5):hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 24px rgba(0, 0, 0, 0.12);
+        }
+    }
+    @media (prefers-reduced-motion: reduce) {
+        :is(.st-key-evg_curso_card_1, .st-key-evg_curso_card_2,
+            .st-key-evg_curso_card_3, .st-key-evg_curso_card_4,
+            .st-key-evg_curso_card_5) {
+            transition: none !important;
+            transform: none !important;
+        }
+    }
 </style>
 """,
     unsafe_allow_html=True,
@@ -537,7 +561,7 @@ def explicar_recomendacao(curso, linha, respostas):
 def mostrar_curso(posicao, curso, matriz, respostas):
     """Card compacto, com link e avaliação individual em linhas consecutivas."""
     linha = linha_do_curso(curso, matriz)
-    with st.container(border=True):
+    with st.container(border=True, key=f"evg_curso_card_{posicao}"):
         st.markdown(f"**{posicao}. {curso['nome_curso']}**")
         area = str(curso.get("area_principal", "")).strip()
         if area:
