@@ -115,17 +115,17 @@ st.markdown(
         letter-spacing: -.015em; margin: 1.2rem 0 .6rem 0;
     }
 
-    /* Orientação: lavanda sutil no tema claro; superfície compatível no escuro. */
+    /* Orientação: lilás translúcido sobre o fundo REAL da tela. Não misturar
+       com variáveis de tema que podem permanecer no modo claro após a troca
+       para escuro pelo menu do Streamlit. A letra acompanha a cor corrente. */
     .evg-orientacao {
-        background: color-mix(in srgb,
-            var(--st-primary-color, var(--primary-color, #74258F)) 9%,
-            var(--st-background-color, var(--background-color, #FBF7FD)));
-        color: var(--st-text-color, var(--text-color, inherit));
-        border: 1px solid color-mix(in srgb,
-            var(--st-primary-color, var(--primary-color, #74258F)) 20%, transparent);
+        background: rgba(116, 37, 143, 0.11);
+        color: inherit;
+        border: 1px solid rgba(116, 37, 143, 0.30);
         border-radius: 10px;
-        padding: .85rem 1.1rem; margin-bottom: 1.2rem; line-height: 1.45;
+        padding: .85rem 1.1rem; margin-bottom: 1.2rem; line-height: 1.55;
     }
+    .evg-orientacao strong {color: inherit; font-weight: 700;}
 
     /* Os elementos nativos usam primaryColor do tema; mantemos hover definido. */
     .stButton > button[kind="primary"],
