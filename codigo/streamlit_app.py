@@ -831,18 +831,30 @@ def main():
             unsafe_allow_html=True,
         )
         st.info(APRESENTACAO_AVISO)
+        st.caption(
+            "Ao gerar sua lista, suas respostas e os cursos recomendados serão "
+            "registrados para análise acadêmica. "
+            "Veja os detalhes em 'Sobre os seus dados'."
+        )
+        # Ação imediata para quem já conhece a proposta do projeto.
+        if st.button(
+            "Começar questionário", type="primary",
+            key="evg_comecar_topo", use_container_width=True,
+        ):
+            st.session_state["evg_tela"] = "p01"
+            solicitar_rolagem_topo()
+            st.rerun()
         st.markdown('<div class="evg-subtitulo">Como funciona</div>', unsafe_allow_html=True)
         st.markdown(APRESENTACAO_COMO_FUNCIONA)
         with st.expander("Como o modelo escolhe os cursos"):
             st.markdown(APRESENTACAO_MODELO)
         with st.expander("Sobre os seus dados"):
             st.markdown(APRESENTACAO_DADOS)
-        st.caption(
-            "Ao gerar sua lista, suas respostas e os cursos recomendados serão "
-            "registrados para análise acadêmica. "
-            "Veja os detalhes em 'Sobre os seus dados'."
-        )
-        if st.button("Começar questionário", type="primary"):
+        # Segunda ação para quem preferiu ler as informações antes de começar.
+        if st.button(
+            "Começar questionário", type="primary",
+            key="evg_comecar_final", use_container_width=True,
+        ):
             st.session_state["evg_tela"] = "p01"
             solicitar_rolagem_topo()
             st.rerun()
