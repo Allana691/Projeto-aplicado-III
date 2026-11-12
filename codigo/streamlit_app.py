@@ -74,6 +74,28 @@ st.markdown(
         font-weight: 700;
     }
 
+    /* O título nativo da abertura e os títulos das seções seguem o roxo. */
+    .stApp h1, .stApp h2,
+    .stApp [data-testid="stMarkdownContainer"] h1,
+    .stApp [data-testid="stMarkdownContainer"] h2 {
+        color: var(--st-link-color, var(--link-color, #74258F));
+    }
+    /* Cor e contorno dos links para os cursos. */
+    .stApp .stLinkButton > a {
+        color: var(--st-link-color, var(--link-color, #74258F));
+        border-color: var(--st-border-color,
+            var(--border-color, #E7D8EF));
+        background: var(--st-secondary-background-color,
+            var(--secondary-background-color, transparent));
+    }
+    .stApp .stLinkButton > a:hover {
+        border-color: var(--st-primary-color, var(--primary-color, #74258F));
+        background: color-mix(in srgb,
+            var(--st-primary-color, var(--primary-color, #74258F)) 7%,
+            var(--st-secondary-background-color,
+                var(--secondary-background-color, transparent)));
+    }
+
     /* Largura da página: uma coluna centralizada, confortável de ler */
     /* O espaço no topo (5rem) evita que a primeira linha fique escondida
        atrás da barra fixa do Streamlit, onde aparece o botão Deploy */
@@ -279,6 +301,16 @@ st.markdown(
         font-weight: 500;
         line-height: 1.6;
         margin: 0.25rem 0 1.05rem;
+    }
+
+    /* Superfície dos cinco cards dos cursos: branca no tema claro,
+       grafite-ameixa no escuro (conforme a configuração do Streamlit). */
+    :is(.st-key-evg_curso_card_1, .st-key-evg_curso_card_2,
+        .st-key-evg_curso_card_3, .st-key-evg_curso_card_4,
+        .st-key-evg_curso_card_5) {
+        background: var(--st-secondary-background-color,
+            var(--secondary-background-color, color-mix(in srgb, currentColor 2%, transparent)));
+        border-radius: 12px;
     }
 
     /* Elevação discreta somente nos cinco cards dos cursos.
