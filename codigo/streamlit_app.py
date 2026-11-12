@@ -122,6 +122,17 @@ st.markdown(
         border-radius: 10px;
     }
     [data-testid="stAlert"] {border-radius: 10px;}
+
+    /* Apenas o aviso acadêmico da tela inicial ganha relevo permanente.
+       O contorno acompanha a cor do tema, para o efeito ser perceptível
+       também no modo escuro, sem alterar o fundo do aviso do Streamlit. */
+    .st-key-evg_aviso_academico [data-testid="stAlert"] {
+        border-radius: 12px;
+        box-shadow:
+            0 6px 18px rgba(0, 0, 0, 0.16),
+            0 0 0 1px color-mix(in srgb, currentColor 14%, transparent),
+            0 2px 10px color-mix(in srgb, currentColor 8%, transparent);
+    }
     div[data-testid="stRadio"] label, div[data-testid="stCheckbox"] label {
         line-height: 1.5;
     }
@@ -830,7 +841,8 @@ def main():
             f'<p class="evg-lead">{APRESENTACAO_ABERTURA}</p>',
             unsafe_allow_html=True,
         )
-        st.info(APRESENTACAO_AVISO)
+        with st.container(key="evg_aviso_academico"):
+            st.info(APRESENTACAO_AVISO)
         st.caption(
             "Ao gerar sua lista, suas respostas e os cursos recomendados serão "
             "registrados para análise acadêmica. "
