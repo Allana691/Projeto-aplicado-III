@@ -6,14 +6,16 @@ Execute na raiz do projeto:
 O aplicativo usa o motor híbrido já validado e não altera suas matrizes.
 """
 from pathlib import Path
-import csv
 import html
-import io
 import unicodedata
+from datetime import datetime, timezone
+from uuid import uuid4
 
 import numpy as np
 import pandas as pd
 import streamlit as st
+
+from registro_sheets import registrar_participacao, registrar_avaliacao
 
 from motor_recomendador import (
     carregar_opcoes,
@@ -237,9 +239,10 @@ APRESENTACAO_DADOS = """
   respostas que você dá aqui.
 - Suas respostas servem só para montar a sua lista: elas **não alteram o
   modelo**, e cada pessoa começa do zero.
-- Nesta versão de teste, as respostas **não são guardadas automaticamente**. Se
-  você avaliar a lista, poderá baixar um arquivo com as suas respostas (e o
-  nome, se você o digitou) e enviá-lo à equipe, caso queira contribuir.
+- Ao gerar sua lista, as respostas (e o nome, se informado) e os cinco cursos
+  recomendados são registrados numa planilha privada do projeto para análise
+  acadêmica. As avaliações, quando enviadas, também são registradas.
+- Suas respostas não são enviadas à EV.G e não alteram o modelo.
 - Alguns cursos têm requisitos de acesso. Quem decide se você pode se matricular
   é a EV.G.
 """
@@ -390,6 +393,12 @@ def avancar(etapa):
                 return
             st.session_state["evg_resultado"] = resultado
             st.session_state["evg_respostas"] = respostas
+            st.session_state["evg_participacao_id"] = str(uuid4())
+            st.session_state["evg_participacao_utc"] = datetime.now(timezone.utc).isoformat(timespec="seconds")
+            st.session_state["evg_registro_status"] = "pendente"
+            st.session_state["evg_avaliacao_enviada"] = False
+            for chave in ("evg_p07", "evg_p08", "evg_p09"):
+                st.session_state.pop(chave, None)
             st.session_state["evg_tela"] = "resultado"
             st.rerun()
         except (ValueError, KeyError, FileNotFoundError) as erro:
@@ -523,12 +532,12 @@ def mostrar_curso(posicao, curso, matriz):
 
 
 def mostrar_avaliacao():
-    """Avaliação opcional, dentro de uma caixa com borda, abaixo da lista."""
+    """Avaliação geral opcional; gravada somente com envio explícito."""
     st.markdown(
         '<div class="evg-subtitulo">📝 Avaliação da Experiência (Opcional)</div>',
         unsafe_allow_html=True,
     )
-    st.caption("As perguntas avaliam se a lista foi útil para você, e não a qualidade dos cursos.")
+    st.caption("As perguntas avaliam se a lista foi útil para você, não a qualidade dos cursos.")
     escala = [
         "1 — Nada", "2 — Pouco", "3 — Parcialmente",
         "4 — Muito", "5 — Totalmente", "Não consigo avaliar",
@@ -547,41 +556,50 @@ def mostrar_avaliacao():
             "P09 — Quanto a lista ajudou você a encontrar cursos que gostaria de fazer?",
             options=escala, index=None, horizontal=True, key="evg_p09",
         )
+    if st.session_state.get("evg_avaliacao_enviada"):
+        st.success("Obrigado! Sua avaliação foi registrada.")
+        return
     if all(st.session_state.get(chave) for chave in ("evg_p07", "evg_p08", "evg_p09")):
-        dados = st.session_state.get("evg_respostas", {})
-        resultado = st.session_state.get("evg_resultado", {})
-        linha = {
-            "nome_opcional": st.session_state.get("evg_nome", ""),
-            "situacao_p01": dados.get("situacao", ""),
-            "experiencia_p02": " | ".join(dados.get("experiencia", [])),
-            "formacao_p04": " | ".join(dados.get("formacao", [])),
-            "interesses_p05": " | ".join(dados.get("interesses", [])) or "Ainda não sei",
-            "objetivo_p06": dados.get("objetivo", ""),
-            "avaliacao_p07": st.session_state["evg_p07"],
-            "avaliacao_p08": st.session_state["evg_p08"],
-            "avaliacao_p09": st.session_state["evg_p09"],
-            "cursos_recomendados": " | ".join(
-                c["nome_curso"] for c in resultado.get("cursos", [])
-            ),
-        }
-        memoria = io.StringIO()
-        escritor = csv.DictWriter(memoria, fieldnames=linha.keys(), delimiter=";")
-        escritor.writeheader()
-        escritor.writerow(linha)
-        st.success("Obrigado! Sua avaliação está pronta para ser compartilhada.")
-        st.download_button(
-            "📥 Baixar minha avaliação",
-            data=memoria.getvalue().encode("utf-8-sig"),
-            file_name="avaliacao_evg.csv",
-            mime="text/csv",
-            type="primary",
-        )
-        st.caption(
-            "Para esta versão de teste, envie o arquivo baixado à equipe do projeto. "
-            "As respostas ainda não são armazenadas automaticamente em um banco de dados."
-        )
+        if st.button("Enviar minha avaliação", type="primary"):
+            try:
+                registrar_avaliacao(
+                    st.session_state["evg_participacao_id"],
+                    {
+                        "p07": st.session_state["evg_p07"],
+                        "p08": st.session_state["evg_p08"],
+                        "p09": st.session_state["evg_p09"],
+                    },
+                )
+            except Exception:
+                st.error("Não foi possível salvar a avaliação. Tente enviar novamente.")
+            else:
+                st.session_state["evg_avaliacao_enviada"] = True
+                st.rerun()
     else:
-        st.info("Responda às três perguntas para gerar seu arquivo de avaliação.")
+        st.info("Se quiser contribuir, responda às três perguntas e clique em Enviar.")
+
+
+def tentar_registrar_participacao():
+    """Uma gravação por resultado; permite retomar em caso de falha."""
+    if st.session_state.get("evg_registro_status") == "pendente":
+        try:
+            registrar_participacao(
+                st.session_state["evg_participacao_id"],
+                st.session_state["evg_participacao_utc"],
+                st.session_state.get("evg_nome", ""),
+                st.session_state["evg_respostas"],
+                st.session_state["evg_resultado"]["cursos"][:5],
+            )
+        except Exception:
+            st.session_state["evg_registro_status"] = "erro"
+        else:
+            st.session_state["evg_registro_status"] = "salvo"
+    if st.session_state.get("evg_registro_status") == "erro":
+        st.warning("As recomendações foram geradas, mas não foi possível registrar os dados na planilha.")
+        if st.button("Tentar salvar os dados novamente"):
+            st.session_state["evg_registro_status"] = "pendente"
+            st.rerun()
+
 
 
 def main():
@@ -601,7 +619,15 @@ def main():
         with st.expander("🔒 Sobre os seus dados"):
             st.markdown(APRESENTACAO_DADOS)
         st.text_input("Como gostaria de ser chamado(a)? (opcional)", key="evg_nome")
-        if st.button("Começar questionário ➡️", type="primary"):
+        st.checkbox(
+            "Estou ciente de que minhas respostas e os cursos apresentados serão "
+            "registrados para a análise acadêmica descrita acima.",
+            key="evg_ciente_registro",
+        )
+        if st.button(
+            "Começar questionário ➡️", type="primary",
+            disabled=not st.session_state.get("evg_ciente_registro", False),
+        ):
             st.session_state["evg_tela"] = "p01"
             st.rerun()
     elif tela in ("p01", "p02", "p04", "p05", "p06"):
@@ -657,6 +683,7 @@ def main():
             f'<h2 class="evg-titulo">🎯 Cursos Recomendados para Você{saudacao}</h2>',
             unsafe_allow_html=True,
         )
+        tentar_registrar_participacao()
         st.write("Clique no nome de cada curso para ver os detalhes e abrir o link.")
         matriz, *_ = carregar_modelo()
         for posicao, curso in enumerate(resultado["cursos"][:5], start=1):
