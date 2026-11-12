@@ -311,8 +311,8 @@ def cabecalho_da_pergunta(etapa):
 # Textos da tela inicial. Para mudar qualquer frase, é só editar aqui.
 APRESENTACAO_ABERTURA = (
     "Responda a algumas perguntas e receba cinco sugestões de cursos da "
-    "Escola Virtual de Governo (EV.G), a plataforma de cursos online do "
-    "governo federal."
+    "Escola Virtual de Governo (EV.G), a plataforma de cursos online gratuitos "
+    "do governo federal."
 )
 APRESENTACAO_AVISO = (
     "**Este é um trabalho acadêmico.** O recomendador foi desenvolvido por "
