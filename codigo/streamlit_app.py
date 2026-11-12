@@ -92,6 +92,23 @@ st.markdown(
     }
     .evg-lead {opacity: .8; font-size: 1.08rem;}
 
+    /* Legibilidade dos textos secundários: usam a cor natural do tema,
+       com contraste maior que o padrão de st.caption.
+       Aplicar só aos cards, sem alterar avisos e textos do questionário. */
+    :is(.st-key-evg_curso_card_1, .st-key-evg_curso_card_2,
+        .st-key-evg_curso_card_3, .st-key-evg_curso_card_4,
+        .st-key-evg_curso_card_5) [data-testid="stCaptionContainer"] {
+        color: inherit !important;
+        opacity: 0.88;
+        font-size: 0.88rem !important;
+        line-height: 1.5;
+    }
+    :is(.st-key-evg_curso_card_1, .st-key-evg_curso_card_2,
+        .st-key-evg_curso_card_3, .st-key-evg_curso_card_4,
+        .st-key-evg_curso_card_5) [data-testid="stCaptionContainer"] * {
+        color: inherit !important;
+    }
+
     /* Elevação discreta somente nos cinco cards dos cursos.
        Os seletores st-key são gerados pelo key= do st.container. */
     @media (hover: hover) and (pointer: fine) {
