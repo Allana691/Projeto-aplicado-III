@@ -146,6 +146,63 @@ st.markdown(
     }
     .evg-lead {opacity: .9; font-size: 1.08rem; font-weight: 500; line-height: 1.65;}
 
+    /* Como funciona: cards ilustrados com icones SVG de traco (nao emojis).
+       Tres colunas em desktop e uma coluna em telas estreitas. */
+    .evg-como-grid {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 0.9rem;
+        margin: 0.7rem 0 1.5rem;
+    }
+    .evg-como-card {
+        min-width: 0;
+        border: 1px solid color-mix(in srgb, currentColor 18%, transparent);
+        border-radius: 14px;
+        background: color-mix(in srgb, currentColor 3%, transparent);
+        padding: 1.1rem;
+        box-shadow: 0 4px 13px rgba(0, 0, 0, 0.075);
+        transition: transform 180ms ease, box-shadow 180ms ease;
+    }
+    .evg-como-icone {
+        width: 43px;
+        height: 43px;
+        border-radius: 11px;
+        display: grid;
+        place-items: center;
+        background: color-mix(in srgb, #3d82e0 14%, transparent);
+        color: #3d82e0;
+        margin-bottom: 0.95rem;
+    }
+    .evg-como-icone svg {width: 24px; height: 24px;}
+    .evg-como-card h3 {
+        font-family: 'Manrope', 'Segoe UI', sans-serif !important;
+        font-size: 1.0rem;
+        font-weight: 700;
+        line-height: 1.35;
+        letter-spacing: -.02em;
+        margin: 0 0 0.6rem;
+        color: inherit;
+    }
+    .evg-como-card p {
+        font-family: 'Manrope', 'Segoe UI', sans-serif;
+        font-size: 0.9rem;
+        line-height: 1.6;
+        opacity: 0.92;
+        margin: 0;
+    }
+    @media (hover: hover) and (pointer: fine) {
+        .evg-como-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
+        }
+    }
+    @media (max-width: 640px) {
+        .evg-como-grid {grid-template-columns: 1fr;}
+    }
+    @media (prefers-reduced-motion: reduce) {
+        .evg-como-card {transition: none; transform: none !important;}
+    }
+
     /* Legibilidade das legendas em todo o aplicativo: no tema claro e
        no escuro, partem da cor do texto corrente em vez do cinza claro
        usado por padrao no st.caption. Mantem hierarquia com leve opacidade. */
@@ -321,13 +378,47 @@ APRESENTACAO_AVISO = (
     "ponto de partida: para se inscrever em qualquer curso, use o site da EV.G."
 )
 APRESENTACAO_COMO_FUNCIONA = """
-1. **Você responde** a poucas perguntas, uma por vez, sobre sua situação, o que
-   já fez e estudou, o que quer aprender e qual é o seu objetivo. É só clicar
-   nas opções.
-2. **O modelo compara** o seu perfil com os mais de mil cursos do catálogo da
-   EV.G e escolhe cinco.
-3. **Você recebe a lista**, com os links dos cursos, e avalia 
-   se ela foi útil. Essa avaliação ajuda o nosso trabalho.
+<div class="evg-como-grid">
+    <article class="evg-como-card">
+        <div class="evg-como-icone" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                 stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="5" y="4" width="14" height="17" rx="2"/>
+                <path d="M9 4h6M8 10h8M8 14h8M8 18h5"/>
+            </svg>
+        </div>
+        <h3>Você responde</h3>
+        <p>A algumas perguntas, uma por vez, sobre sua situação, experiências,
+        estudos, interesses e objetivo. É só selecionar as opções.</p>
+    </article>
+    <article class="evg-como-card">
+        <div class="evg-como-icone" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                 stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="5" cy="6" r="2"/>
+                <circle cx="19" cy="6" r="2"/>
+                <circle cx="12" cy="18" r="2"/>
+                <path d="m6.7 7.2 4.1 8.5m6.5-8.5-4.1 8.5M7 6h10"/>
+            </svg>
+        </div>
+        <h3>O modelo compara</h3>
+        <p>Seu perfil com os mais de mil cursos do catálogo da EV.G e
+        seleciona cinco recomendações.</p>
+    </article>
+    <article class="evg-como-card">
+        <div class="evg-como-icone" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                 stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M12 7v14M3 18V5a2 2 0 0 1 2-2h3a4 4 0 0 1 4 4
+                         4 4 0 0 1 4-4h3a2 2 0 0 1 2 2v13h-5a4 4 0 0 0-4 4
+                         4 4 0 0 0-4-4H3Z"/>
+            </svg>
+        </div>
+        <h3>Você recebe a lista</h3>
+        <p>Com os links dos cinco cursos e pode avaliar se as sugestões
+        foram úteis. A avaliação ajuda o nosso trabalho.</p>
+    </article>
+</div>
 """
 APRESENTACAO_MODELO = """
 O modelo é **híbrido**: junta duas pistas.
@@ -857,7 +948,7 @@ def main():
             solicitar_rolagem_topo()
             st.rerun()
         st.markdown('<div class="evg-subtitulo">Como funciona</div>', unsafe_allow_html=True)
-        st.markdown(APRESENTACAO_COMO_FUNCIONA)
+        st.html(APRESENTACAO_COMO_FUNCIONA)
         with st.expander("Como o modelo escolhe os cursos"):
             st.markdown(APRESENTACAO_MODELO)
         with st.expander("Sobre os seus dados"):
