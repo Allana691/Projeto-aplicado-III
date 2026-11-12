@@ -232,30 +232,25 @@ SITUACOES_COM_P02 = {"trabalho", "trabalho_estudo", "oportunidade", "transicao"}
 # P01 nas demais etapas.
 PERGUNTAS = {
     "p01": (
-        "P01 — Situação Atual",
         "Qual é sua situação atualmente?",
         "Primeiro, queremos conhecer sua situação atual. Considere o que "
         "melhor representa seu momento neste período.",
     ),
     "p02": (
-        "P02 — Experiência Profissional",
         "Em quais áreas você trabalha ou já trabalhou?",
         "Escolha até três áreas. Você pode abrir mais de uma categoria.",
     ),
     "p04": (
-        "P04 — Formação e Conhecimentos",
         "Em quais áreas você já estudou ou possui conhecimentos?",
         "Considere faculdade, cursos, trabalho e estudos por conta própria. "
         "Escolha até três áreas.",
     ),
     "p05": (
-        "P05 — Interesses de Aprendizagem",
         "Quais assuntos você gostaria de aprender?",
         "Escolha até três assuntos, mesmo que não tenham relação com sua "
         "formação.",
     ),
     "p06": (
-        "P06 — Objetivo de Aprendizagem",
         "Qual é seu principal objetivo ao fazer um curso?",
         "Por fim, considerando sua vida profissional, seus estudos e seus "
         "interesses, queremos entender o que você busca ao fazer cursos "
@@ -265,19 +260,11 @@ PERGUNTAS = {
 
 
 def cabecalho_da_pergunta(etapa):
-    """Título azul + caixa cinza de orientação, como nos prints de referência."""
-    titulo, _, orientacao = PERGUNTAS[etapa]
-    st.markdown(f'<h2 class="evg-titulo">{titulo}</h2>', unsafe_allow_html=True)
+    """Exibe a pergunta uma única vez, com a orientação logo abaixo."""
+    pergunta, orientacao = PERGUNTAS[etapa]
+    st.markdown(f'<h2 class="evg-titulo">{pergunta}</h2>', unsafe_allow_html=True)
     st.markdown(
         f'<div class="evg-orientacao">👉 <strong>Orientação:</strong> {orientacao}</div>',
-        unsafe_allow_html=True,
-    )
-
-
-def pergunta_em_azul(etapa):
-    """Pergunta em azul (usada nas telas com caixas de marcar)."""
-    st.markdown(
-        f'<div class="evg-subtitulo">{PERGUNTAS[etapa][1]}</div>',
         unsafe_allow_html=True,
     )
 
@@ -463,11 +450,10 @@ def solicitar_rolagem_topo():
 
 
 def aplicar_rolagem_topo():
-    """Reposiciona a página após renderizar a nova etapa no Streamlit.
+    """Volta ao topo após mudança de tela, sem rolar nos reruns dos widgets.
 
-    No Streamlit 1.67, st.html executa JS confiável quando explicitamente
-    habilitado. O HTML é estático; só o identificador numérico muda para
-    garantir a execução em cada navegação. Não interfere nos reruns comuns.
+    O script confiável usa as superfícies de rolagem do Streamlit e repete
+    o ajuste brevemente para contornar a restauração tardia da posição.
     """
     if not st.session_state.pop("evg_rolagem_pendente", False):
         return
@@ -478,15 +464,31 @@ def aplicar_rolagem_topo():
         <script>
         (() => {{
             const toTop = () => {{
-                const main = document.querySelector('section[data-testid="stMain"]');
-                const alternative = document.querySelector('[data-testid="stAppViewContainer"]');
-                if (main) main.scrollTop = 0;
-                if (alternative && alternative !== main) alternative.scrollTop = 0;
-                window.scrollTo(0, 0);
+                // O Streamlit pode preservar a rolagem ao trocar as etapas.
+                // Rolar também o contêiner correto, não só o window.
+                const scrollers = [
+                    document.scrollingElement,
+                    document.documentElement,
+                    document.body,
+                    ...document.querySelectorAll(
+                        'section[data-testid="stMain"],' +
+                        '[data-testid="stAppViewContainer"],' +
+                        '[data-testid="stMainBlockContainer"]'
+                    ),
+                ];
+                scrollers.forEach((el) => {{
+                    if (el) el.scrollTop = 0;
+                }});
+                window.scrollTo({{top: 0, left: 0, behavior: 'instant'}});
+                const topContent = document.querySelector(
+                    'section[data-testid="stMain"] .block-container'
+                ) || document.querySelector('.block-container');
+                if (topContent) {{
+                    topContent.scrollIntoView({{block: 'start', behavior: 'instant'}});
+                }}
             }};
             requestAnimationFrame(() => requestAnimationFrame(toTop));
-            setTimeout(toTop, 100);
-            setTimeout(toTop, 250);
+            [80, 220, 500, 850].forEach((ms) => setTimeout(toTop, ms));
         }})();
         </script>
         """,
@@ -738,11 +740,11 @@ def mostrar_avaliacao():
     ]
     with st.container(border=True):
         st.radio(
-            "P07 — Quanto os cursos recomendados combinam com seus interesses?",
+            "Quanto os cursos recomendados combinam com seus interesses?",
             options=escala, index=None, horizontal=True, key="evg_p07",
         )
         st.radio(
-            "P09 — Quanto a lista ajudou você a encontrar cursos que gostaria de fazer?",
+            "Quanto a lista ajudou você a encontrar cursos que gostaria de fazer?",
             options=escala, index=None, horizontal=True, key="evg_p09",
         )
     if st.session_state.get("evg_avaliacao_enviada"):
@@ -823,38 +825,36 @@ def main():
         restaurar_etapa(tela)
         etapas = sequencia()
         st.progress((etapas.index(tela) + 1) / len(etapas))
-        st.caption(f"Pergunta {etapas.index(tela) + 1} de {len(etapas)}")
         # O bloco inteiro da pergunta é identificado pela etapa. Assim, o
         # Streamlit não reutiliza elementos da tela anterior ao trocar de pergunta.
         with st.container(key=f"evg_pergunta_{tela}"):
             cabecalho_da_pergunta(tela)
             if tela == "p01":
                 st.radio(
-                    PERGUNTAS["p01"][1],
+                    PERGUNTAS["p01"][0],
                     options=list(ROTULOS_P01.values()),
                     index=None,
+                    label_visibility="collapsed",
                     key="evg_p01",
                 )
             elif tela == "p02":
-                pergunta_em_azul("p02")
                 menus_de_opcoes("p02", "experiencia", 3)
                 st.checkbox(OPCOES["opcao_experiencia_outras"], key="evg_p02_outras")
             elif tela == "p04":
-                pergunta_em_azul("p04")
                 menus_de_opcoes("p04", "areas_cursos", 3)
                 st.checkbox(OPCOES["opcao_formacao_nenhuma"], key="evg_p04_nenhuma")
                 st.checkbox(OPCOES["opcao_formacao_privacidade"], key="evg_p04_privacidade")
             elif tela == "p05":
-                pergunta_em_azul("p05")
                 st.checkbox(OPCOES["opcao_interesses_nao_sei"], key="evg_p05_nao_sei")
                 if not st.session_state.get("evg_p05_nao_sei", False):
                     menus_de_opcoes("p05", "assuntos_p05", 3)
             elif tela == "p06":
                 st.radio(
-                    PERGUNTAS["p06"][1],
+                    PERGUNTAS["p06"][0],
                     options=list(OBJETIVOS),
                     format_func=lambda codigo: OBJETIVOS[codigo],
                     index=None,
+                    label_visibility="collapsed",
                     key="evg_p06",
                 )
             st.divider()
