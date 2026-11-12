@@ -146,58 +146,86 @@ st.markdown(
     }
     .evg-lead {opacity: .9; font-size: 1.08rem; font-weight: 500; line-height: 1.65;}
 
-    /* Como funciona: cards ilustrados com icones SVG de traco (nao emojis).
-       Tres colunas em desktop e uma coluna em telas estreitas. */
+    /* Cards de apresentação: ilustrações azuis (SVG como imagem CSS) para
+       não depender de SVG inline, filtrado pela renderização HTML do Streamlit. */
     .evg-como-grid {
         display: grid;
         grid-template-columns: repeat(3, minmax(0, 1fr));
-        gap: 0.9rem;
-        margin: 0.7rem 0 1.5rem;
+        align-items: stretch;
+        gap: 1rem;
+        margin: 0.75rem 0 1.45rem;
     }
     .evg-como-card {
         min-width: 0;
-        border: 1px solid color-mix(in srgb, currentColor 18%, transparent);
+        min-height: 205px;
+        border: 1px solid color-mix(in srgb, currentColor 15%, transparent);
         border-radius: 14px;
-        background: color-mix(in srgb, currentColor 3%, transparent);
+        background: color-mix(in srgb, currentColor 2%, transparent);
         padding: 1.1rem;
-        box-shadow: 0 4px 13px rgba(0, 0, 0, 0.075);
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.11);
         transition: transform 180ms ease, box-shadow 180ms ease;
     }
-    .evg-como-icone {
-        width: 43px;
-        height: 43px;
-        border-radius: 11px;
-        display: grid;
-        place-items: center;
-        background: color-mix(in srgb, #3d82e0 14%, transparent);
-        color: #3d82e0;
-        margin-bottom: 0.95rem;
+    .evg-como-topo {
+        display: flex;
+        align-items: center;
+        gap: 0.85rem;
+        min-height: 60px;
+        margin-bottom: 0.6rem;
     }
-    .evg-como-icone svg {width: 24px; height: 24px;}
+    .evg-como-icone {
+        flex: 0 0 56px;
+        width: 56px;
+        height: 56px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 11px;
+        background: linear-gradient(140deg, #d7e5fa, #edf4ff);
+    }
+    .evg-como-icone::before {
+        content: "";
+        display: block;
+        width: 47px;
+        height: 47px;
+        background-size: contain;
+        background-repeat: no-repeat;
+        background-position: center;
+    }
+    .evg-icone-responde::before {
+        background-image: url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2064%2064%22%20fill%3D%22none%22%20stroke%3D%22%23285783%22%20stroke-width%3D%222.8%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Crect%20x%3D%2211%22%20y%3D%227%22%20width%3D%2239%22%20height%3D%2249%22%20rx%3D%225%22%20fill%3D%22%23F7FAFF%22%2F%3E%3Cpath%20d%3D%22M20%2019h21M20%2026h18M20%2033h11M20%2041h12%22%2F%3E%3Cpath%20d%3D%22m36%2044%2016-17a4%204%200%200%201%205%205L41%2049l-9%203%204-8Z%22%20fill%3D%22%239AC0F1%22%20stroke%3D%22%23204B81%22%2F%3E%3Cpath%20d%3D%22m49%2030%205%205%22%2F%3E%3C%2Fsvg%3E");
+    }
+    .evg-icone-compara::before {
+        background-image: url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2064%2064%22%20fill%3D%22none%22%20stroke%3D%22%23285783%22%20stroke-width%3D%222.6%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Crect%20x%3D%2218%22%20y%3D%2217%22%20width%3D%2228%22%20height%3D%2230%22%20rx%3D%225%22%20fill%3D%22%23F7FAFF%22%2F%3E%3Cpath%20d%3D%22M11%2010l8%208M52%2010l-7%208M10%2054l9-9M53%2054l-8-9M32%208v9M32%2047v9M8%2032h10M46%2032h10%22%2F%3E%3Ccircle%20cx%3D%229%22%20cy%3D%229%22%20r%3D%224%22%20fill%3D%22%239AC0F1%22%2F%3E%3Ccircle%20cx%3D%2255%22%20cy%3D%229%22%20r%3D%224%22%20fill%3D%22%239AC0F1%22%2F%3E%3Ccircle%20cx%3D%229%22%20cy%3D%2255%22%20r%3D%224%22%20fill%3D%22%239AC0F1%22%2F%3E%3Ccircle%20cx%3D%2255%22%20cy%3D%2255%22%20r%3D%224%22%20fill%3D%22%239AC0F1%22%2F%3E%3Ccircle%20cx%3D%2232%22%20cy%3D%226%22%20r%3D%223%22%20fill%3D%22%239AC0F1%22%2F%3E%3Ccircle%20cx%3D%2232%22%20cy%3D%2258%22%20r%3D%223%22%20fill%3D%22%239AC0F1%22%2F%3E%3Ccircle%20cx%3D%226%22%20cy%3D%2232%22%20r%3D%223%22%20fill%3D%22%239AC0F1%22%2F%3E%3Ccircle%20cx%3D%2258%22%20cy%3D%2232%22%20r%3D%223%22%20fill%3D%22%239AC0F1%22%2F%3E%3Cpath%20d%3D%22M25%2025h14M25%2031h14M25%2037h14%22%20stroke%3D%22%235688BD%22%2F%3E%3C%2Fsvg%3E");
+    }
+    .evg-icone-lista::before {
+        background-image: url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2064%2064%22%20fill%3D%22none%22%20stroke%3D%22%23285783%22%20stroke-width%3D%222.8%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Crect%20x%3D%229%22%20y%3D%226%22%20width%3D%2246%22%20height%3D%2252%22%20rx%3D%225%22%20fill%3D%22%23F7FAFF%22%2F%3E%3Cpath%20d%3D%22m17%2019%204%204%207-8M33%2020h14M17%2034l4%204%207-8M33%2035h14M17%2049l4%204%207-8M33%2050h14%22%20stroke%3D%22%23245B98%22%2F%3E%3C%2Fsvg%3E");
+    }
     .evg-como-card h3 {
         font-family: 'Manrope', 'Segoe UI', sans-serif !important;
-        font-size: 1.0rem;
+        font-size: 1.04rem;
         font-weight: 700;
         line-height: 1.35;
         letter-spacing: -.02em;
-        margin: 0 0 0.6rem;
+        margin: 0;
         color: inherit;
     }
     .evg-como-card p {
         font-family: 'Manrope', 'Segoe UI', sans-serif;
-        font-size: 0.9rem;
+        font-size: 0.93rem;
         line-height: 1.6;
-        opacity: 0.92;
+        opacity: 0.94;
         margin: 0;
     }
     @media (hover: hover) and (pointer: fine) {
         .evg-como-card:hover {
             transform: translateY(-3px);
-            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
+            box-shadow: 0 9px 22px rgba(0, 0, 0, 0.16),
+                0 0 0 1px color-mix(in srgb, currentColor 10%, transparent);
         }
     }
-    @media (max-width: 640px) {
+    @media (max-width: 720px) {
         .evg-como-grid {grid-template-columns: 1fr;}
+        .evg-como-card {min-height: 0;}
     }
     @media (prefers-reduced-motion: reduce) {
         .evg-como-card {transition: none; transform: none !important;}
@@ -380,41 +408,26 @@ APRESENTACAO_AVISO = (
 APRESENTACAO_COMO_FUNCIONA = """
 <div class="evg-como-grid">
     <article class="evg-como-card">
-        <div class="evg-como-icone" aria-hidden="true">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                 stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-                <rect x="5" y="4" width="14" height="17" rx="2"/>
-                <path d="M9 4h6M8 10h8M8 14h8M8 18h5"/>
-            </svg>
+        <div class="evg-como-topo">
+            <span class="evg-como-icone evg-icone-responde" aria-hidden="true"></span>
+            <h3>Você responde</h3>
         </div>
-        <h3>Você responde</h3>
         <p>A algumas perguntas, uma por vez, sobre sua situação, experiências,
         estudos, interesses e objetivo. É só selecionar as opções.</p>
     </article>
     <article class="evg-como-card">
-        <div class="evg-como-icone" aria-hidden="true">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                 stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-                <circle cx="5" cy="6" r="2"/>
-                <circle cx="19" cy="6" r="2"/>
-                <circle cx="12" cy="18" r="2"/>
-                <path d="m6.7 7.2 4.1 8.5m6.5-8.5-4.1 8.5M7 6h10"/>
-            </svg>
+        <div class="evg-como-topo">
+            <span class="evg-como-icone evg-icone-compara" aria-hidden="true"></span>
+            <h3>O modelo compara</h3>
         </div>
-        <h3>O modelo compara</h3>
         <p>Seu perfil com os mais de mil cursos do catálogo da EV.G e
         seleciona cinco recomendações.</p>
     </article>
     <article class="evg-como-card">
-        <div class="evg-como-icone" aria-hidden="true">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                 stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M12 7v14M3 18V5a2 2 0 0 1 2-2h3a4 4 0 0 1 4 4
-                         4 4 0 0 1 4-4h3a2 2 0 0 1 2 2v13h-5a4 4 0 0 0-4 4
-                         4 4 0 0 0-4-4H3Z"/>
-            </svg>
+        <div class="evg-como-topo">
+            <span class="evg-como-icone evg-icone-lista" aria-hidden="true"></span>
+            <h3>Você recebe a lista</h3>
         </div>
-        <h3>Você recebe a lista</h3>
         <p>Com os links dos cinco cursos e pode avaliar se as sugestões
         foram úteis. A avaliação ajuda o nosso trabalho.</p>
     </article>
@@ -927,6 +940,8 @@ def main():
     st.session_state.setdefault("evg_tela", "inicio")
     tela = st.session_state["evg_tela"]
     if tela == "inicio":
+        # Abertura um pouco mais larga para três cards com ícone ao lado do título.
+        st.markdown("<style>.block-container {max-width: 960px;}</style>", unsafe_allow_html=True)
         st.title("Encontre cursos para você")
         st.markdown(
             f'<p class="evg-lead">{APRESENTACAO_ABERTURA}</p>',
