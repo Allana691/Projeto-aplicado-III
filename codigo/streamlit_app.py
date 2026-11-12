@@ -23,6 +23,7 @@ from motor_recomendador import (
     montar_perfil,
     recomendar_experimental,
     validar_perfil,
+    separar_lista,
 )
 
 
@@ -505,47 +506,60 @@ def linha_do_curso(curso, matriz):
     return None if achadas.empty else achadas.iloc[0]
 
 
-def mostrar_curso(posicao, curso, matriz):
-    """Cada curso tem avaliação opcional, salva ao ser selecionada."""
+def explicar_recomendacao(curso, linha, respostas):
+    """Explicação factual, sem transformar a nota interna em porcentagem.
+
+    O motor usa P05 por correspondência em assuntos/termos de busca;
+    na ausência de coincidência explícita, não inventamos um vínculo.
+    """
+    if linha is not None:
+        termos = [
+            normalizar(item)
+            for campo in ("assuntos", "termos_busca")
+            for item in separar_lista(linha.get(campo, ""))
+        ]
+        for interesse in respostas.get("interesses", []):
+            if any(normalizar(interesse) in termo for termo in termos):
+                return f"Relacionado ao interesse que você marcou: **{interesse}**."
+
+        area = str(linha.get("area_principal", ""))
+        if area in respostas.get("formacao", []):
+            return "É da mesma área de formação ou conhecimentos que você informou."
+
+    motivos = curso.get("motivos", [])
+    if "popularidade histórica da EV.G" in motivos:
+        return "Sugestão baseada na popularidade histórica dos cursos no catálogo analisado."
+    if "conhecimento e experiência informados" in motivos:
+        return "Considera sua experiência e seus conhecimentos, junto das relações entre cursos."
+    return "Selecionado a partir dos seus interesses e das relações entre os conteúdos dos cursos."
+
+
+def mostrar_curso(posicao, curso, matriz, respostas):
+    """Card compacto, com link e avaliação individual em linhas consecutivas."""
     linha = linha_do_curso(curso, matriz)
     with st.container(border=True):
         st.markdown(f"**{posicao}. {curso['nome_curso']}**")
-        st.link_button("Abrir curso na EV.G", curso["link_do_curso"])
+        area = str(curso.get("area_principal", "")).strip()
+        if area:
+            st.caption(f"Área: {area}")
 
-        with st.expander("Ver detalhes do curso"):
-            if linha is not None:
-                st.markdown(f"**Área principal:** {linha['area_principal']}")
-                horas = pd.to_numeric(linha.get("carga_horaria", ""), errors="coerce")
-                if pd.notna(horas):
-                    st.markdown(f"**Carga horária:** {horas:g} horas")
-                instituicao = str(linha.get("instituicao", "")).strip()
-                if instituicao:
-                    st.markdown(f"**Instituição:** {instituicao}")
-                restrito = normalizar(linha.get("acesso_restrito", "")) in ("true", "1", "sim")
-                if restrito:
-                    st.warning(
-                        "⚠️ Este curso pode ter requisitos de acesso. Consulte a EV.G "
-                        "para confirmar se você pode se matricular."
-                    )
-                    requisito = str(linha.get("vinculo_exigido", "")).strip()
-                    if requisito:
-                        st.caption(f"Requisito informado pela EV.G: {requisito}")
-            idiomas = idiomas_alternativos(curso, matriz)
-            if idiomas:
-                links = " · ".join(f"[{idioma}]({url})" for idioma, url in idiomas)
-                st.markdown(f"Este curso também existe em outros idiomas: {links}")
+        st.markdown("**Por que apareceu para você?**")
+        st.caption(explicar_recomendacao(curso, linha, respostas))
+        st.link_button("Abrir curso na EV.G ↗", curso["link_do_curso"], use_container_width=True)
 
+        st.caption("Esta recomendação despertou seu interesse? (opcional)")
         interesse = st.radio(
-            "Essa recomendação despertou seu interesse? (Opcional)",
+            f"Interesse no curso {posicao}",
             options=["Me interessou", "Não me interessou"],
             index=None,
             horizontal=True,
+            label_visibility="collapsed",
             key=f"evg_interesse_curso_{posicao}",
         )
         if interesse:
             salvos = st.session_state.setdefault("evg_interesses_salvos", {})
             if st.session_state.get("evg_registro_status") != "salvo":
-                st.warning("O registro do questionário precisa ser concluído antes de salvar esta opinião.")
+                st.warning("O registro do questionário precisa ser concluído para salvar esta opinião.")
             elif salvos.get(posicao) != interesse:
                 try:
                     registrar_interesse(
@@ -554,11 +568,29 @@ def mostrar_curso(posicao, curso, matriz):
                         interesse,
                     )
                 except Exception:
-                    st.error("Não conseguimos salvar sua opinião. Ela será reenviada se você interagir novamente com a página.")
+                    st.error("Não conseguimos salvar sua opinião. Você pode tentar novamente.")
                 else:
                     salvos[posicao] = interesse
             if salvos.get(posicao) == interesse:
-                st.caption("✓ Opinião registrada automaticamente.")
+                st.caption("✓ Opinião registrada.")
+
+        with st.expander("Mais informações"):
+            if linha is not None:
+                instituicao = str(linha.get("instituicao", "")).strip()
+                if instituicao:
+                    st.markdown(f"**Instituição:** {instituicao}")
+                restrito = normalizar(linha.get("acesso_restrito", "")) in ("true", "1", "sim")
+                if restrito:
+                    st.warning(
+                        "Este curso pode ter requisitos de acesso. Consulte a EV.G."
+                    )
+                    requisito = str(linha.get("vinculo_exigido", "")).strip()
+                    if requisito:
+                        st.caption(f"Requisito informado pela EV.G: {requisito}")
+            idiomas = idiomas_alternativos(curso, matriz)
+            if idiomas:
+                links = " · ".join(f"[{idioma}]({url})" for idioma, url in idiomas)
+                st.markdown(f"Outros idiomas disponíveis: {links}")
 
 
 
@@ -709,10 +741,30 @@ def main():
             unsafe_allow_html=True,
         )
         tentar_registrar_participacao()
-        st.write("Acesse os cursos e, se desejar, marque quais recomendações despertaram seu interesse. As escolhas são salvas automaticamente.")
+        st.write("Compare os cursos e marque, se quiser, quais sugestões despertaram seu interesse. As escolhas são salvas automaticamente.")
         matriz, *_ = carregar_modelo()
-        for posicao, curso in enumerate(resultado["cursos"][:5], start=1):
-            mostrar_curso(posicao, curso, matriz)
+        # A página de resultados é mais larga para acomodar os cards.
+        st.markdown(
+            "<style>.block-container {max-width: 1180px;}"
+            "@media (max-width: 900px) {.block-container {padding-left: 1rem; padding-right: 1rem;}}</style>",
+            unsafe_allow_html=True,
+        )
+        cursos = resultado["cursos"][:5]
+        respostas = st.session_state.get("evg_respostas", {})
+        if hasattr(st, "grid"):
+            # Versões recentes do Streamlit redistribuem os cards automaticamente.
+            grade = st.grid(columns=3, min_column_width=280, gap="medium")
+            with grade:
+                for posicao, curso in enumerate(cursos, start=1):
+                    with grade.cell():
+                        mostrar_curso(posicao, curso, matriz, respostas)
+        else:
+            # Compatibilidade com versões do Streamlit sem st.grid.
+            for inicio in range(0, len(cursos), 3):
+                colunas = st.columns(3, gap="small")
+                for deslocamento, curso in enumerate(cursos[inicio:inicio + 3]):
+                    with colunas[deslocamento]:
+                        mostrar_curso(inicio + deslocamento + 1, curso, matriz, respostas)
         st.divider()
         mostrar_avaliacao()
         st.divider()
