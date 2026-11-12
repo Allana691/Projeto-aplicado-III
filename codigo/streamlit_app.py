@@ -837,6 +837,25 @@ def mostrar_curso(posicao, curso, matriz, respostas):
 
         st.markdown("**Por que apareceu para você?**")
         st.caption(explicar_recomendacao(curso, linha, respostas))
+
+        # Mostrar o aviso antes do link: a pessoa deve saber sobre a
+        # restrição antes de tentar fazer a matrícula.
+        if linha is not None:
+            restrito = normalizar(linha.get("acesso_restrito", "")) in ("true", "1", "sim")
+        else:
+            restrito = bool(curso.get("acesso_restrito", False))
+        if restrito:
+            st.warning(
+                "Atenção: curso com acesso restrito. "
+                "Verifique as condições de matrícula na EV.G."
+            )
+            requisito = (
+                str(linha.get("vinculo_exigido", "")).strip()
+                if linha is not None else str(curso.get("vinculo_exigido", "")).strip()
+            )
+            if requisito and normalizar(requisito) not in ("nan", "none"):
+                st.caption(f"Requisito de acesso informado no catálogo: {requisito}")
+
         st.link_button("Abrir curso na EV.G", curso["link_do_curso"], use_container_width=True)
 
         st.caption("Esta recomendação despertou seu interesse? (opcional)")
@@ -865,21 +884,6 @@ def mostrar_curso(posicao, curso, matriz, respostas):
                     salvos[posicao] = interesse
             if salvos.get(posicao) == interesse:
                 st.caption("Opinião registrada.")
-
-        # Acesso restrito é um alerta, não um detalhe escondido.
-        # O filtro do motor já impede recomendar cursos marcados como restritos,
-        # mas o aviso protege a interface se o catálogo ou a regra mudar.
-        if linha is not None:
-            restrito = normalizar(linha.get("acesso_restrito", "")) in ("true", "1", "sim")
-            if restrito:
-                requisito = str(linha.get("vinculo_exigido", "")).strip()
-                st.warning(
-                    "Atenção: este curso possui requisitos de acesso "
-                    "e pode não estar disponível ao público em geral. "
-                    "Confira as condições de matrícula na EV.G."
-                )
-                if requisito:
-                    st.caption(f"Requisito informado pela EV.G: {requisito}")
 
         # Preservar as versões em outros idiomas, quando existirem,
         # sem mostrar um menu de detalhes em todos os cards.
