@@ -15,7 +15,7 @@ import numpy as np
 import pandas as pd
 import streamlit as st
 
-from registro_sheets import registrar_participacao, registrar_avaliacao
+from registro_sheets import registrar_participacao, registrar_avaliacao, registrar_interesse
 
 from motor_recomendador import (
     carregar_opcoes,
@@ -397,8 +397,10 @@ def avancar(etapa):
             st.session_state["evg_participacao_utc"] = datetime.now(timezone.utc).isoformat(timespec="seconds")
             st.session_state["evg_registro_status"] = "pendente"
             st.session_state["evg_avaliacao_enviada"] = False
-            for chave in ("evg_p07", "evg_p08", "evg_p09"):
-                st.session_state.pop(chave, None)
+            for chave in list(st.session_state):
+                if chave in ("evg_p07", "evg_p08", "evg_p09") or chave.startswith("evg_interesse_curso_"):
+                    st.session_state.pop(chave, None)
+            st.session_state["evg_interesses_salvos"] = {}
             st.session_state["evg_tela"] = "resultado"
             st.rerun()
         except (ValueError, KeyError, FileNotFoundError) as erro:
@@ -504,31 +506,60 @@ def linha_do_curso(curso, matriz):
 
 
 def mostrar_curso(posicao, curso, matriz):
-    """Um curso por caixa: fechada mostra só o nome; aberta, os detalhes."""
+    """Cada curso tem avaliação opcional, salva ao ser selecionada."""
     linha = linha_do_curso(curso, matriz)
-    with st.expander(f"{posicao}. {curso['nome_curso']}"):
-        if linha is not None:
-            st.markdown(f"**Área principal:** {linha['area_principal']}")
-            horas = pd.to_numeric(linha.get("carga_horaria", ""), errors="coerce")
-            if pd.notna(horas):
-                st.markdown(f"**Carga horária:** {horas:g} horas")
-            instituicao = str(linha.get("instituicao", "")).strip()
-            if instituicao:
-                st.markdown(f"**Instituição:** {instituicao}")
-            restrito = normalizar(linha.get("acesso_restrito", "")) in ("true", "1", "sim")
-            if restrito:
-                st.warning(
-                    "⚠️ Este curso pode ter requisitos de acesso. Consulte a EV.G "
-                    "para confirmar se você pode se matricular."
-                )
-                requisito = str(linha.get("vinculo_exigido", "")).strip()
-                if requisito:
-                    st.caption(f"Requisito informado pela EV.G: {requisito}")
+    with st.container(border=True):
+        st.markdown(f"**{posicao}. {curso['nome_curso']}**")
         st.link_button("Abrir curso na EV.G", curso["link_do_curso"])
-        idiomas = idiomas_alternativos(curso, matriz)
-        if idiomas:
-            links = " · ".join(f"[{idioma}]({url})" for idioma, url in idiomas)
-            st.markdown(f"Este curso também existe em outros idiomas: {links}")
+
+        with st.expander("Ver detalhes do curso"):
+            if linha is not None:
+                st.markdown(f"**Área principal:** {linha['area_principal']}")
+                horas = pd.to_numeric(linha.get("carga_horaria", ""), errors="coerce")
+                if pd.notna(horas):
+                    st.markdown(f"**Carga horária:** {horas:g} horas")
+                instituicao = str(linha.get("instituicao", "")).strip()
+                if instituicao:
+                    st.markdown(f"**Instituição:** {instituicao}")
+                restrito = normalizar(linha.get("acesso_restrito", "")) in ("true", "1", "sim")
+                if restrito:
+                    st.warning(
+                        "⚠️ Este curso pode ter requisitos de acesso. Consulte a EV.G "
+                        "para confirmar se você pode se matricular."
+                    )
+                    requisito = str(linha.get("vinculo_exigido", "")).strip()
+                    if requisito:
+                        st.caption(f"Requisito informado pela EV.G: {requisito}")
+            idiomas = idiomas_alternativos(curso, matriz)
+            if idiomas:
+                links = " · ".join(f"[{idioma}]({url})" for idioma, url in idiomas)
+                st.markdown(f"Este curso também existe em outros idiomas: {links}")
+
+        interesse = st.radio(
+            "Essa recomendação despertou seu interesse? (Opcional)",
+            options=["Me interessou", "Não me interessou"],
+            index=None,
+            horizontal=True,
+            key=f"evg_interesse_curso_{posicao}",
+        )
+        if interesse:
+            salvos = st.session_state.setdefault("evg_interesses_salvos", {})
+            if st.session_state.get("evg_registro_status") != "salvo":
+                st.warning("O registro do questionário precisa ser concluído antes de salvar esta opinião.")
+            elif salvos.get(posicao) != interesse:
+                try:
+                    registrar_interesse(
+                        st.session_state["evg_participacao_id"],
+                        posicao,
+                        interesse,
+                    )
+                except Exception:
+                    st.error("Não conseguimos salvar sua opinião. Ela será reenviada se você interagir novamente com a página.")
+                else:
+                    salvos[posicao] = interesse
+            if salvos.get(posicao) == interesse:
+                st.caption("✓ Opinião registrada automaticamente.")
+
 
 
 def mostrar_avaliacao():
@@ -548,25 +579,19 @@ def mostrar_avaliacao():
             options=escala, index=None, horizontal=True, key="evg_p07",
         )
         st.radio(
-            "P08 — Algum dos cursos despertou seu interesse?",
-            options=["Sim", "Não", "Ainda não sei"],
-            index=None, horizontal=True, key="evg_p08",
-        )
-        st.radio(
             "P09 — Quanto a lista ajudou você a encontrar cursos que gostaria de fazer?",
             options=escala, index=None, horizontal=True, key="evg_p09",
         )
     if st.session_state.get("evg_avaliacao_enviada"):
         st.success("Obrigado! Sua avaliação foi registrada.")
         return
-    if all(st.session_state.get(chave) for chave in ("evg_p07", "evg_p08", "evg_p09")):
+    if all(st.session_state.get(chave) for chave in ("evg_p07", "evg_p09")):
         if st.button("Enviar minha avaliação", type="primary"):
             try:
                 registrar_avaliacao(
                     st.session_state["evg_participacao_id"],
                     {
                         "p07": st.session_state["evg_p07"],
-                        "p08": st.session_state["evg_p08"],
                         "p09": st.session_state["evg_p09"],
                     },
                 )
@@ -576,7 +601,7 @@ def mostrar_avaliacao():
                 st.session_state["evg_avaliacao_enviada"] = True
                 st.rerun()
     else:
-        st.info("Se quiser contribuir, responda às três perguntas e clique em Enviar.")
+        st.info("Se quiser contribuir, responda às duas perguntas e clique em Enviar.")
 
 
 def tentar_registrar_participacao():
@@ -684,7 +709,7 @@ def main():
             unsafe_allow_html=True,
         )
         tentar_registrar_participacao()
-        st.write("Clique no nome de cada curso para ver os detalhes e abrir o link.")
+        st.write("Acesse os cursos e, se desejar, marque quais recomendações despertaram seu interesse. As escolhas são salvas automaticamente.")
         matriz, *_ = carregar_modelo()
         for posicao, curso in enumerate(resultado["cursos"][:5], start=1):
             mostrar_curso(posicao, curso, matriz)
