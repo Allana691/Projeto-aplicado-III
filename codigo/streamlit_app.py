@@ -79,59 +79,78 @@ st.markdown(
        atrás da barra fixa do Streamlit, onde aparece o botão Deploy */
     .block-container {max-width: 760px; padding-top: 5rem; padding-bottom: 4rem;}
 
-    /* Título de cada pergunta (azul, como nos prints de referência) */
+    /* Roxo Profundo: os tokens vêm do tema ativo (config.toml).
+       Há versões próprias para claro e escuro, inclusive ao trocar o tema no menu. */
     .evg-titulo {
-        color: #3d82e0; font-size: clamp(1.6rem, 4vw, 2.1rem);
+        color: var(--st-link-color, var(--link-color, #74258F));
+        font-size: clamp(1.6rem, 4vw, 2.1rem);
         font-weight: 700; letter-spacing: -.025em;
         line-height: 1.25; margin: .4rem 0 1rem 0;
     }
     .evg-subtitulo {
-        color: #3d82e0; font-size: 1.25rem; font-weight: 700;
+        color: var(--st-link-color, var(--link-color, #74258F));
+        font-size: 1.25rem; font-weight: 700;
         letter-spacing: -.015em; margin: 1.2rem 0 .6rem 0;
     }
 
-    /* Caixa cinza de "Orientação". Fundo claro + letra escura = legível
-       tanto no tema claro quanto no escuro. */
+    /* Orientação: lavanda sutil no tema claro; superfície compatível no escuro. */
     .evg-orientacao {
-        background: #e3e7ec; color: #1f2937; border-radius: 10px;
+        background: color-mix(in srgb,
+            var(--st-primary-color, var(--primary-color, #74258F)) 9%,
+            var(--st-background-color, var(--background-color, #FBF7FD)));
+        color: var(--st-text-color, var(--text-color, inherit));
+        border: 1px solid color-mix(in srgb,
+            var(--st-primary-color, var(--primary-color, #74258F)) 20%, transparent);
+        border-radius: 10px;
         padding: .85rem 1.1rem; margin-bottom: 1.2rem; line-height: 1.45;
     }
 
-    /* Botão principal azul (os dois seletores cobrem versões diferentes do Streamlit) */
+    /* Os elementos nativos usam primaryColor do tema; mantemos hover definido. */
     .stButton > button[kind="primary"],
     .stButton > button[data-testid="stBaseButton-primary"],
     .stDownloadButton > button[kind="primary"],
     .stDownloadButton > button[data-testid="stBaseButton-primary"] {
-        background: #2563eb; border-color: #2563eb; color: #ffffff;
+        background: var(--st-primary-color, var(--primary-color, #74258F));
+        border-color: var(--st-primary-color, var(--primary-color, #74258F));
+        color: #FFFFFF;
         font-weight: 600;
     }
     .stButton > button[kind="primary"]:hover,
     .stButton > button[data-testid="stBaseButton-primary"]:hover,
     .stDownloadButton > button[kind="primary"]:hover,
     .stDownloadButton > button[data-testid="stBaseButton-primary"]:hover {
-        background: #1d4ed8; border-color: #1d4ed8; color: #ffffff;
+        background: var(--evg-hover, #5F1E74);
+        border-color: var(--evg-hover, #5F1E74);
+        color: #FFFFFF;
     }
     .stButton > button, .stDownloadButton > button, .stLinkButton > a {
         border-radius: 10px; min-height: 2.75rem;
     }
 
-    /* Caixas que abrem (grupos de áreas e cursos): sem fundo fixo, para
-       combinar com o tema claro ou escuro de quem estiver usando */
+    /* Bordas e superfícies acompanhando o tema ativo. */
     [data-testid="stExpander"] {
-        background: transparent; border: 1px solid rgba(128, 128, 128, .35);
+        background: var(--st-secondary-background-color,
+            var(--secondary-background-color, transparent));
+        border: 1px solid var(--st-border-color,
+            var(--border-color, color-mix(in srgb, currentColor 20%, transparent)));
         border-radius: 10px;
     }
     [data-testid="stAlert"] {border-radius: 10px;}
 
-    /* Apenas o aviso acadêmico da tela inicial ganha relevo permanente.
-       O contorno acompanha a cor do tema, para o efeito ser perceptível
-       também no modo escuro, sem alterar o fundo do aviso do Streamlit. */
+    /* Aviso acadêmico: lavanda/ameixa, com sombra permanente. */
     .st-key-evg_aviso_academico [data-testid="stAlert"] {
+        background: color-mix(in srgb,
+            var(--st-primary-color, var(--primary-color, #74258F)) 10%,
+            var(--st-background-color, var(--background-color, #FBF7FD)));
+        border: 1px solid color-mix(in srgb,
+            var(--st-primary-color, var(--primary-color, #74258F)) 24%, transparent);
         border-radius: 12px;
         box-shadow:
-            0 6px 18px rgba(0, 0, 0, 0.16),
-            0 0 0 1px color-mix(in srgb, currentColor 14%, transparent),
-            0 2px 10px color-mix(in srgb, currentColor 8%, transparent);
+            0 6px 18px rgba(0, 0, 0, 0.12),
+            0 0 0 1px color-mix(in srgb, currentColor 9%, transparent);
+    }
+    .st-key-evg_aviso_academico [data-testid="stAlert"] svg {
+        color: var(--st-primary-color, var(--primary-color, #74258F));
     }
     div[data-testid="stRadio"] label, div[data-testid="stCheckbox"] label {
         line-height: 1.5;
@@ -144,10 +163,15 @@ st.markdown(
         padding: 0.42rem 0.25rem;
         align-items: center;
     }
+    /* Hover usa a variante mais profunda; o tema escuro ajusta o tom. */
+    :root {--evg-hover: #5F1E74;}
+    @media (prefers-color-scheme: dark) {
+        :root {--evg-hover: #6D2584;}
+    }
     .evg-lead {opacity: .9; font-size: 1.08rem; font-weight: 500; line-height: 1.65;}
 
-    /* Cards de apresentação: ilustrações azuis (SVG como imagem CSS) para
-       não depender de SVG inline, filtrado pela renderização HTML do Streamlit. */
+    /* Cards de apresentação: ilustrações em ameixa/lilás (SVG como CSS)
+       para evitar o filtro de SVG inline do Streamlit. */
     .evg-como-grid {
         display: grid;
         grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -158,9 +182,11 @@ st.markdown(
     .evg-como-card {
         min-width: 0;
         min-height: 205px;
-        border: 1px solid color-mix(in srgb, currentColor 15%, transparent);
+        border: 1px solid var(--st-border-color,
+            var(--border-color, color-mix(in srgb, currentColor 15%, transparent)));
         border-radius: 14px;
-        background: color-mix(in srgb, currentColor 2%, transparent);
+        background: var(--st-secondary-background-color,
+            var(--secondary-background-color, color-mix(in srgb, currentColor 2%, transparent)));
         padding: 1.1rem;
         box-shadow: 0 5px 15px rgba(0, 0, 0, 0.11);
         transition: transform 180ms ease, box-shadow 180ms ease;
@@ -180,7 +206,7 @@ st.markdown(
         align-items: center;
         justify-content: center;
         border-radius: 11px;
-        background: linear-gradient(140deg, #d7e5fa, #edf4ff);
+        background: linear-gradient(140deg, #E9D8F0, #F1E8F6);
     }
     .evg-como-icone::before {
         content: "";
@@ -192,13 +218,13 @@ st.markdown(
         background-position: center;
     }
     .evg-icone-responde::before {
-        background-image: url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2064%2064%22%20fill%3D%22none%22%20stroke%3D%22%23285783%22%20stroke-width%3D%222.8%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Crect%20x%3D%2211%22%20y%3D%227%22%20width%3D%2239%22%20height%3D%2249%22%20rx%3D%225%22%20fill%3D%22%23F7FAFF%22%2F%3E%3Cpath%20d%3D%22M20%2019h21M20%2026h18M20%2033h11M20%2041h12%22%2F%3E%3Cpath%20d%3D%22m36%2044%2016-17a4%204%200%200%201%205%205L41%2049l-9%203%204-8Z%22%20fill%3D%22%239AC0F1%22%20stroke%3D%22%23204B81%22%2F%3E%3Cpath%20d%3D%22m49%2030%205%205%22%2F%3E%3C%2Fsvg%3E");
+        background-image: url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2064%2064%22%20fill%3D%22none%22%20stroke%3D%22%2374258F%22%20stroke-width%3D%222.8%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Crect%20x%3D%2211%22%20y%3D%227%22%20width%3D%2239%22%20height%3D%2249%22%20rx%3D%225%22%20fill%3D%22%23F1E8F6%22%2F%3E%3Cpath%20d%3D%22M20%2019h21M20%2026h18M20%2033h11M20%2041h12%22%2F%3E%3Cpath%20d%3D%22m36%2044%2016-17a4%204%200%200%201%205%205L41%2049l-9%203%204-8Z%22%20fill%3D%22%23C7A6D8%22%20stroke%3D%22%235F1E74%22%2F%3E%3Cpath%20d%3D%22m49%2030%205%205%22%2F%3E%3C%2Fsvg%3E");
     }
     .evg-icone-compara::before {
-        background-image: url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2064%2064%22%20fill%3D%22none%22%20stroke%3D%22%23285783%22%20stroke-width%3D%222.6%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Crect%20x%3D%2218%22%20y%3D%2217%22%20width%3D%2228%22%20height%3D%2230%22%20rx%3D%225%22%20fill%3D%22%23F7FAFF%22%2F%3E%3Cpath%20d%3D%22M11%2010l8%208M52%2010l-7%208M10%2054l9-9M53%2054l-8-9M32%208v9M32%2047v9M8%2032h10M46%2032h10%22%2F%3E%3Ccircle%20cx%3D%229%22%20cy%3D%229%22%20r%3D%224%22%20fill%3D%22%239AC0F1%22%2F%3E%3Ccircle%20cx%3D%2255%22%20cy%3D%229%22%20r%3D%224%22%20fill%3D%22%239AC0F1%22%2F%3E%3Ccircle%20cx%3D%229%22%20cy%3D%2255%22%20r%3D%224%22%20fill%3D%22%239AC0F1%22%2F%3E%3Ccircle%20cx%3D%2255%22%20cy%3D%2255%22%20r%3D%224%22%20fill%3D%22%239AC0F1%22%2F%3E%3Ccircle%20cx%3D%2232%22%20cy%3D%226%22%20r%3D%223%22%20fill%3D%22%239AC0F1%22%2F%3E%3Ccircle%20cx%3D%2232%22%20cy%3D%2258%22%20r%3D%223%22%20fill%3D%22%239AC0F1%22%2F%3E%3Ccircle%20cx%3D%226%22%20cy%3D%2232%22%20r%3D%223%22%20fill%3D%22%239AC0F1%22%2F%3E%3Ccircle%20cx%3D%2258%22%20cy%3D%2232%22%20r%3D%223%22%20fill%3D%22%239AC0F1%22%2F%3E%3Cpath%20d%3D%22M25%2025h14M25%2031h14M25%2037h14%22%20stroke%3D%22%235688BD%22%2F%3E%3C%2Fsvg%3E");
+        background-image: url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2064%2064%22%20fill%3D%22none%22%20stroke%3D%22%2374258F%22%20stroke-width%3D%222.6%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Crect%20x%3D%2218%22%20y%3D%2217%22%20width%3D%2228%22%20height%3D%2230%22%20rx%3D%225%22%20fill%3D%22%23F1E8F6%22%2F%3E%3Cpath%20d%3D%22M11%2010l8%208M52%2010l-7%208M10%2054l9-9M53%2054l-8-9M32%208v9M32%2047v9M8%2032h10M46%2032h10%22%2F%3E%3Ccircle%20cx%3D%229%22%20cy%3D%229%22%20r%3D%224%22%20fill%3D%22%23C7A6D8%22%2F%3E%3Ccircle%20cx%3D%2255%22%20cy%3D%229%22%20r%3D%224%22%20fill%3D%22%23C7A6D8%22%2F%3E%3Ccircle%20cx%3D%229%22%20cy%3D%2255%22%20r%3D%224%22%20fill%3D%22%23C7A6D8%22%2F%3E%3Ccircle%20cx%3D%2255%22%20cy%3D%2255%22%20r%3D%224%22%20fill%3D%22%23C7A6D8%22%2F%3E%3Ccircle%20cx%3D%2232%22%20cy%3D%226%22%20r%3D%223%22%20fill%3D%22%23C7A6D8%22%2F%3E%3Ccircle%20cx%3D%2232%22%20cy%3D%2258%22%20r%3D%223%22%20fill%3D%22%23C7A6D8%22%2F%3E%3Ccircle%20cx%3D%226%22%20cy%3D%2232%22%20r%3D%223%22%20fill%3D%22%23C7A6D8%22%2F%3E%3Ccircle%20cx%3D%2258%22%20cy%3D%2232%22%20r%3D%223%22%20fill%3D%22%23C7A6D8%22%2F%3E%3Cpath%20d%3D%22M25%2025h14M25%2031h14M25%2037h14%22%20stroke%3D%22%23A76ABF%22%2F%3E%3C%2Fsvg%3E");
     }
     .evg-icone-lista::before {
-        background-image: url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2064%2064%22%20fill%3D%22none%22%20stroke%3D%22%23285783%22%20stroke-width%3D%222.8%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Crect%20x%3D%229%22%20y%3D%226%22%20width%3D%2246%22%20height%3D%2252%22%20rx%3D%225%22%20fill%3D%22%23F7FAFF%22%2F%3E%3Cpath%20d%3D%22m17%2019%204%204%207-8M33%2020h14M17%2034l4%204%207-8M33%2035h14M17%2049l4%204%207-8M33%2050h14%22%20stroke%3D%22%23245B98%22%2F%3E%3C%2Fsvg%3E");
+        background-image: url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2064%2064%22%20fill%3D%22none%22%20stroke%3D%22%2374258F%22%20stroke-width%3D%222.8%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Crect%20x%3D%229%22%20y%3D%226%22%20width%3D%2246%22%20height%3D%2252%22%20rx%3D%225%22%20fill%3D%22%23F1E8F6%22%2F%3E%3Cpath%20d%3D%22m17%2019%204%204%207-8M33%2020h14M17%2034l4%204%207-8M33%2035h14M17%2049l4%204%207-8M33%2050h14%22%20stroke%3D%22%2374258F%22%2F%3E%3C%2Fsvg%3E");
     }
     .evg-como-card h3 {
         font-family: 'Manrope', 'Segoe UI', sans-serif !important;
@@ -235,7 +261,7 @@ st.markdown(
        no escuro, partem da cor do texto corrente em vez do cinza claro
        usado por padrao no st.caption. Mantem hierarquia com leve opacidade. */
     .stApp [data-testid="stCaptionContainer"] {
-        color: inherit !important;
+        color: var(--st-text-color, var(--text-color, inherit)) !important;
         opacity: 0.9;
         font-size: 0.9rem !important;
         font-weight: 400;
