@@ -1,0 +1,21 @@
+# Identidade visual do recomendador EV.G / Projeto Aplicado III.
+# Tema claro e tema escuro podem ser alternados no menu do Streamlit.
+# Tipografia Manrope e ajustes específicos continuam no CSS do aplicativo.
+[theme]
+base = "light"
+
+[theme.light]
+primaryColor = "#74258F"
+backgroundColor = "#FBF7FD"
+secondaryBackgroundColor = "#FFFFFF"
+textColor = "#2F2336"
+linkColor = "#74258F"
+borderColor = "#E7D8EF"
+
+[theme.dark]
+primaryColor = "#803199"
+backgroundColor = "#18131F"
+secondaryBackgroundColor = "#2B2233"
+textColor = "#F4ECF7"
+linkColor = "#DDB5EE"
+borderColor = "#584365"
