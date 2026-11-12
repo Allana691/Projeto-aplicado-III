@@ -128,21 +128,28 @@ st.markdown(
     }
     .evg-lead {opacity: .9; font-size: 1.08rem; font-weight: 500; line-height: 1.65;}
 
-    /* Legibilidade dos textos secundários: usam a cor natural do tema,
-       com contraste maior que o padrão de st.caption.
-       Aplicar só aos cards, sem alterar avisos e textos do questionário. */
-    :is(.st-key-evg_curso_card_1, .st-key-evg_curso_card_2,
-        .st-key-evg_curso_card_3, .st-key-evg_curso_card_4,
-        .st-key-evg_curso_card_5) [data-testid="stCaptionContainer"] {
+    /* Legibilidade das legendas em todo o aplicativo: no tema claro e
+       no escuro, partem da cor do texto corrente em vez do cinza claro
+       usado por padrao no st.caption. Mantem hierarquia com leve opacidade. */
+    .stApp [data-testid="stCaptionContainer"] {
         color: inherit !important;
-        opacity: 0.88;
-        font-size: 0.88rem !important;
-        line-height: 1.5;
+        opacity: 0.9;
+        font-size: 0.9rem !important;
+        font-weight: 400;
+        line-height: 1.55;
     }
-    :is(.st-key-evg_curso_card_1, .st-key-evg_curso_card_2,
-        .st-key-evg_curso_card_3, .st-key-evg_curso_card_4,
-        .st-key-evg_curso_card_5) [data-testid="stCaptionContainer"] * {
+    .stApp [data-testid="stCaptionContainer"] * {
         color: inherit !important;
+    }
+
+    /* A nota antes da avaliacao precisa ser secundaria, mas nao desbotada. */
+    .evg-nota-avaliacao {
+        color: inherit;
+        opacity: 0.9;
+        font-size: 0.93rem;
+        font-weight: 500;
+        line-height: 1.6;
+        margin: 0.25rem 0 1.05rem;
     }
 
     /* Elevação discreta somente nos cinco cards dos cursos.
@@ -747,7 +754,11 @@ def mostrar_avaliacao():
         '<div class="evg-subtitulo">Avaliação da Experiência (Opcional)</div>',
         unsafe_allow_html=True,
     )
-    st.caption("As perguntas avaliam se a lista foi útil para você, não a qualidade dos cursos.")
+    st.markdown(
+        '<p class="evg-nota-avaliacao">As perguntas avaliam se a lista foi útil para você, '
+        'não a qualidade dos cursos.</p>',
+        unsafe_allow_html=True,
+    )
     escala = [
         "1 — Nada", "2 — Pouco", "3 — Parcialmente",
         "4 — Muito", "5 — Totalmente", "Não consigo avaliar",
