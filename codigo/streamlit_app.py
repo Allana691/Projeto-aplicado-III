@@ -6,7 +6,6 @@ Execute na raiz do projeto:
 O aplicativo usa o motor híbrido já validado e não altera suas matrizes.
 """
 from pathlib import Path
-from urllib.parse import quote
 import unicodedata
 from datetime import datetime, timezone
 from uuid import uuid4
@@ -232,167 +231,139 @@ st.markdown(
     div[data-testid="stRadio"] label, div[data-testid="stCheckbox"] label {
         line-height: 1.5;
     }
-    /* P01 e P06: radios nativos apresentados como cards de selecao unica.
-       As respostas e as teclas de navegacao seguem as do Streamlit. */
-    :is(.st-key-evg_pergunta_p01, .st-key-evg_pergunta_p06)
-    [data-testid="stRadio"],
-    :is(.st-key-evg_pergunta_p01, .st-key-evg_pergunta_p06)
-    [role="radiogroup"] {
-        width: 100%;
-    }
-    :is(.st-key-evg_pergunta_p01, .st-key-evg_pergunta_p06)
-    [role="radiogroup"] {
-        display: flex;
-        flex-direction: column;
-        gap: 0.75rem;
-    }
-    :is(.st-key-evg_pergunta_p01, .st-key-evg_pergunta_p06)
-    [role="radiogroup"] > label {
+    /* P01/P06: cards verdadeiramente clicáveis, implementados com st.button.
+       Não estilizar radios ou checkboxes das outras telas. */
+    :is([class*="st-key-evg_card_p01_"], [class*="st-key-evg_card_p06_"])
+    button {
         display: flex !important;
-        align-items: center !important;
+        flex-direction: column !important;
+        align-items: stretch !important;
+        justify-content: center !important;
+        position: relative;
         width: 100%;
+        min-height: 100px;
+        height: auto;
+        padding: 1rem 1.1rem 1rem 4.9rem !important;
         box-sizing: border-box;
-        min-height: 95px;
-        padding: 1rem 1.15rem !important;
-        gap: 0.95rem;
         border: 1.5px solid #E7D8EF;
         border-radius: 16px;
         background: #FFFFFF;
         color: #2F2336;
-        cursor: pointer;
-        box-shadow: 0 2px 9px rgba(48, 34, 53, 0.045);
-        transition: border-color 150ms ease, background-color 150ms ease,
-                    box-shadow 150ms ease, transform 150ms ease;
+        text-align: left !important;
+        white-space: normal;
+        box-shadow: 0 2px 9px rgba(48, 34, 53, 0.06);
+        gap: 0.3rem;
+        transition: transform 150ms ease, border-color 150ms ease,
+                    box-shadow 150ms ease, background-color 150ms ease;
     }
-    /* Ocultar apenas o circulo visual do radio. O input continua no
-       documento, acessivel ao teclado e a leitores de tela. */
-    :is(.st-key-evg_pergunta_p01, .st-key-evg_pergunta_p06)
-    [role="radiogroup"] > label > div:first-child:has(input[type="radio"]) {
-        position: absolute;
-        width: 1px;
-        height: 1px;
-        opacity: 0;
-        pointer-events: none;
-    }
-    :is(.st-key-evg_pergunta_p01, .st-key-evg_pergunta_p06)
-    [role="radiogroup"] > label::before {
-        content: "";
-        display: inline-block;
-        flex: 0 0 52px;
-        width: 52px;
-        height: 52px;
-        border-radius: 12px;
-        background-color: #F1E8F6;
-        background-image: var(--evg-card-icone-claro, none);
-        background-position: center;
-        background-repeat: no-repeat;
-        background-size: 25px 25px;
-    }
-    :is(.st-key-evg_pergunta_p01, .st-key-evg_pergunta_p06)
-    [role="radiogroup"] > label > div:last-child {
+    :is([class*="st-key-evg_card_p01_"], [class*="st-key-evg_card_p06_"])
+    button [data-testid="stMarkdownContainer"] {
+        text-align: left !important;
+        width: 100%;
         min-width: 0;
-        flex: 1 1 auto;
     }
-    :is(.st-key-evg_pergunta_p01, .st-key-evg_pergunta_p06)
-    [role="radiogroup"] > label [data-testid="stMarkdownContainer"] p {
-        color: #2F2336;
-        font-size: 1rem;
-        line-height: 1.4;
+    :is([class*="st-key-evg_card_p01_"], [class*="st-key-evg_card_p06_"])
+    button [data-testid="stMarkdownContainer"] p {
+        font-size: 1.02rem;
         font-weight: 700;
+        line-height: 1.4;
+        color: #2F2336;
+        text-align: left !important;
+        white-space: normal;
         margin: 0;
     }
-    :is(.st-key-evg_pergunta_p01, .st-key-evg_pergunta_p06)
-    [role="radiogroup"] > label [data-testid="stCaptionContainer"] {
-        color: #5E4C68 !important;
-        font-size: 0.9rem !important;
-        opacity: 1;
-        line-height: 1.5;
-    }
-    :is(.st-key-evg_pergunta_p01, .st-key-evg_pergunta_p06)
-    [role="radiogroup"] > label:has(input:checked) {
-        border: 2px solid #74258F;
+    :is([class*="st-key-evg_card_p01_"], [class*="st-key-evg_card_p06_"])
+    button [data-testid="stIconMaterial"] {
+        position: absolute;
+        left: 1.1rem;
+        top: 50%;
+        transform: translateY(-50%);
+        width: 2.8rem;
+        height: 2.8rem;
         background: #F1E8F6;
-        box-shadow: 0 4px 14px rgba(116, 37, 143, 0.12);
+        color: #74258F;
+        border-radius: 12px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.45rem;
+        flex-shrink: 0;
     }
-    :is(.st-key-evg_pergunta_p01, .st-key-evg_pergunta_p06)
-    [role="radiogroup"] > label:has(input:focus-visible) {
+    :is([class*="st-key-evg_card_p01_"], [class*="st-key-evg_card_p06_"])
+    button::after {
+        content: var(--evg-card-descricao, "");
+        display: block;
+        text-align: left;
+        color: #5E4C68;
+        font-family: 'Manrope', 'Segoe UI', sans-serif;
+        font-size: 0.9rem;
+        font-weight: 400;
+        line-height: 1.5;
+        white-space: normal;
+        overflow-wrap: anywhere;
+    }
+    :is([class*="st-key-evg_card_p01_"], [class*="st-key-evg_card_p06_"])
+    button:focus-visible {
         outline: 3px solid #C7A6D8;
         outline-offset: 2px;
     }
     @media (hover: hover) and (pointer: fine) {
-        :is(.st-key-evg_pergunta_p01, .st-key-evg_pergunta_p06)
-        [role="radiogroup"] > label:hover {
+        :is([class*="st-key-evg_card_p01_"], [class*="st-key-evg_card_p06_"])
+        button:hover {
             transform: translateY(-2px);
             border-color: #C7A6D8;
-            box-shadow: 0 7px 16px rgba(48, 34, 53, 0.10);
-        }
-        :is(.st-key-evg_pergunta_p01, .st-key-evg_pergunta_p06)
-        [role="radiogroup"] > label:has(input:checked):hover {
-            border-color: #74258F;
+            box-shadow: 0 8px 18px rgba(48, 34, 53, 0.10);
         }
     }
     html.evg-tema-escuro .stApp
-    :is(.st-key-evg_pergunta_p01, .st-key-evg_pergunta_p06)
-    [role="radiogroup"] > label {
+    :is([class*="st-key-evg_card_p01_"], [class*="st-key-evg_card_p06_"])
+    button {
         background: #2B2233;
         border-color: #584365;
         color: #F4ECF7;
-        box-shadow: 0 2px 9px rgba(0, 0, 0, 0.14);
+        box-shadow: 0 2px 9px rgba(0, 0, 0, 0.16);
     }
     html.evg-tema-escuro .stApp
-    :is(.st-key-evg_pergunta_p01, .st-key-evg_pergunta_p06)
-    [role="radiogroup"] > label::before {
-        background-color: #3A2944;
-        background-image: var(--evg-card-icone-escuro, none);
-    }
-    html.evg-tema-escuro .stApp
-    :is(.st-key-evg_pergunta_p01, .st-key-evg_pergunta_p06)
-    [role="radiogroup"] > label [data-testid="stMarkdownContainer"] p {
+    :is([class*="st-key-evg_card_p01_"], [class*="st-key-evg_card_p06_"])
+    button [data-testid="stMarkdownContainer"] p {
         color: #F4ECF7;
     }
     html.evg-tema-escuro .stApp
-    :is(.st-key-evg_pergunta_p01, .st-key-evg_pergunta_p06)
-    [role="radiogroup"] > label [data-testid="stCaptionContainer"] {
-        color: #D7C6DE !important;
-    }
-    html.evg-tema-escuro .stApp
-    :is(.st-key-evg_pergunta_p01, .st-key-evg_pergunta_p06)
-    [role="radiogroup"] > label:has(input:checked) {
+    :is([class*="st-key-evg_card_p01_"], [class*="st-key-evg_card_p06_"])
+    button [data-testid="stIconMaterial"] {
         background: #3A2944;
-        border: 2px solid #DDB5EE;
-        box-shadow: 0 4px 15px rgba(221, 181, 238, 0.13);
+        color: #DDB5EE;
     }
     html.evg-tema-escuro .stApp
-    :is(.st-key-evg_pergunta_p01, .st-key-evg_pergunta_p06)
-    [role="radiogroup"] > label:has(input:focus-visible) {
-        outline-color: #DDB5EE;
+    :is([class*="st-key-evg_card_p01_"], [class*="st-key-evg_card_p06_"])
+    button::after {
+        color: #D7C6DE;
     }
     @media (hover: hover) and (pointer: fine) {
         html.evg-tema-escuro .stApp
-        :is(.st-key-evg_pergunta_p01, .st-key-evg_pergunta_p06)
-        [role="radiogroup"] > label:hover {
+        :is([class*="st-key-evg_card_p01_"], [class*="st-key-evg_card_p06_"])
+        button:hover {
             border-color: #DDB5EE;
-            box-shadow: 0 7px 17px rgba(0, 0, 0, 0.25);
+            box-shadow: 0 8px 18px rgba(0, 0, 0, 0.28);
         }
     }
     @media (max-width: 560px) {
-        :is(.st-key-evg_pergunta_p01, .st-key-evg_pergunta_p06)
-        [role="radiogroup"] > label {
-            padding: 0.9rem !important;
-            gap: 0.75rem;
-            min-height: 85px;
+        :is([class*="st-key-evg_card_p01_"], [class*="st-key-evg_card_p06_"])
+        button {
+            min-height: 94px;
+            padding-left: 4.25rem !important;
+            padding-right: 0.9rem !important;
         }
-        :is(.st-key-evg_pergunta_p01, .st-key-evg_pergunta_p06)
-        [role="radiogroup"] > label::before {
-            flex-basis: 44px;
-            width: 44px;
-            height: 44px;
-            background-size: 22px 22px;
+        :is([class*="st-key-evg_card_p01_"], [class*="st-key-evg_card_p06_"])
+        button [data-testid="stIconMaterial"] {
+            left: 0.9rem;
+            width: 2.5rem;
+            height: 2.5rem;
         }
     }
     @media (prefers-reduced-motion: reduce) {
-        :is(.st-key-evg_pergunta_p01, .st-key-evg_pergunta_p06)
-        [role="radiogroup"] > label {transition: none; transform: none !important;}
+        :is([class*="st-key-evg_card_p01_"], [class*="st-key-evg_card_p06_"])
+        button {transition: none; transform: none !important;}
     }
     /* Hover usa a variante mais profunda; o tema escuro ajusta o tom. */
     :root {--evg-hover: #5F1E74;}
@@ -638,72 +609,77 @@ ROTULOS_P01 = {
     "outra": "Outra situação / Prefiro não informar",
 }
 
-# Cards de escolha unica: descricoes informativas, sem alterar as opcoes.
-# O rotulo e o valor selecionado continuam vindo de ROTULOS_P01 e OBJETIVOS.
+# P01 e P06 permanecem perguntas de escolha unica. Os códigos, títulos e
+# pesos do modelo continuam inalterados; apenas a interface usa st.button.
+# Cada metadado contém o nome de um ícone Material e uma descrição curta.
 CARDS_P01 = {
-    "trabalho": ("briefcase", "Atualmente exerço uma atividade profissional."),
-    "trabalho_estudo": ("book-open", "Divido meu tempo entre trabalho e estudos."),
-    "estudo": ("graduation-cap", "Atualmente me dedico aos estudos."),
+    "trabalho": ("work", "Atualmente exerço uma atividade profissional."),
+    "trabalho_estudo": ("menu_book", "Divido meu tempo entre trabalho e estudos."),
+    "estudo": ("school", "Atualmente me dedico aos estudos."),
     "primeiro": ("search", "Estou buscando minha primeira oportunidade profissional."),
-    "oportunidade": ("trending-up", "Busco novas oportunidades de trabalho."),
-    "transicao": ("refresh-cw", "Quero começar uma trajetória em outra área."),
-    "outra": ("circle-help", "Minha situação não está listada ou prefiro não responder."),
+    "oportunidade": ("trending_up", "Busco novas oportunidades de trabalho."),
+    "transicao": ("sync_alt", "Quero começar uma trajetória em outra área."),
+    "outra": ("help_outline", "Minha situação não está listada ou prefiro não responder."),
 }
 CARDS_P06 = {
-    "melhorar": ("target", "Aprimorar conhecimentos que já utilizo no trabalho."),
-    "crescer": ("trending-up", "Desenvolver competências para avançar na carreira."),
-    "emprego": ("briefcase", "Preparar-me para conquistar uma oportunidade."),
-    "mudar": ("refresh-cw", "Adquirir conhecimentos para atuar em outra área."),
-    "novo": ("compass", "Conhecer temas e possibilidades que ainda não explorei."),
-    "pessoal": ("heart", "Estudar por curiosidade e desenvolvimento pessoal."),
-    "indefinido": ("circle-help", "Explorar possibilidades antes de decidir."),
+    "melhorar": ("track_changes", "Aprimorar conhecimentos que já utilizo no trabalho."),
+    "crescer": ("trending_up", "Desenvolver competências para avançar na carreira."),
+    "emprego": ("work", "Preparar-me para conquistar uma oportunidade."),
+    "mudar": ("sync_alt", "Adquirir conhecimentos para atuar em outra área."),
+    "novo": ("explore", "Conhecer temas e possibilidades que ainda não explorei."),
+    "pessoal": ("favorite_border", "Estudar por curiosidade e desenvolvimento pessoal."),
+    "indefinido": ("help_outline", "Explorar possibilidades antes de decidir."),
     "privacidade": ("shield", "Continuar sem informar um objetivo específico."),
 }
 
-# Traçados SVG leves, sem bibliotecas extras ou caracteres decorativos.
-ICONES_CARDS = {
-    "briefcase": '<rect x="3" y="7" width="18" height="14" rx="2"/><path d="M8 7V5a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2M3 12h18"/>',
-    "book-open": '<path d="M12 7v14M3 18V5a2 2 0 0 1 2-2h3a4 4 0 0 1 4 4 4 4 0 0 1 4-4h3a2 2 0 0 1 2 2v13h-5a4 4 0 0 0-4 3 4 4 0 0 0-4-3H3Z"/>',
-    "graduation-cap": '<path d="m2 10 10-5 10 5-10 5-10-5ZM6 12v5c3 3 9 3 12 0v-5M22 10v7"/>',
-    "search": '<circle cx="10.5" cy="10.5" r="6.5"/><path d="m16 16 5 5"/>',
-    "trending-up": '<path d="m3 17 7-7 4 4 7-7M15 7h6v6"/>',
-    "refresh-cw": '<path d="M20 11a8 8 0 0 0-14-5L4 8M4 4v4h4M4 13a8 8 0 0 0 14 5l2-2M16 16h4v4"/>',
-    "circle-help": '<circle cx="12" cy="12" r="9"/><path d="M9.5 9a2.7 2.7 0 0 1 5.3.7c0 2-2.8 2.3-2.8 4.3M12 17.5h.01"/>',
-    "target": '<circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1"/>',
-    "compass": '<circle cx="12" cy="12" r="9"/><path d="m16 8-2 6-6 2 2-6 6-2Z"/>',
-    "heart": '<path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.7l-1.1-1.1a5.5 5.5 0 0 0-7.8 7.8L12 21l8.8-8.6a5.5 5.5 0 0 0 0-7.8Z"/>',
-    "shield": '<path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10Z"/><path d="M9 12h6"/>',
-}
+
+def selecionar_card(etapa, resposta):
+    """Guarda a mesma resposta que o radio anterior, sem criar um widget radio."""
+    chave = f"evg_{etapa}"
+    st.session_state[chave] = resposta
+    st.session_state.setdefault("evg_valores", {})[chave] = resposta
 
 
-def estilos_icones_cards():
-    """Adiciona ícones SVG aos rádios sem modificar seu comportamento."""
+def mostrar_cards_escolha_unica(etapa):
+    """Cards inteiros clicáveis; mantêm o valor original de P01 e P06."""
+    if etapa == "p01":
+        opcoes = ROTULOS_P01
+        metadados = CARDS_P01
+        selecionado = situacao_atual()
+    else:
+        opcoes = OBJETIVOS
+        metadados = CARDS_P06
+        selecionado = valor("evg_p06")
+
     estilos = []
-    for etapa, opcoes, metadados in (
-        ("p01", ROTULOS_P01, CARDS_P01),
-        ("p06", OBJETIVOS, CARDS_P06),
-    ):
-        for indice, codigo in enumerate(opcoes, start=1):
-            nome_icone, _descricao = metadados[codigo]
-            traçado = ICONES_CARDS[nome_icone]
-            urls = []
-            for cor in ("#74258F", "#DDB5EE"):
-                svg = (
-                    '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" '
-                    f'fill="none" stroke="{cor}" stroke-width="1.8" '
-                    'stroke-linecap="round" stroke-linejoin="round">'
-                    f'{traçado}</svg>'
-                )
-                urls.append('url("data:image/svg+xml,' + quote(svg, safe="") + '")')
-            seletor = (
-                f'.st-key-evg_pergunta_{etapa} [role="radiogroup"] '
-                f'> label:nth-child({indice})'
-            )
+    for codigo, (icone, descricao) in metadados.items():
+        seletor = f".st-key-evg_card_{etapa}_{codigo} button"
+        # Uma string CSS, não HTML: cada descrição aparece dentro do botão.
+        texto_css = descricao.replace("\\\\", "\\\\\\\\").replace('"', '\\"')
+        estilos.append(f'{seletor}{{--evg-card-descricao:"{texto_css}";}}')
+        if codigo == selecionado:
             estilos.append(
-                f'{seletor}{{--evg-card-icone-claro:{urls[0]};'
-                f'--evg-card-icone-escuro:{urls[1]};}}'
+                f'{seletor}{{background:#F1E8F6!important;'
+                f'border:2px solid #74258F!important;'
+                f'box-shadow:0 5px 15px rgba(116,37,143,.12)!important;}}'
+                f'html.evg-tema-escuro {seletor}{{background:#3A2944!important;'
+                f'border:2px solid #DDB5EE!important;}}'
             )
-    return "<style>" + "".join(estilos) + "</style>"
+    st.markdown("<style>" + "".join(estilos) + "</style>", unsafe_allow_html=True)
+
+    for codigo, titulo in opcoes.items():
+        icone, descricao = metadados[codigo]
+        # st.button desenha o card clicável; o evento atualiza a mesma chave
+        # consumida por sequencia(), coletar_respostas() e validar_etapa().
+        st.button(
+            titulo,
+            key=f"evg_card_{etapa}_{codigo}",
+            icon=f":material/{icone}:",
+            help=descricao,
+            use_container_width=True,
+            on_click=selecionar_card,
+            args=(etapa, titulo if etapa == "p01" else codigo),
+        )
 
 
 # P02 é pertinente para quem trabalha, trabalhou ou está mudando de carreira.
@@ -1450,15 +1426,7 @@ def main():
         with st.container(key=f"evg_pergunta_{tela}"):
             cabecalho_da_pergunta(tela)
             if tela == "p01":
-                st.markdown(estilos_icones_cards(), unsafe_allow_html=True)
-                st.radio(
-                    PERGUNTAS["p01"][0],
-                    options=list(ROTULOS_P01.values()),
-                    captions=[descricao for _, descricao in CARDS_P01.values()],
-                    index=None,
-                    label_visibility="collapsed",
-                    key="evg_p01",
-                )
+                mostrar_cards_escolha_unica("p01")
             elif tela == "p02":
                 menus_de_opcoes("p02", "experiencia", 3)
                 st.checkbox(OPCOES["opcao_experiencia_outras"], key="evg_p02_outras")
@@ -1471,16 +1439,7 @@ def main():
                 if not st.session_state.get("evg_p05_nao_sei", False):
                     menus_de_opcoes("p05", "assuntos_p05", 3)
             elif tela == "p06":
-                st.markdown(estilos_icones_cards(), unsafe_allow_html=True)
-                st.radio(
-                    PERGUNTAS["p06"][0],
-                    options=list(OBJETIVOS),
-                    format_func=lambda codigo: OBJETIVOS[codigo],
-                    captions=[descricao for _, descricao in CARDS_P06.values()],
-                    index=None,
-                    label_visibility="collapsed",
-                    key="evg_p06",
-                )
+                mostrar_cards_escolha_unica("p06")
             st.divider()
             botoes_navegacao(tela)
     elif tela == "resultado":
