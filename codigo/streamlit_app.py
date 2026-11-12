@@ -751,16 +751,17 @@ def main():
         )
         cursos = resultado["cursos"][:5]
         respostas = st.session_state.get("evg_respostas", {})
-        # Distribuição 3 + 2: a segunda linha usa duas colunas mais largas,
-        # sem deixar um terceiro espaço vazio à direita.
+        # Três cards em cima; dois cards da mesma largura visual embaixo,
+        # centralizados com margens simétricas. Os espaços laterais ocupam
+        # metade da largura de cada coluna de card.
         primeira_linha = st.columns(3, gap="medium")
         for posicao, curso in enumerate(cursos[:3], start=1):
             with primeira_linha[posicao - 1]:
                 mostrar_curso(posicao, curso, matriz, respostas)
 
-        segunda_linha = st.columns(2, gap="medium")
+        segunda_linha = st.columns([1, 2, 2, 1], gap="medium")
         for posicao, curso in enumerate(cursos[3:], start=4):
-            with segunda_linha[posicao - 4]:
+            with segunda_linha[posicao - 3]:
                 mostrar_curso(posicao, curso, matriz, respostas)
         st.divider()
         mostrar_avaliacao()
