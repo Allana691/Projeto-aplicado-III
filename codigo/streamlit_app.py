@@ -231,19 +231,22 @@ st.markdown(
     div[data-testid="stRadio"] label, div[data-testid="stCheckbox"] label {
         line-height: 1.5;
     }
-    /* P01/P06: cards verdadeiramente clicáveis, implementados com st.button.
-       Não estilizar radios ou checkboxes das outras telas. */
+    /* P01/P06: grid coloca ícone na primeira coluna, título e descrição
+       alinhados à esquerda na segunda. Substitui a estrutura flex anterior. */
     :is([class*="st-key-evg_card_p01_"], [class*="st-key-evg_card_p06_"])
     button {
-        display: flex !important;
-        flex-direction: column !important;
-        align-items: stretch !important;
-        justify-content: center !important;
-        position: relative;
+        display: grid !important;
+        grid-template-columns: 2.8rem minmax(0, 1fr);
+        grid-template-rows: auto auto;
+        column-gap: 0.95rem;
+        row-gap: 0.2rem;
+        align-content: center;
+        align-items: center;
+        justify-items: start;
         width: 100%;
         min-height: 100px;
         height: auto;
-        padding: 1rem 1.1rem 1rem 4.9rem !important;
+        padding: 1rem 1.1rem !important;
         box-sizing: border-box;
         border: 1.5px solid #E7D8EF;
         border-radius: 16px;
@@ -252,15 +255,19 @@ st.markdown(
         text-align: left !important;
         white-space: normal;
         box-shadow: 0 2px 9px rgba(48, 34, 53, 0.06);
-        gap: 0.3rem;
         transition: transform 150ms ease, border-color 150ms ease,
                     box-shadow 150ms ease, background-color 150ms ease;
     }
     :is([class*="st-key-evg_card_p01_"], [class*="st-key-evg_card_p06_"])
     button [data-testid="stMarkdownContainer"] {
+        grid-column: 2;
+        grid-row: 1;
+        justify-self: stretch;
+        align-self: end;
         text-align: left !important;
         width: 100%;
         min-width: 0;
+        margin: 0;
     }
     :is([class*="st-key-evg_card_p01_"], [class*="st-key-evg_card_p06_"])
     button [data-testid="stMarkdownContainer"] p {
@@ -274,10 +281,10 @@ st.markdown(
     }
     :is([class*="st-key-evg_card_p01_"], [class*="st-key-evg_card_p06_"])
     button [data-testid="stIconMaterial"] {
-        position: absolute;
-        left: 1.1rem;
-        top: 50%;
-        transform: translateY(-50%);
+        grid-column: 1;
+        grid-row: 1 / span 2;
+        justify-self: center;
+        align-self: center;
         width: 2.8rem;
         height: 2.8rem;
         background: #F1E8F6;
@@ -293,6 +300,11 @@ st.markdown(
     button::after {
         content: var(--evg-card-descricao, "");
         display: block;
+        grid-column: 2;
+        grid-row: 2;
+        justify-self: stretch;
+        align-self: start;
+        width: 100%;
         text-align: left;
         color: #5E4C68;
         font-family: 'Manrope', 'Segoe UI', sans-serif;
@@ -351,12 +363,12 @@ st.markdown(
         :is([class*="st-key-evg_card_p01_"], [class*="st-key-evg_card_p06_"])
         button {
             min-height: 94px;
-            padding-left: 4.25rem !important;
-            padding-right: 0.9rem !important;
+            grid-template-columns: 2.5rem minmax(0, 1fr);
+            column-gap: 0.75rem;
+            padding: 0.9rem !important;
         }
         :is([class*="st-key-evg_card_p01_"], [class*="st-key-evg_card_p06_"])
         button [data-testid="stIconMaterial"] {
-            left: 0.9rem;
             width: 2.5rem;
             height: 2.5rem;
         }
