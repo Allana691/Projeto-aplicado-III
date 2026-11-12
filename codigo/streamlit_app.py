@@ -40,6 +40,41 @@ st.set_page_config(
 st.markdown(
     """
 <style>
+    @import url('https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap');
+
+    /* Tipografia geral: mesma família em textos e widgets do Streamlit,
+       sem substituir a fonte usada por ícones e componentes internos. */
+    body, .stApp,
+    .stApp button, .stApp input, .stApp textarea,
+    .stApp select, .stApp label,
+    .stApp [data-testid="stMarkdownContainer"],
+    .stApp [data-testid="stCaptionContainer"],
+    .stApp [data-testid="stWidgetLabel"],
+    .stApp [data-testid="stRadio"] {
+        font-family: 'Manrope', 'Segoe UI', sans-serif !important;
+    }
+    .stApp {font-weight: 400; line-height: 1.55;}
+    .stApp h1, .stApp h2, .stApp h3,
+    .stApp [data-testid="stMarkdownContainer"] h1,
+    .stApp [data-testid="stMarkdownContainer"] h2,
+    .stApp [data-testid="stMarkdownContainer"] h3 {
+        font-family: 'Manrope', 'Segoe UI', sans-serif !important;
+        font-weight: 700;
+        letter-spacing: -0.025em;
+        line-height: 1.25;
+    }
+    .stApp button, .stApp .stLinkButton > a {
+        font-family: 'Manrope', 'Segoe UI', sans-serif !important;
+        font-weight: 600;
+    }
+    .stApp [data-testid="stWidgetLabel"] label,
+    .stApp [data-testid="stRadio"] label {
+        font-weight: 500;
+    }
+    .stApp [data-testid="stMarkdownContainer"] strong {
+        font-weight: 700;
+    }
+
     /* Largura da página: uma coluna centralizada, confortável de ler */
     /* O espaço no topo (5rem) evita que a primeira linha fique escondida
        atrás da barra fixa do Streamlit, onde aparece o botão Deploy */
@@ -48,11 +83,12 @@ st.markdown(
     /* Título de cada pergunta (azul, como nos prints de referência) */
     .evg-titulo {
         color: #3d82e0; font-size: clamp(1.6rem, 4vw, 2.1rem);
-        font-weight: 700; line-height: 1.2; margin: .4rem 0 1rem 0;
+        font-weight: 700; letter-spacing: -.025em;
+        line-height: 1.25; margin: .4rem 0 1rem 0;
     }
     .evg-subtitulo {
-        color: #3d82e0; font-size: 1.25rem; font-weight: 650;
-        margin: 1.2rem 0 .6rem 0;
+        color: #3d82e0; font-size: 1.25rem; font-weight: 700;
+        letter-spacing: -.015em; margin: 1.2rem 0 .6rem 0;
     }
 
     /* Caixa cinza de "Orientação". Fundo claro + letra escura = legível
@@ -90,7 +126,7 @@ st.markdown(
     div[data-testid="stRadio"] label, div[data-testid="stCheckbox"] label {
         line-height: 1.4;
     }
-    .evg-lead {opacity: .8; font-size: 1.08rem;}
+    .evg-lead {opacity: .9; font-size: 1.08rem; font-weight: 500; line-height: 1.65;}
 
     /* Legibilidade dos textos secundários: usam a cor natural do tema,
        com contraste maior que o padrão de st.caption.
