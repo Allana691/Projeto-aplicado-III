@@ -19,7 +19,7 @@ COLUNAS = {
     ],
     "Recomendacoes": [
         "id_participacao", "posicao", "id_curso_canonico",
-        "nome_curso", "link_do_curso",
+        "nome_curso", "link_do_curso", "interesse_individual",
     ],
     "Avaliacoes": [
         "id_participacao", "data_hora_utc",
@@ -40,6 +40,10 @@ def _aba(planilha, nome):
     atual = aba.row_values(1)
     if not atual:
         aba.update([COLUNAS[nome]], "A1", value_input_option="RAW")
+    elif nome == "Recomendacoes" and atual == COLUNAS[nome][:-1]:
+        # Migração compatível: acrescenta somente o novo título na coluna F.
+        # Todas as participações e recomendações anteriores ficam intactas.
+        aba.update([["interesse_individual"]], "F1", value_input_option="RAW")
     elif atual != COLUNAS[nome]:
         raise ValueError(f"Cabeçalhos inesperados na aba {nome}; nenhuma linha foi sobrescrita.")
     return aba
@@ -84,6 +88,7 @@ def registrar_participacao(identificador, instante, nome, respostas, cursos):
                 str(curso["id_curso_canonico"]),
                 curso["nome_curso"],
                 curso["link_do_curso"],
+                "",
             ])
     if faltantes:
         aba_cursos.append_rows(
@@ -91,6 +96,26 @@ def registrar_participacao(identificador, instante, nome, respostas, cursos):
             value_input_option="RAW",
             insert_data_option="INSERT_ROWS",
         )
+
+
+def registrar_interesse(identificador, posicao, interesse):
+    """Registra somente a opinião sobre um curso na linha já existente.
+
+    As cinco primeiras colunas são preservadas. Atualizar uma opinião não
+    cria uma nova participação nem afeta outros participantes.
+    """
+    if interesse not in ("Me interessou", "Não me interessou"):
+        raise ValueError("Opção de avaliação individual inválida.")
+    aba = _aba(_abrir_planilha(), "Recomendacoes")
+    for numero_linha, celulas in enumerate(aba.get("A2:B"), start=2):
+        if (
+            len(celulas) >= 2
+            and celulas[0] == identificador
+            and celulas[1] == str(posicao)
+        ):
+            aba.update_cell(numero_linha, 6, interesse)
+            return
+    raise ValueError("Curso não encontrado para a participação informada.")
 
 
 def registrar_avaliacao(identificador, respostas):
@@ -103,7 +128,7 @@ def registrar_avaliacao(identificador, respostas):
                 identificador,
                 datetime.now(timezone.utc).isoformat(timespec="seconds"),
                 respostas.get("p07", ""),
-                respostas.get("p08", ""),
+                "",  # P08 descontinuada: coluna mantida para histórico
                 respostas.get("p09", ""),
             ],
             value_input_option="RAW",
