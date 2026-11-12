@@ -476,7 +476,7 @@ def botoes_navegacao(etapa):
             voltar(etapa)
     with direita:
         texto = (
-            "🎯 Gerar Recomendações Personalizadas"
+            "Gerar Recomendações Personalizadas"
             if etapa == "p06" else "Avançar ➡️"
         )
         if st.button(texto, type="primary"):
@@ -648,7 +648,7 @@ def mostrar_curso(posicao, curso, matriz, respostas):
 def mostrar_avaliacao():
     """Avaliação geral opcional; gravada somente com envio explícito."""
     st.markdown(
-        '<div class="evg-subtitulo">📝 Avaliação da Experiência (Opcional)</div>',
+        '<div class="evg-subtitulo">Avaliação da Experiência (Opcional)</div>',
         unsafe_allow_html=True,
     )
     st.caption("As perguntas avaliam se a lista foi útil para você, não a qualidade dos cursos.")
@@ -788,7 +788,7 @@ def main():
         nome = html.escape(st.session_state.get("evg_nome", "").strip())
         saudacao = f", {nome}" if nome else ""
         st.markdown(
-            f'<h2 class="evg-titulo">🎯 Cursos Recomendados para Você{saudacao}</h2>',
+            f'<h2 class="evg-titulo">Cursos Recomendados para Você{saudacao}</h2>',
             unsafe_allow_html=True,
         )
         tentar_registrar_participacao()
