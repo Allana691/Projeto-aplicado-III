@@ -226,10 +226,9 @@ ROTULOS_P01 = {
 # Quem está apenas estudando ou procurando o primeiro emprego vai direto à P04.
 SITUACOES_COM_P02 = {"trabalho", "trabalho_estudo", "oportunidade", "transicao"}
 
-# Textos de cada etapa: (título azul, pergunta, texto da caixa "Orientação").
+# Textos de cada etapa: (pergunta exibida, orientação complementar).
 # Para mudar qualquer frase da tela, é só editar aqui.
-# Usar uma única fonte de textos evita reaproveitar visualmente o enunciado da
-# P01 nas demais etapas.
+# Centralizar os enunciados evita duplicar a pergunta em cada tela.
 PERGUNTAS = {
     "p01": (
         "Qual é sua situação atualmente?",
@@ -299,7 +298,7 @@ O modelo é **híbrido**: junta duas pistas.
   partir de muitas matrículas na EV.G, sem identificar nenhuma pessoa.
 
 Juntando as duas pistas, ele monta a lista de cinco cursos. O seu objetivo
-(pergunta P06) ajuda a decidir quanto cada parte do seu perfil (trabalho,
+também ajuda a decidir quanto cada parte do seu perfil (trabalho,
 estudos e interesses) pesa na escolha.
 """
 APRESENTACAO_DADOS = """
