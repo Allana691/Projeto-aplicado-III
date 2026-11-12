@@ -296,11 +296,11 @@ st.markdown(
         font-size: 1.45rem;
         flex-shrink: 0;
     }
+    /* Descrição no mesmo parágrafo do título: início horizontal idêntico. */
     :is([class*="st-key-evg_card_p01_"], [class*="st-key-evg_card_p06_"])
-    button::after {
+    button [data-testid="stMarkdownContainer"] p::after {
         content: var(--evg-card-descricao, "");
         display: block;
-        width: 100%;
         margin-top: 0.25rem;
         text-align: left;
         color: #5E4C68;
@@ -345,7 +345,7 @@ st.markdown(
     }
     html.evg-tema-escuro .stApp
     :is([class*="st-key-evg_card_p01_"], [class*="st-key-evg_card_p06_"])
-    button::after {
+    button [data-testid="stMarkdownContainer"] p::after {
         color: #D7C6DE;
     }
     @media (hover: hover) and (pointer: fine) {
