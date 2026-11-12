@@ -751,20 +751,17 @@ def main():
         )
         cursos = resultado["cursos"][:5]
         respostas = st.session_state.get("evg_respostas", {})
-        if hasattr(st, "grid"):
-            # Versões recentes do Streamlit redistribuem os cards automaticamente.
-            grade = st.grid(columns=3, min_column_width=280, gap="medium")
-            with grade:
-                for posicao, curso in enumerate(cursos, start=1):
-                    with grade.cell():
-                        mostrar_curso(posicao, curso, matriz, respostas)
-        else:
-            # Compatibilidade com versões do Streamlit sem st.grid.
-            for inicio in range(0, len(cursos), 3):
-                colunas = st.columns(3, gap="small")
-                for deslocamento, curso in enumerate(cursos[inicio:inicio + 3]):
-                    with colunas[deslocamento]:
-                        mostrar_curso(inicio + deslocamento + 1, curso, matriz, respostas)
+        # Distribuição 3 + 2: a segunda linha usa duas colunas mais largas,
+        # sem deixar um terceiro espaço vazio à direita.
+        primeira_linha = st.columns(3, gap="medium")
+        for posicao, curso in enumerate(cursos[:3], start=1):
+            with primeira_linha[posicao - 1]:
+                mostrar_curso(posicao, curso, matriz, respostas)
+
+        segunda_linha = st.columns(2, gap="medium")
+        for posicao, curso in enumerate(cursos[3:], start=4):
+            with segunda_linha[posicao - 4]:
+                mostrar_curso(posicao, curso, matriz, respostas)
         st.divider()
         mostrar_avaliacao()
         st.divider()
