@@ -258,12 +258,27 @@ PERGUNTAS = {
 }
 
 
+# Estes títulos organizam o questionário sem expor os códigos P01/P02/etc.
+TITULOS_DAS_ETAPAS = {
+    "p01": "Situação Atual",
+    "p02": "Experiência Profissional",
+    "p04": "Formação e Conhecimentos",
+    "p05": "Interesses de Aprendizagem",
+    "p06": "Objetivo de Aprendizagem",
+}
+
+
 def cabecalho_da_pergunta(etapa):
-    """Exibe a pergunta uma única vez, com a orientação logo abaixo."""
+    """Mostra a seção, a orientação e o enunciado, sem código de pergunta."""
     pergunta, orientacao = PERGUNTAS[etapa]
-    st.markdown(f'<h2 class="evg-titulo">{pergunta}</h2>', unsafe_allow_html=True)
+    titulo = TITULOS_DAS_ETAPAS[etapa]
+    st.markdown(f'<h2 class="evg-titulo">{titulo}</h2>', unsafe_allow_html=True)
     st.markdown(
         f'<div class="evg-orientacao">👉 <strong>Orientação:</strong> {orientacao}</div>',
+        unsafe_allow_html=True,
+    )
+    st.markdown(
+        f'<div class="evg-subtitulo">{pergunta}</div>',
         unsafe_allow_html=True,
     )
 
