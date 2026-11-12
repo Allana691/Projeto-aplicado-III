@@ -574,23 +574,28 @@ def mostrar_curso(posicao, curso, matriz, respostas):
             if salvos.get(posicao) == interesse:
                 st.caption("✓ Opinião registrada.")
 
-        with st.expander("Mais informações"):
-            if linha is not None:
-                instituicao = str(linha.get("instituicao", "")).strip()
-                if instituicao:
-                    st.markdown(f"**Instituição:** {instituicao}")
-                restrito = normalizar(linha.get("acesso_restrito", "")) in ("true", "1", "sim")
-                if restrito:
-                    st.warning(
-                        "Este curso pode ter requisitos de acesso. Consulte a EV.G."
-                    )
-                    requisito = str(linha.get("vinculo_exigido", "")).strip()
-                    if requisito:
-                        st.caption(f"Requisito informado pela EV.G: {requisito}")
-            idiomas = idiomas_alternativos(curso, matriz)
-            if idiomas:
-                links = " · ".join(f"[{idioma}]({url})" for idioma, url in idiomas)
-                st.markdown(f"Outros idiomas disponíveis: {links}")
+        # Acesso restrito é um alerta, não um detalhe escondido.
+        # O filtro do motor já impede recomendar cursos marcados como restritos,
+        # mas o aviso protege a interface se o catálogo ou a regra mudar.
+        if linha is not None:
+            restrito = normalizar(linha.get("acesso_restrito", "")) in ("true", "1", "sim")
+            if restrito:
+                requisito = str(linha.get("vinculo_exigido", "")).strip()
+                st.warning(
+                    "⚠️ Atenção: este curso possui requisitos de acesso "
+                    "e pode não estar disponível ao público em geral. "
+                    "Confira as condições de matrícula na EV.G."
+                )
+                if requisito:
+                    st.caption(f"Requisito informado pela EV.G: {requisito}")
+
+        # Preservar as versões em outros idiomas, quando existirem,
+        # sem mostrar um menu de detalhes em todos os cards.
+        idiomas = idiomas_alternativos(curso, matriz)
+        if idiomas:
+            links = " · ".join(f"[{idioma}]({url})" for idioma, url in idiomas)
+            st.caption("Este curso também existe em outros idiomas:")
+            st.markdown(links)
 
 
 
