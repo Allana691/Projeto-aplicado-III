@@ -174,21 +174,16 @@ st.markdown(
         color: var(--st-text-color, var(--text-color, #2F2336));
         line-height: 1.6;
     }
-    /* Fundo exclusivo do aviso academico, preservando o restante da paleta. */
+    /* Fundo exclusivo do aviso academico. A sincronizacao com o tema ativo
+       do Streamlit e feita pelo script do proprio aviso, nao pelo tema do SO. */
     .evg-aviso-academico {
         background: #EEE2F2;
         box-shadow: 0 6px 18px rgba(0, 0, 0, 0.10),
                     0 1px 4px rgba(0, 0, 0, 0.05);
     }
-    /* Preferencia do sistema e tema escolhido no menu do Streamlit. */
-    @media (prefers-color-scheme: dark) {
-        .evg-aviso-academico {background: #22162B;}
-    }
-    :is(html, body, .stApp)[data-theme="light"] .evg-aviso-academico {
-        background: #EEE2F2;
-    }
-    :is(html, body, .stApp)[data-theme="dark"] .evg-aviso-academico {
-        background: #22162B;
+    .evg-aviso-academico .evg-aviso-icone {
+        color: var(--evg-aviso-icon, #74258F);
+        border-color: var(--evg-aviso-icon, #74258F);
     }
     .evg-aviso-secundario {
         margin-top: 0.6rem;
@@ -1095,6 +1090,56 @@ def main():
                 '<span class="evg-aviso-icone" aria-hidden="true">i</span>'
                 f'<div class="evg-aviso-conteudo"><p>{APRESENTACAO_AVISO}</p></div>'
                 '</aside>'
+                """
+                <script>
+                (() => {
+                    // O menu de temas do Streamlit pode divergir do tema do SO.
+                    // Leia a aparência ativa do app, inclusive após a troca no menu.
+                    if (window.__evgAvisoTemaTimer) {
+                        clearInterval(window.__evgAvisoTemaTimer);
+                    }
+                    const card = document.querySelector('.evg-aviso-academico');
+                    if (!card) return;
+
+                    const intensidade = (cor) => {
+                        const rgb = cor.match(/rgba?\(([^)]+)\)/i);
+                        if (!rgb) return null;
+                        const valores = rgb[1].split(',').map(v => Number.parseFloat(v));
+                        if (valores.length < 3 ||
+                            valores.slice(0, 3).some(v => !Number.isFinite(v))) return null;
+                        if (valores.length > 3 && valores[3] === 0) return null;
+                        return .2126 * valores[0] + .7152 * valores[1] + .0722 * valores[2];
+                    };
+                    const atualizar = () => {
+                        if (!card.isConnected) {
+                            clearInterval(window.__evgAvisoTemaTimer);
+                            window.__evgAvisoTemaTimer = null;
+                            return;
+                        }
+                        const app = document.querySelector('[data-testid="stAppViewContainer"]')
+                            || document.querySelector('.stApp') || document.body;
+                        const estilo = getComputedStyle(app);
+                        const brilhoFundo = intensidade(estilo.backgroundColor);
+                        // Se a superfície for transparente, usar o texto do app:
+                        // letra clara indica tema escuro.
+                        const brilhoTexto = intensidade(estilo.color);
+                        const escuro = brilhoFundo !== null
+                            ? brilhoFundo < 125
+                            : (brilhoTexto !== null && brilhoTexto > 150);
+                        const modo = escuro ? 'dark' : 'light';
+                        if (card.dataset.evgTema === modo) return;
+                        card.dataset.evgTema = modo;
+                        card.style.backgroundColor = escuro ? '#22162B' : '#EEE2F2';
+                        card.style.color = escuro ? '#F4ECF7' : '#2F2336';
+                        card.style.setProperty('--evg-aviso-icon',
+                            escuro ? '#DDB5EE' : '#74258F');
+                    };
+                    atualizar();
+                    window.__evgAvisoTemaTimer = setInterval(atualizar, 350);
+                })();
+                </script>
+                """,
+                unsafe_allow_javascript=True,
             )
         st.caption(
             "Ao gerar sua lista, suas respostas e os cursos recomendados serão "
