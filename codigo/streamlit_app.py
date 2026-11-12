@@ -683,7 +683,6 @@ def mostrar_cards_escolha_unica(etapa):
             titulo,
             key=f"evg_card_{etapa}_{codigo}",
             icon=f":material/{icone}:",
-            help=descricao,
             use_container_width=True,
             on_click=selecionar_card,
             args=(etapa, titulo if etapa == "p01" else codigo),
