@@ -6,7 +6,6 @@ Execute na raiz do projeto:
 O aplicativo usa o motor híbrido já validado e não altera suas matrizes.
 """
 from pathlib import Path
-import html
 import unicodedata
 from datetime import datetime, timezone
 from uuid import uuid4
@@ -332,15 +331,14 @@ também ajuda a decidir quanto cada parte do seu perfil (trabalho,
 estudos e interesses) pesa na escolha.
 """
 APRESENTACAO_DADOS = """
-- Não pedimos login, e-mail, CPF nem outros dados pessoais. Só o nome, que é
-  opcional.
+- Não pedimos nome, login, e-mail ou CPF para responder ao questionário.
 - O app **não consulta o seu histórico** na EV.G. O seu perfil vem apenas das
   respostas que você dá aqui.
 - Suas respostas servem só para montar a sua lista: elas **não alteram o
   modelo**, e cada pessoa começa do zero.
-- Ao gerar sua lista, as respostas (e o nome, se informado) e os cinco cursos
-  recomendados são registrados numa planilha privada do projeto para análise
-  acadêmica. As avaliações, quando enviadas, também são registradas.
+- Ao gerar sua lista, as respostas e os cinco cursos recomendados são
+  registrados numa planilha privada do projeto para análise acadêmica.
+  As avaliações, quando enviadas, também são registradas.
 - Suas respostas não são enviadas à EV.G e não alteram o modelo.
 - Alguns cursos têm requisitos de acesso. Quem decide se você pode se matricular
   é a EV.G.
@@ -647,11 +645,9 @@ def idiomas_alternativos(curso, matriz):
 
 
 def reiniciar():
-    nome = st.session_state.get("evg_nome", "")
     for chave in list(st.session_state):
         if chave.startswith("evg_"):
             del st.session_state[chave]
-    st.session_state["evg_nome"] = nome
     st.session_state["evg_tela"] = "inicio"
     solicitar_rolagem_topo()
     st.rerun()
@@ -809,7 +805,7 @@ def tentar_registrar_participacao():
             registrar_participacao(
                 st.session_state["evg_participacao_id"],
                 st.session_state["evg_participacao_utc"],
-                st.session_state.get("evg_nome", ""),
+                "",  # Coluna histórica de nome mantida vazia por compatibilidade.
                 st.session_state["evg_respostas"],
                 st.session_state["evg_resultado"]["cursos"][:5],
             )
@@ -841,10 +837,9 @@ def main():
             st.markdown(APRESENTACAO_MODELO)
         with st.expander("Sobre os seus dados"):
             st.markdown(APRESENTACAO_DADOS)
-        st.text_input("Como gostaria de ser chamado(a)? (opcional)", key="evg_nome")
         st.caption(
-            "Ao gerar sua lista, suas respostas, o nome (se informado) e os cursos "
-            "recomendados serão registrados para análise acadêmica. "
+            "Ao gerar sua lista, suas respostas e os cursos recomendados serão "
+            "registrados para análise acadêmica. "
             "Veja os detalhes em 'Sobre os seus dados'."
         )
         if st.button("Começar questionário", type="primary"):
@@ -896,10 +891,8 @@ def main():
             if st.button("Iniciar", type="primary"):
                 reiniciar()
             return
-        nome = html.escape(st.session_state.get("evg_nome", "").strip())
-        saudacao = f", {nome}" if nome else ""
         st.markdown(
-            f'<h2 class="evg-titulo">Cursos Recomendados para Você{saudacao}</h2>',
+            '<h2 class="evg-titulo">Cursos Recomendados para Você</h2>',
             unsafe_allow_html=True,
         )
         tentar_registrar_participacao()
