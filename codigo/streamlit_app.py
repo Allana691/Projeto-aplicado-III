@@ -74,11 +74,17 @@ st.markdown(
         font-weight: 700;
     }
 
-    /* O título nativo da abertura e os títulos das seções seguem o roxo. */
+    /* Titulos da pagina: cor roxa no claro, lilas no escuro. */
     .stApp h1, .stApp h2,
     .stApp [data-testid="stMarkdownContainer"] h1,
     .stApp [data-testid="stMarkdownContainer"] h2 {
-        color: var(--st-link-color, var(--link-color, #74258F));
+        color: #74258F;
+    }
+    html.evg-tema-escuro .stApp h1,
+    html.evg-tema-escuro .stApp h2,
+    html.evg-tema-escuro .stApp [data-testid="stMarkdownContainer"] h1,
+    html.evg-tema-escuro .stApp [data-testid="stMarkdownContainer"] h2 {
+        color: #DDB5EE;
     }
     /* Cor e contorno dos links para os cursos. */
     .stApp .stLinkButton > a {
@@ -101,18 +107,21 @@ st.markdown(
        atrás da barra fixa do Streamlit, onde aparece o botão Deploy */
     .block-container {max-width: 760px; padding-top: 5rem; padding-bottom: 4rem;}
 
-    /* Roxo Profundo: os tokens vêm do tema ativo (config.toml).
-       Há versões próprias para claro e escuro, inclusive ao trocar o tema no menu. */
+    /* Cabecalhos do questionario e dos resultados. */
     .evg-titulo {
-        color: var(--st-link-color, var(--link-color, #74258F));
+        color: #74258F;
         font-size: clamp(1.6rem, 4vw, 2.1rem);
         font-weight: 700; letter-spacing: -.025em;
         line-height: 1.25; margin: .4rem 0 1rem 0;
     }
     .evg-subtitulo {
-        color: var(--st-link-color, var(--link-color, #74258F));
+        color: #74258F;
         font-size: 1.25rem; font-weight: 700;
         letter-spacing: -.015em; margin: 1.2rem 0 .6rem 0;
+    }
+    html.evg-tema-escuro .stApp .evg-titulo,
+    html.evg-tema-escuro .stApp .evg-subtitulo {
+        color: #DDB5EE;
     }
 
     /* Orientação: lilás translúcido sobre o fundo REAL da tela. Não misturar
@@ -389,6 +398,42 @@ st.markdown(
 </style>
 """,
     unsafe_allow_html=True,
+)
+
+# Sincroniza a cor dos titulos com o tema realmente exibido pelo Streamlit.
+# Isso inclui trocas de tema pelo menu, sem recarregar a pagina.
+st.html(
+    """
+    <script>
+    (() => {
+        if (window.__evgTemaCabecalhosTimer) {
+            clearInterval(window.__evgTemaCabecalhosTimer);
+        }
+        const brilho = (cor) => {
+            const rgb = String(cor).match(/rgba?\\(([^)]+)\\)/i);
+            if (!rgb) return null;
+            const valores = rgb[1].split(',').map(v => Number.parseFloat(v));
+            if (valores.length < 3 || valores.slice(0, 3).some(v => !Number.isFinite(v))) {
+                return null;
+            }
+            if (valores.length > 3 && valores[3] === 0) return null;
+            return .2126 * valores[0] + .7152 * valores[1] + .0722 * valores[2];
+        };
+        const sincronizar = () => {
+            const app = document.querySelector('[data-testid="stAppViewContainer"]')
+                || document.querySelector('.stApp') || document.body;
+            const estilo = getComputedStyle(app);
+            const fundo = brilho(estilo.backgroundColor);
+            const texto = brilho(estilo.color);
+            const escuro = fundo !== null ? fundo < 125 : texto !== null && texto > 150;
+            document.documentElement.classList.toggle('evg-tema-escuro', escuro);
+        };
+        sincronizar();
+        window.__evgTemaCabecalhosTimer = setInterval(sincronizar, 350);
+    })();
+    </script>
+    """,
+    unsafe_allow_javascript=True,
 )
 
 
