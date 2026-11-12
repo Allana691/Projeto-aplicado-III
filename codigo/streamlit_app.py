@@ -459,6 +459,30 @@ APRESENTACAO_DADOS = """
   é a EV.G.
 """
 
+APRESENTACAO_NOSSO_PROJETO = """
+**Sobre o projeto**
+
+Somos estudantes do curso de **Banco de Dados – Análise, Mineração e Engenharia
+de Dados**, da **Universidade Presbiteriana Mackenzie**, e desenvolvemos este
+recomendador na disciplina **Projeto Aplicado III**, em 2026.
+
+Nosso objetivo é facilitar a descoberta de oportunidades gratuitas de
+capacitação profissional. Para isso, combinamos informações sobre os cursos da
+**Escola Virtual de Governo (EV.G)** com técnicas de recomendação baseadas em
+conteúdo e em padrões de matrículas, apresentando cinco sugestões de acordo
+com as respostas de cada participante.
+
+**Nossa equipe**
+
+- Allana Rayssa Vieira de Oliveira
+- Erika Cristina Alves Benesi Gomes
+- Nicole Fernandes Moreira
+- Tawany Nascimento Santos
+
+O aplicativo é um **protótipo acadêmico independente**, desenvolvido para
+fins de pesquisa e aprendizagem. Não é um serviço oficial da EV.G.
+"""
+
 
 def valor(chave, padrao=None):
     """Lê a resposta guardada mesmo após o Streamlit ocultar o widget."""
@@ -968,6 +992,8 @@ def main():
             st.markdown(APRESENTACAO_MODELO)
         with st.expander("Sobre os seus dados"):
             st.markdown(APRESENTACAO_DADOS)
+        with st.expander("Conheça nosso projeto"):
+            st.markdown(APRESENTACAO_NOSSO_PROJETO)
         # Segunda ação para quem preferiu ler as informações antes de começar.
         if st.button(
             "Começar questionário", type="primary",
