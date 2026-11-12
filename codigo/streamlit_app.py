@@ -104,7 +104,12 @@ st.markdown(
             .st-key-evg_curso_card_3, .st-key-evg_curso_card_4,
             .st-key-evg_curso_card_5):hover {
             transform: translateY(-5px);
-            box-shadow: 0 10px 24px rgba(0, 0, 0, 0.12);
+            /* A sombra escura dá profundidade; o contorno e brilho usam
+               a cor do texto do tema atual, ficando visíveis também no escuro. */
+            box-shadow:
+                0 10px 24px rgba(0, 0, 0, 0.22),
+                0 0 0 1px color-mix(in srgb, currentColor 24%, transparent),
+                0 0 18px color-mix(in srgb, currentColor 12%, transparent);
         }
     }
     @media (prefers-reduced-motion: reduce) {
