@@ -842,15 +842,12 @@ def main():
         with st.expander("Sobre os seus dados"):
             st.markdown(APRESENTACAO_DADOS)
         st.text_input("Como gostaria de ser chamado(a)? (opcional)", key="evg_nome")
-        st.checkbox(
-            "Estou ciente de que minhas respostas e os cursos apresentados serão "
-            "registrados para a análise acadêmica descrita acima.",
-            key="evg_ciente_registro",
+        st.caption(
+            "Ao gerar sua lista, suas respostas, o nome (se informado) e os cursos "
+            "recomendados serão registrados para análise acadêmica. "
+            "Veja os detalhes em 'Sobre os seus dados'."
         )
-        if st.button(
-            "Começar questionário", type="primary",
-            disabled=not st.session_state.get("evg_ciente_registro", False),
-        ):
+        if st.button("Começar questionário", type="primary"):
             st.session_state["evg_tela"] = "p01"
             solicitar_rolagem_topo()
             st.rerun()
