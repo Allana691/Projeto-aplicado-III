@@ -365,6 +365,9 @@ st.markdown(
         background: var(--st-secondary-background-color,
             var(--secondary-background-color, color-mix(in srgb, currentColor 2%, transparent)));
         border-radius: 12px;
+        /* Altura sincronizada com o maior dos cinco cards pelo script abaixo.
+           min-height permite crescimento sem cortar conteúdo. */
+        box-sizing: border-box;
     }
 
     /* Elevação discreta somente nos cinco cards dos cursos.
@@ -1287,6 +1290,68 @@ def main():
         for posicao, curso in enumerate(cursos[3:], start=4):
             with segunda_linha[posicao - 3]:
                 mostrar_curso(posicao, curso, matriz, respostas)
+
+        # A primeira e a segunda linha sao blocos Streamlit independentes.
+        # Sincronizar a altura dos CINCO cards pela maior altura natural evita
+        # medidas fixas que cortariam cursos com avisos ou textos mais longos.
+        st.html(
+            """
+            <script>
+            (() => {
+                if (window.__evgCardsAltura) {
+                    window.__evgCardsAltura.encerrar();
+                }
+                const cards = [1, 2, 3, 4, 5]
+                    .map(n => document.querySelector('.st-key-evg_curso_card_' + n));
+                if (cards.some(card => !card)) return;
+
+                let frame = null;
+                const observers = [];
+                const medir = () => {
+                    frame = null;
+                    if (cards.some(card => !card.isConnected)) {
+                        encerrar();
+                        return;
+                    }
+                    // Retirar a altura anterior ANTES de medir o conteúdo natural.
+                    cards.forEach(card => { card.style.minHeight = ''; });
+                    const maior = Math.ceil(Math.max(...cards.map(
+                        card => card.getBoundingClientRect().height
+                    )));
+                    cards.forEach(card => {
+                        card.style.minHeight = maior + 'px';
+                    });
+                };
+                const agendar = () => {
+                    if (frame !== null) cancelAnimationFrame(frame);
+                    frame = requestAnimationFrame(medir);
+                };
+                const escutar = () => {
+                    const observer = new MutationObserver(agendar);
+                    cards.forEach(card => observer.observe(card, {
+                        subtree: true, childList: true, characterData: true
+                    }));
+                    observers.push(observer);
+                };
+                const encerrar = () => {
+                    observers.forEach(obs => obs.disconnect());
+                    window.removeEventListener('resize', agendar);
+                    if (frame !== null) cancelAnimationFrame(frame);
+                    cards.forEach(card => { card.style.minHeight = ''; });
+                    if (window.__evgCardsAltura?.encerrar === encerrar) {
+                        window.__evgCardsAltura = null;
+                    }
+                };
+                window.__evgCardsAltura = { encerrar };
+                escutar();
+                window.addEventListener('resize', agendar, { passive: true });
+                agendar();
+                if (document.fonts?.ready) document.fonts.ready.then(agendar);
+            })();
+            </script>
+            """,
+            unsafe_allow_javascript=True,
+        )
         st.divider()
         mostrar_avaliacao()
         st.divider()
