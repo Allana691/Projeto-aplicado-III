@@ -159,20 +159,58 @@ st.markdown(
     }
     [data-testid="stAlert"] {border-radius: 10px;}
 
-    /* Aviso acadêmico: lavanda/ameixa, com sombra permanente. */
-    .st-key-evg_aviso_academico [data-testid="stAlert"] {
-        background: color-mix(in srgb,
-            var(--st-primary-color, var(--primary-color, #74258F)) 10%,
-            var(--st-background-color, var(--background-color, #FBF7FD)));
-        border: 1px solid color-mix(in srgb,
-            var(--st-primary-color, var(--primary-color, #74258F)) 24%, transparent);
+    /* Avisos informativos independentes do st.info: este componente nativo
+       impõe sua paleta azul mesmo com as cores roxas do tema. */
+    .evg-aviso-academico, .evg-aviso-secundario {
+        display: flex;
+        align-items: flex-start;
+        gap: 0.85rem;
+        padding: 1rem 1.15rem;
+        border: 1px solid var(--st-border-color,
+            var(--border-color, #E7D8EF));
         border-radius: 12px;
-        box-shadow:
-            0 6px 18px rgba(0, 0, 0, 0.12),
-            0 0 0 1px color-mix(in srgb, currentColor 9%, transparent);
+        background: var(--st-secondary-background-color,
+            var(--secondary-background-color, #FFFFFF));
+        color: var(--st-text-color, var(--text-color, #2F2336));
+        line-height: 1.6;
     }
-    .st-key-evg_aviso_academico [data-testid="stAlert"] svg {
-        color: var(--st-primary-color, var(--primary-color, #74258F));
+    .evg-aviso-academico {
+        box-shadow: 0 6px 18px rgba(0, 0, 0, 0.10),
+                    0 1px 4px rgba(0, 0, 0, 0.05);
+    }
+    .evg-aviso-secundario {
+        margin-top: 0.6rem;
+        background: color-mix(in srgb,
+            var(--st-primary-color, var(--primary-color, #74258F)) 8%,
+            var(--st-secondary-background-color,
+                var(--secondary-background-color, #FFFFFF)));
+    }
+    .evg-aviso-icone {
+        flex: 0 0 23px;
+        width: 23px;
+        height: 23px;
+        display: inline-flex;
+        justify-content: center;
+        align-items: center;
+        margin-top: 0.1rem;
+        border: 1.7px solid var(--st-link-color,
+            var(--link-color, #74258F));
+        border-radius: 50%;
+        color: var(--st-link-color, var(--link-color, #74258F));
+        background: color-mix(in srgb,
+            var(--st-primary-color, var(--primary-color, #74258F)) 9%, transparent);
+        font-family: 'Manrope', 'Segoe UI', sans-serif;
+        font-size: 0.85rem;
+        font-weight: 800;
+        font-style: normal;
+        line-height: 1;
+    }
+    .evg-aviso-conteudo {flex: 1; min-width: 0; font-size: 0.96rem;}
+    .evg-aviso-conteudo p {margin: 0;}
+    .evg-aviso-conteudo strong {font-weight: 700;}
+    @media (max-width: 400px) {
+        .evg-aviso-academico, .evg-aviso-secundario {padding: 0.8rem; gap: 0.65rem;}
+        .evg-aviso-conteudo {font-size: 0.9rem;}
     }
     div[data-testid="stRadio"] label, div[data-testid="stCheckbox"] label {
         line-height: 1.5;
@@ -458,9 +496,9 @@ APRESENTACAO_ABERTURA = (
     "do governo federal."
 )
 APRESENTACAO_AVISO = (
-    "**Este é um trabalho acadêmico.** O recomendador foi desenvolvido por "
-    "estudantes do Mackenzie no **Projeto Aplicado III** e está em fase de "
-    "testes. Ele **não é um serviço oficial da EV.G**. As sugestões são só um "
+    "<strong>Este é um trabalho acadêmico.</strong> O recomendador foi desenvolvido por "
+    "estudantes do Mackenzie no <strong>Projeto Aplicado III</strong> e está em fase de "
+    "testes. Ele <strong>não é um serviço oficial da EV.G</strong>. As sugestões são só um "
     "ponto de partida: para se inscrever em qualquer curso, use o site da EV.G."
 )
 APRESENTACAO_COMO_FUNCIONA = """
@@ -996,7 +1034,13 @@ def mostrar_avaliacao():
                 st.session_state["evg_avaliacao_enviada"] = True
                 st.rerun()
     else:
-        st.info("Se quiser contribuir, responda às duas perguntas e clique em Enviar.")
+        st.html(
+            '<div class="evg-aviso-secundario" role="note">'
+            '<span class="evg-aviso-icone" aria-hidden="true">i</span>'
+            '<div class="evg-aviso-conteudo"><p>Se quiser contribuir, '
+            'responda às duas perguntas e clique em Enviar.</p></div>'
+            '</div>'
+        )
 
 
 def tentar_registrar_participacao():
@@ -1034,7 +1078,12 @@ def main():
             unsafe_allow_html=True,
         )
         with st.container(key="evg_aviso_academico"):
-            st.info(APRESENTACAO_AVISO)
+            st.html(
+                '<aside class="evg-aviso-academico" role="note" aria-label="Aviso acadêmico">'
+                '<span class="evg-aviso-icone" aria-hidden="true">i</span>'
+                f'<div class="evg-aviso-conteudo"><p>{APRESENTACAO_AVISO}</p></div>'
+                '</aside>'
+            )
         st.caption(
             "Ao gerar sua lista, suas respostas e os cursos recomendados serão "
             "registrados para análise acadêmica. "
