@@ -739,7 +739,7 @@ def mostrar_curso(posicao, curso, matriz, respostas):
             if restrito:
                 requisito = str(linha.get("vinculo_exigido", "")).strip()
                 st.warning(
-                    ""Atenção: este curso possui requisitos de acesso "
+                    "Atenção: este curso possui requisitos de acesso "
                     "e pode não estar disponível ao público em geral. "
                     "Confira as condições de matrícula na EV.G."
                 )
