@@ -174,9 +174,21 @@ st.markdown(
         color: var(--st-text-color, var(--text-color, #2F2336));
         line-height: 1.6;
     }
+    /* Fundo exclusivo do aviso academico, preservando o restante da paleta. */
     .evg-aviso-academico {
+        background: #EEE2F2;
         box-shadow: 0 6px 18px rgba(0, 0, 0, 0.10),
                     0 1px 4px rgba(0, 0, 0, 0.05);
+    }
+    /* Preferencia do sistema e tema escolhido no menu do Streamlit. */
+    @media (prefers-color-scheme: dark) {
+        .evg-aviso-academico {background: #22162B;}
+    }
+    :is(html, body, .stApp)[data-theme="light"] .evg-aviso-academico {
+        background: #EEE2F2;
+    }
+    :is(html, body, .stApp)[data-theme="dark"] .evg-aviso-academico {
+        background: #22162B;
     }
     .evg-aviso-secundario {
         margin-top: 0.6rem;
