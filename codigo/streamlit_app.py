@@ -841,6 +841,72 @@ def mostrar_cards_escolha_unica(etapa):
                     args=(etapa, titulo if etapa == "p01" else codigo),
                 )
 
+    # P01 e P06: igualar a altura de TODOS os cards à maior altura natural
+    # da pergunta, inclusive após mudança de seleção ou largura da tela.
+    # Usar min-height, sem valores fixos nem cortes em títulos/descrições.
+    st.html(
+        """
+        <script>
+        (() => {
+            const etapa = "__ETAPA__";
+            const quantidade = __TOTAL__;
+            const raiz = document.querySelector('.st-key-evg_pergunta_' + etapa);
+            if (!raiz) return;
+
+            if (window.__evgCardsEscolhaAltura?.encerrar) {
+                window.__evgCardsEscolhaAltura.encerrar();
+            }
+            const seletor = '[class*="st-key-evg_card_' + etapa + '_"] button';
+            let frame = null;
+            let botoesAtuais = [];
+            let observador = null;
+
+            const encerrar = () => {
+                if (observador) observador.disconnect();
+                window.removeEventListener('resize', agendar);
+                if (frame !== null) cancelAnimationFrame(frame);
+                botoesAtuais.forEach(botao => { botao.style.minHeight = ''; });
+                if (window.__evgCardsEscolhaAltura?.encerrar === encerrar) {
+                    window.__evgCardsEscolhaAltura = null;
+                }
+            };
+            const medir = () => {
+                frame = null;
+                if (!raiz.isConnected) {
+                    encerrar();
+                    return;
+                }
+                const botoes = [...raiz.querySelectorAll(seletor)];
+                if (botoes.length !== quantidade) return;
+
+                // Remover alturas aplicadas anteriormente antes de medir.
+                botoes.forEach(botao => { botao.style.minHeight = ''; });
+                const maior = Math.ceil(Math.max(...botoes.map(
+                    botao => botao.getBoundingClientRect().height
+                )));
+                botoes.forEach(botao => {
+                    botao.style.minHeight = maior + 'px';
+                });
+                botoesAtuais = botoes;
+            };
+            const agendar = () => {
+                if (frame !== null) cancelAnimationFrame(frame);
+                frame = requestAnimationFrame(medir);
+            };
+            observador = new MutationObserver(agendar);
+            observador.observe(raiz, {
+                subtree: true, childList: true, characterData: true
+            });
+            window.__evgCardsEscolhaAltura = { encerrar };
+            window.addEventListener('resize', agendar, { passive: true });
+            agendar();
+            if (document.fonts?.ready) document.fonts.ready.then(agendar);
+        })();
+        </script>
+        """.replace("__ETAPA__", etapa).replace("__TOTAL__", str(len(itens))),
+        unsafe_allow_javascript=True,
+    )
+
 
 # P02 é pertinente para quem trabalha, trabalhou ou está mudando de carreira.
 # Quem está apenas estudando ou procurando o primeiro emprego vai direto à P04.
