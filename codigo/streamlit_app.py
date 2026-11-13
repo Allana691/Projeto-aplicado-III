@@ -540,6 +540,83 @@ st.markdown(
         margin: 0.25rem 0 1.05rem;
     }
 
+    /* Etapa 3: convite de avaliação no sexto espaço da grade.
+       Visual diferente dos cursos e legível nos temas claro e escuro. */
+    .evg-convite-avaliacao {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        justify-content: center;
+        gap: 0.85rem;
+        box-sizing: border-box;
+        width: 100%;
+        padding: 1.5rem;
+        border: 1px solid rgba(116, 37, 143, 0.42);
+        border-radius: 12px;
+        background: rgba(116, 37, 143, 0.09);
+        color: inherit;
+    }
+    .evg-convite-icone {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 3.3rem;
+        height: 3.3rem;
+        border-radius: 12px;
+        background: rgba(116, 37, 143, 0.15);
+        color: #74258F;
+    }
+    html.evg-tema-escuro .evg-convite-icone {color: #DDB5EE;}
+    .evg-convite-icone svg {width: 2rem; height: 2rem;}
+    .evg-convite-avaliacao h3 {
+        margin: 0;
+        font-size: 1.22rem;
+        font-weight: 800;
+        line-height: 1.3;
+        color: #74258F;
+    }
+    html.evg-tema-escuro .evg-convite-avaliacao h3 {color: #DDB5EE;}
+    .evg-convite-avaliacao p {
+        margin: 0;
+        font-size: 0.97rem;
+        line-height: 1.6;
+        color: inherit;
+    }
+    .evg-convite-botao {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: .45rem;
+        width: 100%;
+        min-height: 2.8rem;
+        margin-top: .45rem;
+        padding: .65rem .75rem;
+        box-sizing: border-box;
+        border: 1px solid #74258F;
+        border-radius: 10px;
+        background: #74258F;
+        color: #FFFFFF !important;
+        text-align: center;
+        text-decoration: none !important;
+        font-weight: 700;
+        font-size: 0.9rem;
+        line-height: 1.35;
+        transition: background 160ms ease, border-color 160ms ease;
+    }
+    .evg-convite-botao svg {flex-shrink: 0; width: 1.05rem; height: 1.05rem;}
+    .evg-convite-botao:hover, .evg-convite-botao:focus-visible {
+        background: var(--evg-hover, #5F1E74);
+        border-color: var(--evg-hover, #5F1E74);
+        color: #FFFFFF !important;
+    }
+    .evg-convite-botao:focus-visible {
+        outline: 3px solid #C7A6D8;
+        outline-offset: 3px;
+    }
+    @media (prefers-reduced-motion: reduce) {
+        .evg-convite-botao {transition: none;}
+    }
+
     /* Superfície dos cinco cards dos cursos: branca no tema claro,
        grafite-ameixa no escuro (conforme a configuração do Streamlit). */
     :is(.st-key-evg_curso_card_1, .st-key-evg_curso_card_2,
@@ -1599,9 +1676,48 @@ def main():
             with segunda_linha[posicao - 4]:
                 mostrar_curso(posicao, curso, matriz, respostas)
 
+        # Convite destacado no terceiro espaço da segunda linha.
+        # Ele não é um curso e não participa dos registros de interesse.
+        with segunda_linha[2]:
+            st.html(
+                """
+                <section class="evg-convite-avaliacao"
+                         aria-labelledby="evg-convite-titulo">
+                    <span class="evg-convite-icone" aria-hidden="true">
+                        <svg viewBox="0 0 24 24" fill="none"
+                             stroke="currentColor" stroke-width="1.8"
+                             stroke-linecap="round" stroke-linejoin="round">
+                            <rect x="5" y="4" width="14" height="17" rx="2"/>
+                            <rect x="9" y="2" width="6" height="4" rx="1"/>
+                            <path d="m8 12 2 2 4-4M8 18h8"/>
+                        </svg>
+                    </span>
+                    <h3 id="evg-convite-titulo">Antes de finalizar</h3>
+                    <p>Responda 2 perguntas rápidas sobre sua experiência.</p>
+                    <a class="evg-convite-botao" href="#evg-avaliacao-geral"
+                       aria-label="Responder avaliação da experiência">
+                        <svg viewBox="0 0 24 24" fill="none"
+                             stroke="currentColor" stroke-width="2"
+                             stroke-linecap="round" stroke-linejoin="round"
+                             aria-hidden="true">
+                            <path d="m12 19 7-7 3 3-7 7-4 1 1-4Z"/>
+                            <path d="m17 14 3 3"/>
+                        </svg>
+                        <span>Responder avaliação</span>
+                        <svg viewBox="0 0 24 24" fill="none"
+                             stroke="currentColor" stroke-width="2"
+                             stroke-linecap="round" stroke-linejoin="round"
+                             aria-hidden="true">
+                            <path d="M5 12h14m-6-6 6 6-6 6"/>
+                        </svg>
+                    </a>
+                </section>
+                """
+            )
+
         # A primeira e a segunda linha sao blocos Streamlit independentes.
-        # Sincronizar a altura dos CINCO cards pela maior altura natural evita
-        # medidas fixas que cortariam cursos com avisos ou textos mais longos.
+        # Sincronizar os cinco cards de cursos e o convite com a maior
+        # altura natural evita cortes e mantém as duas linhas alinhadas.
         st.html(
             """
             <script>
@@ -1612,6 +1728,8 @@ def main():
                 const cards = [1, 2, 3, 4, 5]
                     .map(n => document.querySelector('.st-key-evg_curso_card_' + n));
                 if (cards.some(card => !card)) return;
+                const convite = document.querySelector('.evg-convite-avaliacao');
+                if (convite) cards.push(convite);
 
                 let frame = null;
                 const observers = [];
