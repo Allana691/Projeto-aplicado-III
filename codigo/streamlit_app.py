@@ -124,6 +124,55 @@ st.markdown(
         color: #DDB5EE;
     }
 
+    /* Etapa 1: atalho visível para a avaliação, sem modificar os cursos. */
+    .evg-cabecalho-resultado {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        flex-wrap: wrap;
+        gap: 1rem;
+        margin: .4rem 0 1rem;
+    }
+    .evg-cabecalho-resultado .evg-titulo {margin: 0;}
+    .evg-atalho-avaliacao {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: .55rem;
+        min-height: 2.75rem;
+        padding: .65rem 1rem;
+        background: #74258F;
+        border: 1px solid #74258F;
+        border-radius: 10px;
+        color: #FFFFFF !important;
+        font-family: 'Manrope', 'Segoe UI', sans-serif;
+        font-size: .9rem;
+        font-weight: 700;
+        line-height: 1.3;
+        text-decoration: none !important;
+        white-space: nowrap;
+        transition: background 160ms ease, border-color 160ms ease;
+    }
+    .evg-atalho-avaliacao:hover,
+    .evg-atalho-avaliacao:focus-visible {
+        background: var(--evg-hover, #5F1E74);
+        border-color: var(--evg-hover, #5F1E74);
+        color: #FFFFFF !important;
+        text-decoration: none !important;
+    }
+    .evg-atalho-avaliacao:focus-visible {
+        outline: 3px solid #C7A6D8;
+        outline-offset: 3px;
+    }
+    #evg-avaliacao-geral {scroll-margin-top: 5rem;}
+    @media (max-width: 640px) {
+        .evg-cabecalho-resultado {align-items: stretch;}
+        .evg-atalho-avaliacao {width: 100%;}
+    }
+    @media (prefers-reduced-motion: reduce) {
+        .evg-atalho-avaliacao {transition: none;}
+    }
+
     /* Orientação: lilás translúcido sobre o fundo REAL da tela. Não misturar
        com variáveis de tema que podem permanecer no modo claro após a troca
        para escuro pelo menu do Streamlit. A letra acompanha a cor corrente. */
@@ -1300,7 +1349,7 @@ def mostrar_curso(posicao, curso, matriz, respostas):
 def mostrar_avaliacao():
     """Avaliação geral opcional; gravada somente com envio explícito."""
     st.markdown(
-        '<div class="evg-subtitulo">Avaliação da Experiência (Opcional)</div>',
+        '<div id="evg-avaliacao-geral" class="evg-subtitulo">Avaliação da Experiência (Opcional)</div>',
         unsafe_allow_html=True,
     )
     st.markdown(
@@ -1518,7 +1567,12 @@ def main():
                 reiniciar()
             return
         st.markdown(
-            '<h2 class="evg-titulo">Cursos Recomendados para Você</h2>',
+            '<div class="evg-cabecalho-resultado">'
+            '<h2 class="evg-titulo">Cursos Recomendados para Você</h2>'
+            '<a class="evg-atalho-avaliacao" href="#evg-avaliacao-geral" '
+            'aria-label="Ir para a avaliação da experiência">'
+            'Avaliar experiência <span aria-hidden="true">↓</span></a>'
+            '</div>',
             unsafe_allow_html=True,
         )
         tentar_registrar_participacao()
