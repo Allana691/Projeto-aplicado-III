@@ -639,6 +639,13 @@ st.markdown(
         .evg-convite-botao {transition: none;}
     }
 
+    /* Avaliação geral: caixa branca somente no tema claro, para contrastar
+       com o novo fundo lavanda. No tema escuro, preservar o estilo original. */
+    html:not(.evg-tema-escuro) .stApp .st-key-evg_avaliacao_card {
+        background-color: #FFFFFF;
+        border-color: #D8B9E3;
+    }
+
     /* Superfície dos cinco cards dos cursos: branca no tema claro,
        grafite-ameixa no escuro (conforme a configuração do Streamlit). */
     :is(.st-key-evg_curso_card_1, .st-key-evg_curso_card_2,
@@ -1526,7 +1533,7 @@ def mostrar_avaliacao():
         "1 — Nada", "2 — Pouco", "3 — Parcialmente",
         "4 — Muito", "5 — Totalmente", "Não consigo avaliar",
     ]
-    with st.container(border=True):
+    with st.container(border=True, key="evg_avaliacao_card"):
         st.radio(
             "Quanto os cursos recomendados combinam com seus interesses?",
             options=escala, index=None, horizontal=True, key="evg_p07",
