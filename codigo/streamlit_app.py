@@ -86,7 +86,7 @@ st.markdown(
     html.evg-tema-escuro .stApp [data-testid="stMarkdownContainer"] h2 {
         color: #DDB5EE;
     }
-    /* Cor e contorno dos links para os cursos. */
+    /* Aparência padrão dos links da aplicação. */
     .stApp .stLinkButton > a {
         color: var(--st-link-color, var(--link-color, #74258F));
         border-color: var(--st-border-color,
@@ -100,6 +100,54 @@ st.markdown(
             var(--st-primary-color, var(--primary-color, #74258F)) 7%,
             var(--st-secondary-background-color,
                 var(--secondary-background-color, transparent)));
+    }
+    /* Texto dos links "Abrir curso na EV.G" em negrito nos dois temas. */
+    .stApp :is(.st-key-evg_curso_card_1, .st-key-evg_curso_card_2,
+               .st-key-evg_curso_card_3, .st-key-evg_curso_card_4,
+               .st-key-evg_curso_card_5) .stLinkButton > a,
+    .stApp :is(.st-key-evg_curso_card_1, .st-key-evg_curso_card_2,
+               .st-key-evg_curso_card_3, .st-key-evg_curso_card_4,
+               .st-key-evg_curso_card_5) .stLinkButton > a p {
+        font-weight: 700 !important;
+    }
+    /* No tema escuro, garantir texto branco nos links dos cinco cursos,
+       inclusive no conteúdo interno e no hover/foco. */
+    html.evg-tema-escuro .stApp
+    :is(.st-key-evg_curso_card_1, .st-key-evg_curso_card_2,
+        .st-key-evg_curso_card_3, .st-key-evg_curso_card_4,
+        .st-key-evg_curso_card_5) .stLinkButton > a,
+    html.evg-tema-escuro .stApp
+    :is(.st-key-evg_curso_card_1, .st-key-evg_curso_card_2,
+        .st-key-evg_curso_card_3, .st-key-evg_curso_card_4,
+        .st-key-evg_curso_card_5) .stLinkButton > a * {
+        color: #FFFFFF !important;
+    }
+    /* Links dos cinco cursos no tema claro: contorno e fundo suave em
+       repouso; roxo intenso ao passar o mouse ou usar o teclado. */
+    html:not(.evg-tema-escuro) .stApp
+    :is(.st-key-evg_curso_card_1, .st-key-evg_curso_card_2,
+        .st-key-evg_curso_card_3, .st-key-evg_curso_card_4,
+        .st-key-evg_curso_card_5) .stLinkButton > a {
+        color: #74258F;
+        border-color: #74258F;
+        background: color-mix(in srgb, #74258F 7%, #FFFFFF);
+        transition: background-color 160ms ease, color 160ms ease;
+    }
+    html:not(.evg-tema-escuro) .stApp
+    :is(.st-key-evg_curso_card_1, .st-key-evg_curso_card_2,
+        .st-key-evg_curso_card_3, .st-key-evg_curso_card_4,
+        .st-key-evg_curso_card_5) .stLinkButton > a:is(:hover, :focus-visible) {
+        color: #FFFFFF;
+        border-color: #74258F;
+        background: #74258F;
+    }
+    @media (prefers-reduced-motion: reduce) {
+        html:not(.evg-tema-escuro) .stApp
+        :is(.st-key-evg_curso_card_1, .st-key-evg_curso_card_2,
+            .st-key-evg_curso_card_3, .st-key-evg_curso_card_4,
+            .st-key-evg_curso_card_5) .stLinkButton > a {
+            transition: none;
+        }
     }
 
     /* Largura da página: uma coluna centralizada, confortável de ler */
@@ -122,6 +170,55 @@ st.markdown(
     html.evg-tema-escuro .stApp .evg-titulo,
     html.evg-tema-escuro .stApp .evg-subtitulo {
         color: #DDB5EE;
+    }
+
+    /* Etapa 1: atalho visível para a avaliação, sem modificar os cursos. */
+    .evg-cabecalho-resultado {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        flex-wrap: wrap;
+        gap: 1rem;
+        margin: .4rem 0 1rem;
+    }
+    .evg-cabecalho-resultado .evg-titulo {margin: 0;}
+    .evg-atalho-avaliacao {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: .55rem;
+        min-height: 2.75rem;
+        padding: .65rem 1rem;
+        background: #74258F;
+        border: 1px solid #74258F;
+        border-radius: 10px;
+        color: #FFFFFF !important;
+        font-family: 'Manrope', 'Segoe UI', sans-serif;
+        font-size: .9rem;
+        font-weight: 700;
+        line-height: 1.3;
+        text-decoration: none !important;
+        white-space: nowrap;
+        transition: background 160ms ease, border-color 160ms ease;
+    }
+    .evg-atalho-avaliacao:hover,
+    .evg-atalho-avaliacao:focus-visible {
+        background: var(--evg-hover, #5F1E74);
+        border-color: var(--evg-hover, #5F1E74);
+        color: #FFFFFF !important;
+        text-decoration: none !important;
+    }
+    .evg-atalho-avaliacao:focus-visible {
+        outline: 3px solid #C7A6D8;
+        outline-offset: 3px;
+    }
+    #evg-avaliacao-geral {scroll-margin-top: 5rem;}
+    @media (max-width: 640px) {
+        .evg-cabecalho-resultado {align-items: stretch;}
+        .evg-atalho-avaliacao {width: 100%;}
+    }
+    @media (prefers-reduced-motion: reduce) {
+        .evg-atalho-avaliacao {transition: none;}
     }
 
     /* Orientação: lilás translúcido sobre o fundo REAL da tela. Não misturar
@@ -491,17 +588,185 @@ st.markdown(
         margin: 0.25rem 0 1.05rem;
     }
 
-    /* Superfície dos cinco cards dos cursos: branca no tema claro,
-       grafite-ameixa no escuro (conforme a configuração do Streamlit). */
+    /* Etapa 3: convite de avaliação no sexto espaço da grade.
+       Visual diferente dos cursos e legível nos temas claro e escuro. */
+    .evg-convite-avaliacao {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        justify-content: center;
+        gap: 0.85rem;
+        box-sizing: border-box;
+        width: 100%;
+        padding: 1.5rem;
+        border: 1px solid rgba(116, 37, 143, 0.42);
+        border-radius: 12px;
+        background: rgba(116, 37, 143, 0.09);
+        color: inherit;
+    }
+    .evg-convite-icone {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 3.3rem;
+        height: 3.3rem;
+        border-radius: 12px;
+        background: rgba(116, 37, 143, 0.15);
+        color: #74258F;
+    }
+    /* O Streamlit pode filtrar SVG inline em st.html: usamos imagens SVG
+       como fundos CSS, padrão já aplicado aos ícones da página inicial. */
+    .evg-convite-icone::before {
+        content: "";
+        display: block;
+        width: 2rem;
+        height: 2rem;
+        background: url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22%2374258F%22%20stroke-width%3D%221.8%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Crect%20x%3D%225%22%20y%3D%224%22%20width%3D%2214%22%20height%3D%2217%22%20rx%3D%222%22%2F%3E%3Crect%20x%3D%229%22%20y%3D%222%22%20width%3D%226%22%20height%3D%224%22%20rx%3D%221%22%2F%3E%3Cpath%20d%3D%22m8%2012%202%202%204-4M8%2018h8%22%2F%3E%3C%2Fsvg%3E") center / contain no-repeat;
+    }
+    html.evg-tema-escuro .evg-convite-icone::before {
+        background-image: url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22%23DDB5EE%22%20stroke-width%3D%221.8%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Crect%20x%3D%225%22%20y%3D%224%22%20width%3D%2214%22%20height%3D%2217%22%20rx%3D%222%22%2F%3E%3Crect%20x%3D%229%22%20y%3D%222%22%20width%3D%226%22%20height%3D%224%22%20rx%3D%221%22%2F%3E%3Cpath%20d%3D%22m8%2012%202%202%204-4M8%2018h8%22%2F%3E%3C%2Fsvg%3E");
+    }
+    .evg-convite-avaliacao h3 {
+        margin: 0;
+        font-size: 1.22rem;
+        font-weight: 800;
+        line-height: 1.3;
+        color: #74258F;
+    }
+    html.evg-tema-escuro .evg-convite-avaliacao h3 {color: #DDB5EE;}
+    .evg-convite-avaliacao p {
+        margin: 0;
+        font-size: 0.97rem;
+        line-height: 1.6;
+        color: inherit;
+    }
+    .evg-convite-botao {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: .45rem;
+        width: 100%;
+        min-height: 2.8rem;
+        margin-top: .45rem;
+        padding: .65rem .75rem;
+        box-sizing: border-box;
+        border: 1px solid #74258F;
+        border-radius: 10px;
+        background: #74258F;
+        color: #FFFFFF !important;
+        text-align: center;
+        text-decoration: none !important;
+        font-weight: 700;
+        font-size: 0.9rem;
+        line-height: 1.35;
+        transition: background 160ms ease, border-color 160ms ease;
+    }
+    .evg-convite-botao::before,
+    .evg-convite-botao::after {
+        content: "";
+        display: block;
+        flex: 0 0 1.05rem;
+        width: 1.05rem;
+        height: 1.05rem;
+        background-position: center;
+        background-repeat: no-repeat;
+        background-size: contain;
+    }
+    .evg-convite-botao::before {background-image: url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22%23FFFFFF%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpath%20d%3D%22m12%2019%207-7%203%203-7%207-4%201%201-4Z%22%2F%3E%3Cpath%20d%3D%22m17%2014%203%203%22%2F%3E%3C%2Fsvg%3E");}
+    .evg-convite-botao::after {background-image: url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22%23FFFFFF%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpath%20d%3D%22M5%2012h14m-6-6%206%206-6%206%22%2F%3E%3C%2Fsvg%3E");}
+    .evg-convite-botao:hover, .evg-convite-botao:focus-visible {
+        background: var(--evg-hover, #5F1E74);
+        border-color: var(--evg-hover, #5F1E74);
+        color: #FFFFFF !important;
+    }
+    .evg-convite-botao:focus-visible {
+        outline: 3px solid #C7A6D8;
+        outline-offset: 3px;
+    }
+    @media (prefers-reduced-motion: reduce) {
+        .evg-convite-botao {transition: none;}
+    }
+
+    /* Avaliação geral: caixa branca somente no tema claro, para contrastar
+       com o novo fundo lavanda. No tema escuro, preservar o estilo original. */
+    html:not(.evg-tema-escuro) .stApp .st-key-evg_avaliacao_card {
+        background-color: #FFFFFF;
+        border-color: #D8B9E3;
+    }
+
+    /* Avaliação individual: botões de interesse destacados nos cinco cursos.
+       A chave do botão indica apenas a apresentação (ativo ou neutro);
+       a resposta registrada permanece controlada pelo estado da sessão. */
+    .stApp :is([class*="st-key-evg_interesse_sim_"],
+               [class*="st-key-evg_interesse_nao_"]) button {
+        width: 100%;
+        min-height: 3rem;
+        padding: .55rem .5rem;
+        border: 1px solid #D8B9E3;
+        border-radius: 10px;
+        background: #FFF9FC;
+        color: #74258F;
+        white-space: normal;
+        font-size: .86rem;
+        font-weight: 700;
+        line-height: 1.3;
+    }
+    .stApp :is([class*="st-key-evg_interesse_sim_"],
+               [class*="st-key-evg_interesse_nao_"]) button:hover {
+        border-color: #74258F;
+        background: #F1E8F6;
+        color: #74258F;
+    }
+    .stApp :is([class*="st-key-evg_interesse_sim_"][class*="_ativo"],
+               [class*="st-key-evg_interesse_nao_"][class*="_ativo"]) button,
+    .stApp :is([class*="st-key-evg_interesse_sim_"][class*="_ativo"],
+               [class*="st-key-evg_interesse_nao_"][class*="_ativo"]) button:hover {
+        background: #74258F;
+        border-color: #74258F;
+        color: #FFFFFF;
+    }
+    html.evg-tema-escuro .stApp
+    :is([class*="st-key-evg_interesse_sim_"],
+        [class*="st-key-evg_interesse_nao_"]) button {
+        background: #2B2233;
+        border-color: #584365;
+        color: #DDB5EE;
+    }
+    html.evg-tema-escuro .stApp
+    :is([class*="st-key-evg_interesse_sim_"],
+        [class*="st-key-evg_interesse_nao_"]) button:hover {
+        background: #3A2944;
+        border-color: #DDB5EE;
+        color: #F4ECF7;
+    }
+    html.evg-tema-escuro .stApp
+    :is([class*="st-key-evg_interesse_sim_"][class*="_ativo"],
+        [class*="st-key-evg_interesse_nao_"][class*="_ativo"]) button,
+    html.evg-tema-escuro .stApp
+    :is([class*="st-key-evg_interesse_sim_"][class*="_ativo"],
+        [class*="st-key-evg_interesse_nao_"][class*="_ativo"]) button:hover {
+        background: #803199;
+        border-color: #DDB5EE;
+        color: #FFFFFF;
+    }
+
+    /* Cinco cards dos cursos: no tema claro, o mesmo fundo lavanda do
+       convite "Antes de finalizar". Manter o tom anterior no tema escuro. */
+    :is(.st-key-evg_curso_card_1, .st-key-evg_curso_card_2,
+        .st-key-evg_curso_card_3, .st-key-evg_curso_card_4,
+        .st-key-evg_curso_card_5) {
+        background: rgba(116, 37, 143, 0.09);
+        border-radius: 12px;
+        /* Altura sincronizada com o maior dos cinco cards pelo script abaixo.
+           min-height permite crescimento sem cortar conteúdo. */
+        box-sizing: border-box;
+    }
+    html.evg-tema-escuro .stApp
     :is(.st-key-evg_curso_card_1, .st-key-evg_curso_card_2,
         .st-key-evg_curso_card_3, .st-key-evg_curso_card_4,
         .st-key-evg_curso_card_5) {
         background: var(--st-secondary-background-color,
             var(--secondary-background-color, color-mix(in srgb, currentColor 2%, transparent)));
-        border-radius: 12px;
-        /* Altura sincronizada com o maior dos cinco cards pelo script abaixo.
-           min-height permite crescimento sem cortar conteúdo. */
-        box-sizing: border-box;
     }
 
     /* Elevação discreta somente nos cinco cards dos cursos.
@@ -692,6 +957,72 @@ def mostrar_cards_escolha_unica(etapa):
                     on_click=selecionar_card,
                     args=(etapa, titulo if etapa == "p01" else codigo),
                 )
+
+    # P01 e P06: igualar a altura de TODOS os cards à maior altura natural
+    # da pergunta, inclusive após mudança de seleção ou largura da tela.
+    # Usar min-height, sem valores fixos nem cortes em títulos/descrições.
+    st.html(
+        """
+        <script>
+        (() => {
+            const etapa = "__ETAPA__";
+            const quantidade = __TOTAL__;
+            const raiz = document.querySelector('.st-key-evg_pergunta_' + etapa);
+            if (!raiz) return;
+
+            if (window.__evgCardsEscolhaAltura?.encerrar) {
+                window.__evgCardsEscolhaAltura.encerrar();
+            }
+            const seletor = '[class*="st-key-evg_card_' + etapa + '_"] button';
+            let frame = null;
+            let botoesAtuais = [];
+            let observador = null;
+
+            const encerrar = () => {
+                if (observador) observador.disconnect();
+                window.removeEventListener('resize', agendar);
+                if (frame !== null) cancelAnimationFrame(frame);
+                botoesAtuais.forEach(botao => { botao.style.minHeight = ''; });
+                if (window.__evgCardsEscolhaAltura?.encerrar === encerrar) {
+                    window.__evgCardsEscolhaAltura = null;
+                }
+            };
+            const medir = () => {
+                frame = null;
+                if (!raiz.isConnected) {
+                    encerrar();
+                    return;
+                }
+                const botoes = [...raiz.querySelectorAll(seletor)];
+                if (botoes.length !== quantidade) return;
+
+                // Remover alturas aplicadas anteriormente antes de medir.
+                botoes.forEach(botao => { botao.style.minHeight = ''; });
+                const maior = Math.ceil(Math.max(...botoes.map(
+                    botao => botao.getBoundingClientRect().height
+                )));
+                botoes.forEach(botao => {
+                    botao.style.minHeight = maior + 'px';
+                });
+                botoesAtuais = botoes;
+            };
+            const agendar = () => {
+                if (frame !== null) cancelAnimationFrame(frame);
+                frame = requestAnimationFrame(medir);
+            };
+            observador = new MutationObserver(agendar);
+            observador.observe(raiz, {
+                subtree: true, childList: true, characterData: true
+            });
+            window.__evgCardsEscolhaAltura = { encerrar };
+            window.addEventListener('resize', agendar, { passive: true });
+            agendar();
+            if (document.fonts?.ready) document.fonts.ready.then(agendar);
+        })();
+        </script>
+        """.replace("__ETAPA__", etapa).replace("__TOTAL__", str(len(itens))),
+        unsafe_allow_javascript=True,
+    )
 
 
 # P02 é pertinente para quem trabalha, trabalhou ou está mudando de carreira.
@@ -1228,6 +1559,36 @@ def explicar_recomendacao(curso, linha, respostas):
     return "Selecionado a partir dos seus interesses e das relações entre os conteúdos dos cursos."
 
 
+def selecionar_interesse_curso(posicao, interesse):
+    """Registra a opinião do curso em sua linha existente e mantém a escolha visível.
+
+    Repetir a mesma opção não faz nova gravação. Trocar a opção substitui
+    a opinião anterior na mesma célula da planilha Recomendacoes.
+    """
+    salvos = st.session_state.setdefault("evg_interesses_salvos", {})
+    erros = st.session_state.setdefault("evg_interesses_erros", {})
+    erros.pop(posicao, None)
+
+    if salvos.get(posicao) == interesse:
+        return
+    if st.session_state.get("evg_registro_status") != "salvo":
+        erros[posicao] = (
+            "O registro do questionário precisa ser concluído "
+            "antes de salvar esta opinião. Tente novamente."
+        )
+        return
+    try:
+        registrar_interesse(
+            st.session_state["evg_participacao_id"],
+            posicao,
+            interesse,
+        )
+    except Exception:
+        erros[posicao] = "Não conseguimos salvar sua opinião. Você pode tentar novamente."
+    else:
+        salvos[posicao] = interesse
+
+
 def mostrar_curso(posicao, curso, matriz, respostas):
     """Card compacto, com link e avaliação individual em linhas consecutivas."""
     linha = linha_do_curso(curso, matriz)
@@ -1260,32 +1621,32 @@ def mostrar_curso(posicao, curso, matriz, respostas):
 
         st.link_button("Abrir curso na EV.G", curso["link_do_curso"], use_container_width=True)
 
-        st.caption("Esta recomendação despertou seu interesse? (opcional)")
-        interesse = st.radio(
-            f"Interesse no curso {posicao}",
-            options=["Me interessou", "Não me interessou"],
-            index=None,
-            horizontal=True,
-            label_visibility="collapsed",
-            key=f"evg_interesse_curso_{posicao}",
-        )
-        if interesse:
-            salvos = st.session_state.setdefault("evg_interesses_salvos", {})
-            if st.session_state.get("evg_registro_status") != "salvo":
-                st.warning("O registro do questionário precisa ser concluído para salvar esta opinião.")
-            elif salvos.get(posicao) != interesse:
-                try:
-                    registrar_interesse(
-                        st.session_state["evg_participacao_id"],
-                        posicao,
-                        interesse,
-                    )
-                except Exception:
-                    st.error("Não conseguimos salvar sua opinião. Você pode tentar novamente.")
-                else:
-                    salvos[posicao] = interesse
-            if salvos.get(posicao) == interesse:
-                st.caption("Opinião registrada.")
+        st.markdown("**Esta recomendação despertou seu interesse?**")
+        selecionado = st.session_state.get("evg_interesses_salvos", {}).get(posicao)
+        coluna_sim, coluna_nao = st.columns(2, gap="small")
+        with coluna_sim:
+            st.button(
+                "Me interessou",
+                key=f"evg_interesse_sim_{posicao}_{'ativo' if selecionado == 'Me interessou' else 'neutro'}",
+                icon=":material/thumb_up:",
+                use_container_width=True,
+                on_click=selecionar_interesse_curso,
+                args=(posicao, "Me interessou"),
+            )
+        with coluna_nao:
+            st.button(
+                "Não me interessou",
+                key=f"evg_interesse_nao_{posicao}_{'ativo' if selecionado == 'Não me interessou' else 'neutro'}",
+                icon=":material/thumb_down:",
+                use_container_width=True,
+                on_click=selecionar_interesse_curso,
+                args=(posicao, "Não me interessou"),
+            )
+        erro = st.session_state.get("evg_interesses_erros", {}).get(posicao)
+        if erro:
+            st.error(erro)
+        elif selecionado:
+            st.caption("Opinião registrada.")
 
         # Preservar as versões em outros idiomas, quando existirem,
         # sem mostrar um menu de detalhes em todos os cards.
@@ -1300,7 +1661,7 @@ def mostrar_curso(posicao, curso, matriz, respostas):
 def mostrar_avaliacao():
     """Avaliação geral opcional; gravada somente com envio explícito."""
     st.markdown(
-        '<div class="evg-subtitulo">Avaliação da Experiência (Opcional)</div>',
+        '<div id="evg-avaliacao-geral" class="evg-subtitulo">Avaliação da Experiência (Opcional)</div>',
         unsafe_allow_html=True,
     )
     st.markdown(
@@ -1312,7 +1673,7 @@ def mostrar_avaliacao():
         "1 — Nada", "2 — Pouco", "3 — Parcialmente",
         "4 — Muito", "5 — Totalmente", "Não consigo avaliar",
     ]
-    with st.container(border=True):
+    with st.container(border=True, key="evg_avaliacao_card"):
         st.radio(
             "Quanto os cursos recomendados combinam com seus interesses?",
             options=escala, index=None, horizontal=True, key="evg_p07",
@@ -1518,7 +1879,12 @@ def main():
                 reiniciar()
             return
         st.markdown(
-            '<h2 class="evg-titulo">Cursos Recomendados para Você</h2>',
+            '<div class="evg-cabecalho-resultado">'
+            '<h2 class="evg-titulo">Cursos Recomendados para Você</h2>'
+            '<a class="evg-atalho-avaliacao" href="#evg-avaliacao-geral" '
+            'aria-label="Ir para a avaliação da experiência">'
+            'Avaliar experiência <span aria-hidden="true">↓</span></a>'
+            '</div>',
             unsafe_allow_html=True,
         )
         tentar_registrar_participacao()
@@ -1532,22 +1898,40 @@ def main():
         )
         cursos = resultado["cursos"][:5]
         respostas = st.session_state.get("evg_respostas", {})
-        # Três cards em cima; dois cards da mesma largura visual embaixo,
-        # centralizados com margens simétricas. Os espaços laterais ocupam
-        # metade da largura de cada coluna de card.
+        # Etapa 2: tres colunas de mesma largura em cada linha.
+        # Cursos 4 e 5 ocupam as duas primeiras colunas; a terceira fica
+        # disponivel para o convite de avaliacao da proxima etapa.
         primeira_linha = st.columns(3, gap="medium")
         for posicao, curso in enumerate(cursos[:3], start=1):
             with primeira_linha[posicao - 1]:
                 mostrar_curso(posicao, curso, matriz, respostas)
 
-        segunda_linha = st.columns([1, 2, 2, 1], gap="medium")
+        segunda_linha = st.columns(3, gap="medium")
         for posicao, curso in enumerate(cursos[3:], start=4):
-            with segunda_linha[posicao - 3]:
+            with segunda_linha[posicao - 4]:
                 mostrar_curso(posicao, curso, matriz, respostas)
 
+        # Convite destacado no terceiro espaço da segunda linha.
+        # Ele não é um curso e não participa dos registros de interesse.
+        with segunda_linha[2]:
+            st.html(
+                """
+                <section class="evg-convite-avaliacao"
+                         aria-labelledby="evg-convite-titulo">
+                    <span class="evg-convite-icone" aria-hidden="true"></span>
+                    <h3 id="evg-convite-titulo">Antes de finalizar</h3>
+                    <p>Responda 2 perguntas rápidas sobre sua experiência.</p>
+                    <a class="evg-convite-botao" href="#evg-avaliacao-geral"
+                       aria-label="Responder avaliação da experiência">
+                        <span>Responder avaliação</span>
+                    </a>
+                </section>
+                """
+            )
+
         # A primeira e a segunda linha sao blocos Streamlit independentes.
-        # Sincronizar a altura dos CINCO cards pela maior altura natural evita
-        # medidas fixas que cortariam cursos com avisos ou textos mais longos.
+        # Sincronizar os cinco cards de cursos e o convite com a maior
+        # altura natural evita cortes e mantém as duas linhas alinhadas.
         st.html(
             """
             <script>
@@ -1558,6 +1942,8 @@ def main():
                 const cards = [1, 2, 3, 4, 5]
                     .map(n => document.querySelector('.st-key-evg_curso_card_' + n));
                 if (cards.some(card => !card)) return;
+                const convite = document.querySelector('.evg-convite-avaliacao');
+                if (convite) cards.push(convite);
 
                 let frame = null;
                 const observers = [];
