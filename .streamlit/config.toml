@@ -6,7 +6,7 @@ base = "light"
 
 [theme.light]
 primaryColor = "#74258F"
-backgroundColor = "#FBF7FD"
+backgroundColor = "#F5EAF2"
 secondaryBackgroundColor = "#FFFFFF"
 textColor = "#2F2336"
 linkColor = "#74258F"
