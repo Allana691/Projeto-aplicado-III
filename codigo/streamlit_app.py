@@ -899,7 +899,41 @@ def marcadas(grupo_campo):
     return list(dict.fromkeys(selecionadas))
 
 
+def ao_alterar_opcao_exclusiva_p04(chave):
+    """Torna 'Nenhuma' e 'Prefiro não informar' escolhas exclusivas na P04."""
+    marcacao = bool(st.session_state.get(chave, False))
+    guardadas = st.session_state.setdefault("evg_valores", {})
+    guardadas[chave] = marcacao
+    if not marcacao:
+        return  # Ao desmarcar, todas as áreas voltam a ficar disponíveis.
+
+    outra = (
+        "evg_p04_privacidade" if chave == "evg_p04_nenhuma"
+        else "evg_p04_nenhuma"
+    )
+    st.session_state[outra] = False
+    guardadas[outra] = False
+
+    # Limpa tanto os widgets atuais quanto cópias de respostas já guardadas.
+    # Os callbacks executam antes da nova renderização do Streamlit.
+    chaves = set(st.session_state) | set(guardadas)
+    for campo in chaves:
+        if campo.startswith("evg_p04_") and campo not in (
+            "evg_p04_nenhuma", "evg_p04_privacidade"
+        ):
+            if campo in st.session_state:
+                st.session_state[campo] = False
+            guardadas[campo] = False
+
+
 def menus_de_opcoes(tipo, campo, limite):
+    quantidade = len(marcadas((tipo, campo)))
+    # Só a P04 tem escolhas exclusivas; P02 e P05 não são alteradas.
+    exclusivo_ativo = (
+        bool(valor("evg_p04_nenhuma", False))
+        or bool(valor("evg_p04_privacidade", False))
+    ) if tipo == "p04" else False
+
     for numero, grupo in enumerate(GRUPOS):
         itens = (
             [item["nome"] for item in grupo[campo]]
@@ -907,8 +941,14 @@ def menus_de_opcoes(tipo, campo, limite):
         )
         with st.expander(grupo["nome"]):
             for indice, item in enumerate(itens):
-                st.checkbox(item, key=f"evg_{tipo}_{numero}_{indice}")
-    quantidade = len(marcadas((tipo, campo)))
+                chave = f"evg_{tipo}_{numero}_{indice}"
+                # Com escolha exclusiva, não se marcam áreas. Ao atingir três
+                # áreas, só as desmarcadas ficam temporariamente indisponíveis.
+                bloqueada = (
+                    exclusivo_ativo
+                    or (quantidade >= limite and not bool(valor(chave, False)))
+                ) if tipo == "p04" else False
+                st.checkbox(item, key=chave, disabled=bloqueada)
     st.caption(f"{quantidade} de até {limite} opções selecionadas.")
 
 
@@ -1444,8 +1484,24 @@ def main():
                 st.checkbox(OPCOES["opcao_experiencia_outras"], key="evg_p02_outras")
             elif tela == "p04":
                 menus_de_opcoes("p04", "areas_cursos", 3)
-                st.checkbox(OPCOES["opcao_formacao_nenhuma"], key="evg_p04_nenhuma")
-                st.checkbox(OPCOES["opcao_formacao_privacidade"], key="evg_p04_privacidade")
+                st.checkbox(
+                    OPCOES["opcao_formacao_nenhuma"],
+                    key="evg_p04_nenhuma",
+                    disabled=bool(valor("evg_p04_privacidade", False)),
+                    on_change=ao_alterar_opcao_exclusiva_p04,
+                    args=("evg_p04_nenhuma",),
+                )
+                st.checkbox(
+                    OPCOES["opcao_formacao_privacidade"],
+                    key="evg_p04_privacidade",
+                    disabled=bool(valor("evg_p04_nenhuma", False)),
+                    on_change=ao_alterar_opcao_exclusiva_p04,
+                    args=("evg_p04_privacidade",),
+                )
+                st.caption(
+                    "Nenhuma das opções e Prefiro não informar são escolhas "
+                    "exclusivas e não contam entre as três áreas."
+                )
             elif tela == "p05":
                 st.checkbox(OPCOES["opcao_interesses_nao_sei"], key="evg_p05_nao_sei")
                 if not st.session_state.get("evg_p05_nao_sei", False):
