@@ -83,7 +83,7 @@ Os diretórios poderão ser atualizados conforme o avanço das etapas.
 
 ## Status do projeto
 
-🚧 **Projeto em desenvolvimento – 2º semestre de 2026.**
+**Projeto em desenvolvimento – 2º semestre de 2026.**
 
 ### Etapas acadêmicas
 

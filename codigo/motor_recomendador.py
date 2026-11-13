@@ -489,11 +489,29 @@ def _familia_serie(titulo):
     return ''
 
 
+# Preferência de desempate por cursos abertos, sem mexer nas notas de
+# afinidade nem nos pesos por objetivo. Diferencas acima de 0,02
+# (escala normalizada 0 a 1) continuam favorecendo o curso mais pertinente.
+PREFERENCIA_CURSO_ABERTO = 0.02
+
+
+def _cursos_restritos(matriz):
+    """Lê a marcação de acesso da matriz; não pressupõe que todos sejam abertos."""
+    return matriz['acesso_restrito'].astype(str).str.strip().str.lower().isin(
+        ('true', '1', 'sim')
+    ).to_numpy()
+
+
 def _dados_elegiveis(matriz):
+    """Português e link válido; acesso restrito NÃO elimina um curso."""
     idioma = matriz['idioma'].astype(str).map(normalizar_texto)
-    restrito = matriz['acesso_restrito'].astype(str).str.strip().str.lower().isin(('true','1','sim'))
     link = matriz['link_do_curso'].astype(str).str.startswith('https://')
-    return (idioma.isin(('portugues','pt','pt-br','')) & ~restrito & link).to_numpy()
+    return (idioma.isin(('portugues','pt','pt-br','')) & link).to_numpy()
+
+
+def _nota_preferencia_aberto(nota, restrito):
+    """Desempate moderado na ordenação, sem alterar o score original."""
+    return nota - (PREFERENCIA_CURSO_ABERTO if restrito else 0.)
 
 
 def recomendar_experimental(perfil, objetivo, matriz, ids_modelo, semelhanca_conteudo,
@@ -501,7 +519,8 @@ def recomendar_experimental(perfil, objetivo, matriz, ids_modelo, semelhanca_con
                               incluir_outros_idiomas=False, explorar_novos_temas=False):
     """Retorna um resultado compatível com as cinco recomendações do Streamlit.
 
-    Conserva filtros e popularidade como alternativa sem P05. Não grava histórico.
+    Mantém idioma/link válidos, inclui cursos de acesso restrito e prefere
+    cursos abertos quando a relevância é próxima. Não grava histórico.
     """
     ids = np.asarray(ids_modelo)
     n = len(matriz)
@@ -518,6 +537,7 @@ def recomendar_experimental(perfil, objetivo, matriz, ids_modelo, semelhanca_con
     base = np.asarray(afin['afinidade_base'], dtype=float)
     pop = np.asarray(popularidade, dtype=float)
     permitido = _dados_elegiveis(matriz)
+    restritos = _cursos_restritos(matriz)
     if incluir_outros_idiomas:
         # A opção é para ver versões de cursos ofertados; a lista principal
         # continua em português, conforme decisão do questionário.
@@ -528,13 +548,20 @@ def recomendar_experimental(perfil, objetivo, matriz, ids_modelo, semelhanca_con
         # Sem assuntos na P05, a P06 não define pesos.
         # Apenas sem P05 E sem trajetória usamos o baseline de popularidade.
         if not np.any(base):
-            ordem = sorted(indices_elegiveis, key=lambda i: (-pop[i],int(ids[i])))
+            popularidade_normalizada = _normalizar_vetor(pop)
+            ordem = sorted(indices_elegiveis, key=lambda i: (
+                -_nota_preferencia_aberto(popularidade_normalizada[i], restritos[i]),
+                -pop[i], int(ids[i])
+            ))
             motivo = 'popularidade histórica da EV.G'
             notas = pop
         else:
             sim = _modelo(base, semelhanca_conteudo, semelhanca_matriculas,pop,.55)
             notas = .50*base + .50*sim
-            ordem = sorted(indices_elegiveis, key=lambda i: (-notas[i],-pop[i],int(ids[i])))
+            ordem = sorted(indices_elegiveis, key=lambda i: (
+                -_nota_preferencia_aberto(notas[i], restritos[i]),
+                -pop[i], int(ids[i])
+            ))
             motivo = 'conhecimento e experiência informados'
         selecionados = []
         for i in ordem:
@@ -624,12 +651,14 @@ def recomendar_experimental(perfil, objetivo, matriz, ids_modelo, semelhanca_con
         vizinhanca = len(palavras_conteudo(i) & palavras_referencia)
         # Um vínculo por conteúdo vale mais do que popularidade ou área sozinha.
         nota_rel = .42*min(vizinhanca/2,1.) + .24*float(e_da_area) + .24*sim[i]+.10*base[i]
-        return (-nota_rel, not e_da_area, -pop[i],int(ids[i]))
+        return (-_nota_preferencia_aberto(nota_rel, restritos[i]),
+                not e_da_area, -pop[i], int(ids[i]))
 
     # Seleção com cobertura: pelo menos 1 candidato por assunto se disponível.
     ordem_geral = sorted(indices_elegiveis, key=lambda i:(
         cursos['area_principal'][i] not in areas_dominantes if afin_interesse[i] > 0 else True,
-        -notas[i],-afin_interesse[i],-pop[i],int(ids[i])))
+        -_nota_preferencia_aberto(notas[i], restritos[i]),
+        -afin_interesse[i],-pop[i],int(ids[i])))
     selecionados=[]
     def adicionar(i):
         if len(selecionados) >= 5 or i in selecionados or not permitido[i]:
@@ -654,7 +683,9 @@ def recomendar_experimental(perfil, objetivo, matriz, ids_modelo, semelhanca_con
                                           (not any(p in normalizar_texto(matriz.iloc[i]['nome_curso'])
                                                    for p in ('aprendendo','basico','fundamentos')))
                                            if obj == 'A' else False,
-                                          -item['valores'][i], -notas[i], -pop[i], int(ids[i])))
+                                          -_nota_preferencia_aberto(item['valores'][i], restritos[i]),
+                                          -_nota_preferencia_aberto(notas[i], restritos[i]),
+                                          -pop[i], int(ids[i])))
         for i in candidatos:
             if adicionar(int(i)):
                 break
@@ -684,7 +715,10 @@ def _resposta(obj, matriz, ids, selecionados, notas, motivo):
             'id_curso_canonico':int(ids[i]), 'nome_curso':str(linha['nome_curso']),
             'area_principal':str(linha['area_principal']),
             'nota':float(notas[i]), # somente para testes internos, não exibir ao usuário
-            'motivos':[motivo], 'acesso_restrito':False,
+            'motivos':[motivo],
+            'acesso_restrito':str(linha['acesso_restrito']).strip().lower() in
+                              ('true', '1', 'sim'),
+            'vinculo_exigido':str(linha['vinculo_exigido']).strip(),
             'idioma':str(linha['idioma']), 'link_do_curso':str(linha['link_do_curso']),
         })
     return {'objetivo':obj,'estrategia':'experimental','cursos':itens,
