@@ -86,7 +86,7 @@ st.markdown(
     html.evg-tema-escuro .stApp [data-testid="stMarkdownContainer"] h2 {
         color: #DDB5EE;
     }
-    /* Cor e contorno dos links para os cursos. */
+    /* Aparência padrão dos links da aplicação. */
     .stApp .stLinkButton > a {
         color: var(--st-link-color, var(--link-color, #74258F));
         border-color: var(--st-border-color,
@@ -100,6 +100,16 @@ st.markdown(
             var(--st-primary-color, var(--primary-color, #74258F)) 7%,
             var(--st-secondary-background-color,
                 var(--secondary-background-color, transparent)));
+    }
+    /* Somente nos cinco cursos e somente no tema claro: manter sempre
+       o contorno roxo e o fundo lilás antes vistos apenas no hover. */
+    html:not(.evg-tema-escuro) .stApp
+    :is(.st-key-evg_curso_card_1, .st-key-evg_curso_card_2,
+        .st-key-evg_curso_card_3, .st-key-evg_curso_card_4,
+        .st-key-evg_curso_card_5) .stLinkButton > a {
+        color: #74258F;
+        border-color: #74258F;
+        background: color-mix(in srgb, #74258F 7%, #FFFFFF);
     }
 
     /* Largura da página: uma coluna centralizada, confortável de ler */
