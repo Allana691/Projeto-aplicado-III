@@ -646,6 +646,62 @@ st.markdown(
         border-color: #D8B9E3;
     }
 
+    /* Avaliação individual: botões de interesse destacados nos cinco cursos.
+       A chave do botão indica apenas a apresentação (ativo ou neutro);
+       a resposta registrada permanece controlada pelo estado da sessão. */
+    .stApp :is([class*="st-key-evg_interesse_sim_"],
+               [class*="st-key-evg_interesse_nao_"]) button {
+        width: 100%;
+        min-height: 3rem;
+        padding: .55rem .5rem;
+        border: 1px solid #D8B9E3;
+        border-radius: 10px;
+        background: #FFF9FC;
+        color: #74258F;
+        white-space: normal;
+        font-size: .86rem;
+        font-weight: 700;
+        line-height: 1.3;
+    }
+    .stApp :is([class*="st-key-evg_interesse_sim_"],
+               [class*="st-key-evg_interesse_nao_"]) button:hover {
+        border-color: #74258F;
+        background: #F1E8F6;
+        color: #74258F;
+    }
+    .stApp :is([class*="st-key-evg_interesse_sim_"][class*="_ativo"],
+               [class*="st-key-evg_interesse_nao_"][class*="_ativo"]) button,
+    .stApp :is([class*="st-key-evg_interesse_sim_"][class*="_ativo"],
+               [class*="st-key-evg_interesse_nao_"][class*="_ativo"]) button:hover {
+        background: #74258F;
+        border-color: #74258F;
+        color: #FFFFFF;
+    }
+    html.evg-tema-escuro .stApp
+    :is([class*="st-key-evg_interesse_sim_"],
+        [class*="st-key-evg_interesse_nao_"]) button {
+        background: #2B2233;
+        border-color: #584365;
+        color: #DDB5EE;
+    }
+    html.evg-tema-escuro .stApp
+    :is([class*="st-key-evg_interesse_sim_"],
+        [class*="st-key-evg_interesse_nao_"]) button:hover {
+        background: #3A2944;
+        border-color: #DDB5EE;
+        color: #F4ECF7;
+    }
+    html.evg-tema-escuro .stApp
+    :is([class*="st-key-evg_interesse_sim_"][class*="_ativo"],
+        [class*="st-key-evg_interesse_nao_"][class*="_ativo"]) button,
+    html.evg-tema-escuro .stApp
+    :is([class*="st-key-evg_interesse_sim_"][class*="_ativo"],
+        [class*="st-key-evg_interesse_nao_"][class*="_ativo"]) button:hover {
+        background: #803199;
+        border-color: #DDB5EE;
+        color: #FFFFFF;
+    }
+
     /* Cinco cards dos cursos: no tema claro, o mesmo fundo lavanda do
        convite "Antes de finalizar". Manter o tom anterior no tema escuro. */
     :is(.st-key-evg_curso_card_1, .st-key-evg_curso_card_2,
@@ -1455,6 +1511,36 @@ def explicar_recomendacao(curso, linha, respostas):
     return "Selecionado a partir dos seus interesses e das relações entre os conteúdos dos cursos."
 
 
+def selecionar_interesse_curso(posicao, interesse):
+    """Registra a opinião do curso em sua linha existente e mantém a escolha visível.
+
+    Repetir a mesma opção não faz nova gravação. Trocar a opção substitui
+    a opinião anterior na mesma célula da planilha Recomendacoes.
+    """
+    salvos = st.session_state.setdefault("evg_interesses_salvos", {})
+    erros = st.session_state.setdefault("evg_interesses_erros", {})
+    erros.pop(posicao, None)
+
+    if salvos.get(posicao) == interesse:
+        return
+    if st.session_state.get("evg_registro_status") != "salvo":
+        erros[posicao] = (
+            "O registro do questionário precisa ser concluído "
+            "antes de salvar esta opinião. Tente novamente."
+        )
+        return
+    try:
+        registrar_interesse(
+            st.session_state["evg_participacao_id"],
+            posicao,
+            interesse,
+        )
+    except Exception:
+        erros[posicao] = "Não conseguimos salvar sua opinião. Você pode tentar novamente."
+    else:
+        salvos[posicao] = interesse
+
+
 def mostrar_curso(posicao, curso, matriz, respostas):
     """Card compacto, com link e avaliação individual em linhas consecutivas."""
     linha = linha_do_curso(curso, matriz)
@@ -1487,32 +1573,32 @@ def mostrar_curso(posicao, curso, matriz, respostas):
 
         st.link_button("Abrir curso na EV.G", curso["link_do_curso"], use_container_width=True)
 
-        st.caption("Esta recomendação despertou seu interesse? (opcional)")
-        interesse = st.radio(
-            f"Interesse no curso {posicao}",
-            options=["Me interessou", "Não me interessou"],
-            index=None,
-            horizontal=True,
-            label_visibility="collapsed",
-            key=f"evg_interesse_curso_{posicao}",
-        )
-        if interesse:
-            salvos = st.session_state.setdefault("evg_interesses_salvos", {})
-            if st.session_state.get("evg_registro_status") != "salvo":
-                st.warning("O registro do questionário precisa ser concluído para salvar esta opinião.")
-            elif salvos.get(posicao) != interesse:
-                try:
-                    registrar_interesse(
-                        st.session_state["evg_participacao_id"],
-                        posicao,
-                        interesse,
-                    )
-                except Exception:
-                    st.error("Não conseguimos salvar sua opinião. Você pode tentar novamente.")
-                else:
-                    salvos[posicao] = interesse
-            if salvos.get(posicao) == interesse:
-                st.caption("Opinião registrada.")
+        st.markdown("**Esta recomendação despertou seu interesse?**")
+        selecionado = st.session_state.get("evg_interesses_salvos", {}).get(posicao)
+        coluna_sim, coluna_nao = st.columns(2, gap="small")
+        with coluna_sim:
+            st.button(
+                "Me interessou",
+                key=f"evg_interesse_sim_{posicao}_{'ativo' if selecionado == 'Me interessou' else 'neutro'}",
+                icon=":material/thumb_up:",
+                use_container_width=True,
+                on_click=selecionar_interesse_curso,
+                args=(posicao, "Me interessou"),
+            )
+        with coluna_nao:
+            st.button(
+                "Não me interessou",
+                key=f"evg_interesse_nao_{posicao}_{'ativo' if selecionado == 'Não me interessou' else 'neutro'}",
+                icon=":material/thumb_down:",
+                use_container_width=True,
+                on_click=selecionar_interesse_curso,
+                args=(posicao, "Não me interessou"),
+            )
+        erro = st.session_state.get("evg_interesses_erros", {}).get(posicao)
+        if erro:
+            st.error(erro)
+        elif selecionado:
+            st.caption("Opinião registrada.")
 
         # Preservar as versões em outros idiomas, quando existirem,
         # sem mostrar um menu de detalhes em todos os cards.
