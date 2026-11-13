@@ -566,8 +566,18 @@ st.markdown(
         background: rgba(116, 37, 143, 0.15);
         color: #74258F;
     }
-    html.evg-tema-escuro .evg-convite-icone {color: #DDB5EE;}
-    .evg-convite-icone svg {width: 2rem; height: 2rem;}
+    /* O Streamlit pode filtrar SVG inline em st.html: usamos imagens SVG
+       como fundos CSS, padrão já aplicado aos ícones da página inicial. */
+    .evg-convite-icone::before {
+        content: "";
+        display: block;
+        width: 2rem;
+        height: 2rem;
+        background: url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22%2374258F%22%20stroke-width%3D%221.8%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Crect%20x%3D%225%22%20y%3D%224%22%20width%3D%2214%22%20height%3D%2217%22%20rx%3D%222%22%2F%3E%3Crect%20x%3D%229%22%20y%3D%222%22%20width%3D%226%22%20height%3D%224%22%20rx%3D%221%22%2F%3E%3Cpath%20d%3D%22m8%2012%202%202%204-4M8%2018h8%22%2F%3E%3C%2Fsvg%3E") center / contain no-repeat;
+    }
+    html.evg-tema-escuro .evg-convite-icone::before {
+        background-image: url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22%23DDB5EE%22%20stroke-width%3D%221.8%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Crect%20x%3D%225%22%20y%3D%224%22%20width%3D%2214%22%20height%3D%2217%22%20rx%3D%222%22%2F%3E%3Crect%20x%3D%229%22%20y%3D%222%22%20width%3D%226%22%20height%3D%224%22%20rx%3D%221%22%2F%3E%3Cpath%20d%3D%22m8%2012%202%202%204-4M8%2018h8%22%2F%3E%3C%2Fsvg%3E");
+    }
     .evg-convite-avaliacao h3 {
         margin: 0;
         font-size: 1.22rem;
@@ -603,7 +613,19 @@ st.markdown(
         line-height: 1.35;
         transition: background 160ms ease, border-color 160ms ease;
     }
-    .evg-convite-botao svg {flex-shrink: 0; width: 1.05rem; height: 1.05rem;}
+    .evg-convite-botao::before,
+    .evg-convite-botao::after {
+        content: "";
+        display: block;
+        flex: 0 0 1.05rem;
+        width: 1.05rem;
+        height: 1.05rem;
+        background-position: center;
+        background-repeat: no-repeat;
+        background-size: contain;
+    }
+    .evg-convite-botao::before {background-image: url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22%23FFFFFF%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpath%20d%3D%22m12%2019%207-7%203%203-7%207-4%201%201-4Z%22%2F%3E%3Cpath%20d%3D%22m17%2014%203%203%22%2F%3E%3C%2Fsvg%3E");}
+    .evg-convite-botao::after {background-image: url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22%23FFFFFF%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpath%20d%3D%22M5%2012h14m-6-6%206%206-6%206%22%2F%3E%3C%2Fsvg%3E");}
     .evg-convite-botao:hover, .evg-convite-botao:focus-visible {
         background: var(--evg-hover, #5F1E74);
         border-color: var(--evg-hover, #5F1E74);
@@ -1683,33 +1705,12 @@ def main():
                 """
                 <section class="evg-convite-avaliacao"
                          aria-labelledby="evg-convite-titulo">
-                    <span class="evg-convite-icone" aria-hidden="true">
-                        <svg viewBox="0 0 24 24" fill="none"
-                             stroke="currentColor" stroke-width="1.8"
-                             stroke-linecap="round" stroke-linejoin="round">
-                            <rect x="5" y="4" width="14" height="17" rx="2"/>
-                            <rect x="9" y="2" width="6" height="4" rx="1"/>
-                            <path d="m8 12 2 2 4-4M8 18h8"/>
-                        </svg>
-                    </span>
+                    <span class="evg-convite-icone" aria-hidden="true"></span>
                     <h3 id="evg-convite-titulo">Antes de finalizar</h3>
                     <p>Responda 2 perguntas rápidas sobre sua experiência.</p>
                     <a class="evg-convite-botao" href="#evg-avaliacao-geral"
                        aria-label="Responder avaliação da experiência">
-                        <svg viewBox="0 0 24 24" fill="none"
-                             stroke="currentColor" stroke-width="2"
-                             stroke-linecap="round" stroke-linejoin="round"
-                             aria-hidden="true">
-                            <path d="m12 19 7-7 3 3-7 7-4 1 1-4Z"/>
-                            <path d="m17 14 3 3"/>
-                        </svg>
                         <span>Responder avaliação</span>
-                        <svg viewBox="0 0 24 24" fill="none"
-                             stroke="currentColor" stroke-width="2"
-                             stroke-linecap="round" stroke-linejoin="round"
-                             aria-hidden="true">
-                            <path d="M5 12h14m-6-6 6 6-6 6"/>
-                        </svg>
                     </a>
                 </section>
                 """
