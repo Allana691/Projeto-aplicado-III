@@ -101,8 +101,8 @@ Os diretórios poderão ser atualizados conforme o avanço das etapas.
 - [x] Implementação do sistema híbrido.
 - [x] Divisão temporal em treinamento, validação e teste.
 - [x] Avaliação inicial com Recall@10, Hit Rate@10 e NDCG@10.
-- [ ] Comparação com baseline de popularidade.
-- [ ] Consolidação da metodologia acadêmica.
-- [ ] Desenvolvimento da aplicação web extensionista.
+- [x] Comparação com baseline de popularidade.
+- [x] Consolidação da metodologia acadêmica.
+- [x] Desenvolvimento da aplicação web extensionista.
 - [ ] Aplicação junto à comunidade e análise do feedback.
 - [ ] Finalização e entrega do projeto.
