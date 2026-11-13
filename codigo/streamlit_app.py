@@ -1586,17 +1586,17 @@ def main():
         )
         cursos = resultado["cursos"][:5]
         respostas = st.session_state.get("evg_respostas", {})
-        # Três cards em cima; dois cards da mesma largura visual embaixo,
-        # centralizados com margens simétricas. Os espaços laterais ocupam
-        # metade da largura de cada coluna de card.
+        # Etapa 2: tres colunas de mesma largura em cada linha.
+        # Cursos 4 e 5 ocupam as duas primeiras colunas; a terceira fica
+        # disponivel para o convite de avaliacao da proxima etapa.
         primeira_linha = st.columns(3, gap="medium")
         for posicao, curso in enumerate(cursos[:3], start=1):
             with primeira_linha[posicao - 1]:
                 mostrar_curso(posicao, curso, matriz, respostas)
 
-        segunda_linha = st.columns([1, 2, 2, 1], gap="medium")
+        segunda_linha = st.columns(3, gap="medium")
         for posicao, curso in enumerate(cursos[3:], start=4):
-            with segunda_linha[posicao - 3]:
+            with segunda_linha[posicao - 4]:
                 mostrar_curso(posicao, curso, matriz, respostas)
 
         # A primeira e a segunda linha sao blocos Streamlit independentes.
