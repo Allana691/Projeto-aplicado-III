@@ -646,17 +646,23 @@ st.markdown(
         border-color: #D8B9E3;
     }
 
-    /* Superfície dos cinco cards dos cursos: branca no tema claro,
-       grafite-ameixa no escuro (conforme a configuração do Streamlit). */
+    /* Cinco cards dos cursos: no tema claro, o mesmo fundo lavanda do
+       convite "Antes de finalizar". Manter o tom anterior no tema escuro. */
+    :is(.st-key-evg_curso_card_1, .st-key-evg_curso_card_2,
+        .st-key-evg_curso_card_3, .st-key-evg_curso_card_4,
+        .st-key-evg_curso_card_5) {
+        background: rgba(116, 37, 143, 0.09);
+        border-radius: 12px;
+        /* Altura sincronizada com o maior dos cinco cards pelo script abaixo.
+           min-height permite crescimento sem cortar conteúdo. */
+        box-sizing: border-box;
+    }
+    html.evg-tema-escuro .stApp
     :is(.st-key-evg_curso_card_1, .st-key-evg_curso_card_2,
         .st-key-evg_curso_card_3, .st-key-evg_curso_card_4,
         .st-key-evg_curso_card_5) {
         background: var(--st-secondary-background-color,
             var(--secondary-background-color, color-mix(in srgb, currentColor 2%, transparent)));
-        border-radius: 12px;
-        /* Altura sincronizada com o maior dos cinco cards pelo script abaixo.
-           min-height permite crescimento sem cortar conteúdo. */
-        box-sizing: border-box;
     }
 
     /* Elevação discreta somente nos cinco cards dos cursos.
