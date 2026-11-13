@@ -101,6 +101,15 @@ st.markdown(
             var(--st-secondary-background-color,
                 var(--secondary-background-color, transparent)));
     }
+    /* Texto dos links "Abrir curso na EV.G" em negrito nos dois temas. */
+    .stApp :is(.st-key-evg_curso_card_1, .st-key-evg_curso_card_2,
+               .st-key-evg_curso_card_3, .st-key-evg_curso_card_4,
+               .st-key-evg_curso_card_5) .stLinkButton > a,
+    .stApp :is(.st-key-evg_curso_card_1, .st-key-evg_curso_card_2,
+               .st-key-evg_curso_card_3, .st-key-evg_curso_card_4,
+               .st-key-evg_curso_card_5) .stLinkButton > a p {
+        font-weight: 700 !important;
+    }
     /* Links dos cinco cursos no tema claro: contorno e fundo suave em
        repouso; roxo intenso ao passar o mouse ou usar o teclado. */
     html:not(.evg-tema-escuro) .stApp
