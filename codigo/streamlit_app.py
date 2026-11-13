@@ -675,18 +675,23 @@ def mostrar_cards_escolha_unica(etapa):
             )
     st.markdown("<style>" + "".join(estilos) + "</style>", unsafe_allow_html=True)
 
-    for codigo, titulo in opcoes.items():
-        icone, descricao = metadados[codigo]
-        # st.button desenha o card clicável; o evento atualiza a mesma chave
-        # consumida por sequencia(), coletar_respostas() e validar_etapa().
-        st.button(
-            titulo,
-            key=f"evg_card_{etapa}_{codigo}",
-            icon=f":material/{icone}:",
-            use_container_width=True,
-            on_click=selecionar_card,
-            args=(etapa, titulo if etapa == "p01" else codigo),
-        )
+    # Duas opções por linha no desktop; no celular o Streamlit
+    # empilha as colunas, exibindo um card por linha.
+    itens = list(opcoes.items())
+    for inicio in range(0, len(itens), 2):
+        colunas = st.columns(2, gap="medium")
+        for coluna, (codigo, titulo) in zip(colunas, itens[inicio:inicio + 2]):
+            icone, _descricao = metadados[codigo]
+            # Mantém as mesmas chaves e valores consumidos pelo recomendador.
+            with coluna:
+                st.button(
+                    titulo,
+                    key=f"evg_card_{etapa}_{codigo}",
+                    icon=f":material/{icone}:",
+                    use_container_width=True,
+                    on_click=selecionar_card,
+                    args=(etapa, titulo if etapa == "p01" else codigo),
+                )
 
 
 # P02 é pertinente para quem trabalha, trabalhou ou está mudando de carreira.
