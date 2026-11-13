@@ -110,6 +110,18 @@ st.markdown(
                .st-key-evg_curso_card_5) .stLinkButton > a p {
         font-weight: 700 !important;
     }
+    /* No tema escuro, garantir texto branco nos links dos cinco cursos,
+       inclusive no conteúdo interno e no hover/foco. */
+    html.evg-tema-escuro .stApp
+    :is(.st-key-evg_curso_card_1, .st-key-evg_curso_card_2,
+        .st-key-evg_curso_card_3, .st-key-evg_curso_card_4,
+        .st-key-evg_curso_card_5) .stLinkButton > a,
+    html.evg-tema-escuro .stApp
+    :is(.st-key-evg_curso_card_1, .st-key-evg_curso_card_2,
+        .st-key-evg_curso_card_3, .st-key-evg_curso_card_4,
+        .st-key-evg_curso_card_5) .stLinkButton > a * {
+        color: #FFFFFF !important;
+    }
     /* Links dos cinco cursos no tema claro: contorno e fundo suave em
        repouso; roxo intenso ao passar o mouse ou usar o teclado. */
     html:not(.evg-tema-escuro) .stApp
