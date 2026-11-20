@@ -229,6 +229,20 @@ O cronograma real registra as atividades conforme foram efetivamente executadas.
 | Planejamento inicial do questionário de perfil dos participantes | Allana | Outubro/2026 | Ideias iniciais para perguntas, alternativas e direcionamento do fluxo de interação |
 | Organização das possibilidades de integração entre questionário e sistema de recomendação | Allana | Outubro/2026 | Separação conceitual entre coleta de informações do usuário e funcionamento do algoritmo de recomendação |
 | **Início do planejamento técnico da aplicação com Streamlit** | **Allana** | **30/10** | **Tecnologia definida como alternativa para construção da interface; implementação ainda não iniciada** |
+| Elaboração das perguntas e alternativas do questionário de perfil | Tawany | Até 05/11 | Perguntas P01 a P06, alternativas e regras de navegação definidas (especificação funcional do questionário) |
+| Definição das decisões técnicas do recomendador | Allana | 05/11 | Especificação técnica consolidada: pesos das notas por objetivo de aprendizagem, regras de seleção dos cursos e tratamento de participantes sem histórico |
+| Classificação do catálogo e elaboração da `matriz_cursos_resumida.csv` | Tawany | Até 09/11 | 1.030 cursos organizados em 5 grandes áreas, 17 áreas e 37 assuntos, base para comparar as respostas com os cursos |
+| Desenvolvimento do motor de recomendação e da aplicação web em Streamlit | Allana | 05–09/11 | Primeira versão do aplicativo e dos arquivos pré-calculados do modelo publicada no GitHub |
+| Elaboração dos slides e apresentação de acompanhamento | Nicole | 09/11 | Plano de aplicação e estágio do sistema apresentados à professora |
+| Integração com o Google Sheets e ajustes da interface | Allana | 11–13/11 | Registro anônimo das respostas, avaliação individual dos cursos, tela inicial, temas claro e escuro e cards do questionário |
+| Publicação da versão final da aplicação | Allana | 13/11 | Aplicativo disponível no Streamlit Cloud para a comunidade |
+| **Aplicação do sistema junto à comunidade** | **Grupo** | **13–17/11** | **47 participações, 235 recomendações e 26 avaliações gerais registradas** |
+| Avaliação por especialistas | Grupo | 17/11 | Comentários de uma professora de software do Mackenzie e de um coordenador de cursos e analista de dados |
+| Ajustes das correções da professora na Etapa 3 | Tawany | Até 19/11 | Correções indicadas na avaliação da Etapa 3 incorporadas ao relatório final |
+| Produção do vídeo de apresentação do projeto e da aplicação na comunidade | Erika | Até 19/11 | Vídeo publicado no YouTube e incluído no Apêndice A do relatório |
+| Elaboração da documentação da Etapa 4 | Allana | Até 19/11 | Relatório final com metodologia, resultados, aplicação extensionista e conclusão |
+| **Entrega final da Etapa 4** | **Grupo** | **19/11** | **Relatório final entregue no portal do aluno; Projeto Aplicado III concluído** |
+| Correção e atualização do repositório no GitHub | Allana | 20/11 | Código revisado sem alterar as recomendações, READMEs atualizados e relatório final adicionado |
 
 ---
 
@@ -240,6 +254,6 @@ As diferenças entre os dois cronogramas refletem a evolução do projeto, inclu
 
 Na Etapa 3, a implementação técnica do sistema híbrido foi conduzida por Allana, enquanto a elaboração da documentação acadêmica foi distribuída entre as integrantes conforme as seções atribuídas a cada uma. Todas participaram das atividades relacionadas à conclusão e entrega da etapa.
 
-As atividades da Etapa 4 registradas no cronograma real correspondem ao planejamento e à estruturação inicial da aplicação. O desenvolvimento da interface, a integração com o sistema de recomendação e a realização dos testes ainda serão registrados conforme forem efetivamente executados.
+Na Etapa 4, Allana desenvolveu todo o código da aplicação e do motor de recomendação, definiu as decisões técnicas, como os pesos das perguntas, elaborou a documentação da etapa e corrigiu e atualizou o repositório. Tawany elaborou as perguntas e alternativas do questionário e a `matriz_cursos_resumida.csv`, além de incorporar as correções da professora na Etapa 3. Nicole construiu os slides e conduziu a apresentação de acompanhamento de 09/11, e Erika produziu o vídeo do projeto. A aplicação junto à comunidade, de 13 a 17/11, foi divulgada pelas integrantes entre colegas de faculdade e de trabalho.
 
-As próximas atividades serão acrescentadas ao cronograma real à medida que forem realizadas, mantendo a rastreabilidade das contribuições e dos resultados obtidos.
+Com a entrega final em 19/11/2026, o cronograma real está completo.
