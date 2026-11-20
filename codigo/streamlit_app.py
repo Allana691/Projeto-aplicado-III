@@ -928,7 +928,7 @@ def mostrar_cards_escolha_unica(etapa):
     for codigo, (icone, descricao) in metadados.items():
         seletor = f".st-key-evg_card_{etapa}_{codigo} button"
         # Uma string CSS, não HTML: cada descrição aparece dentro do botão.
-        texto_css = descricao.replace("\\\\", "\\\\\\\\").replace('"', '\\"')
+        texto_css = descricao.replace("\\", "\\\\").replace('"', '\\"')
         estilos.append(f'{seletor}{{--evg-card-descricao:"{texto_css}";}}')
         if codigo == selecionado:
             estilos.append(
@@ -953,7 +953,7 @@ def mostrar_cards_escolha_unica(etapa):
                     titulo,
                     key=f"evg_card_{etapa}_{codigo}",
                     icon=f":material/{icone}:",
-                    use_container_width=True,
+                    width="stretch",
                     on_click=selecionar_card,
                     args=(etapa, titulo if etapa == "p01" else codigo),
                 )
@@ -1425,6 +1425,8 @@ def avancar(etapa):
                 if chave in ("evg_p07", "evg_p08", "evg_p09") or chave.startswith("evg_interesse_curso_"):
                     st.session_state.pop(chave, None)
             st.session_state["evg_interesses_salvos"] = {}
+            # Mensagens de erro da lista anterior não devem aparecer na nova.
+            st.session_state["evg_interesses_erros"] = {}
             st.session_state["evg_tela"] = "resultado"
             solicitar_rolagem_topo()
             st.rerun()
@@ -1619,7 +1621,7 @@ def mostrar_curso(posicao, curso, matriz, respostas):
             if requisito and normalizar(requisito) not in ("nan", "none"):
                 st.caption(f"Requisito de acesso informado no catálogo: {requisito}")
 
-        st.link_button("Abrir curso na EV.G", curso["link_do_curso"], use_container_width=True)
+        st.link_button("Abrir curso na EV.G", curso["link_do_curso"], width="stretch")
 
         st.markdown("**Esta recomendação despertou seu interesse?**")
         selecionado = st.session_state.get("evg_interesses_salvos", {}).get(posicao)
@@ -1629,7 +1631,7 @@ def mostrar_curso(posicao, curso, matriz, respostas):
                 "Me interessou",
                 key=f"evg_interesse_sim_{posicao}_{'ativo' if selecionado == 'Me interessou' else 'neutro'}",
                 icon=":material/thumb_up:",
-                use_container_width=True,
+                width="stretch",
                 on_click=selecionar_interesse_curso,
                 args=(posicao, "Me interessou"),
             )
@@ -1638,7 +1640,7 @@ def mostrar_curso(posicao, curso, matriz, respostas):
                 "Não me interessou",
                 key=f"evg_interesse_nao_{posicao}_{'ativo' if selecionado == 'Não me interessou' else 'neutro'}",
                 icon=":material/thumb_down:",
-                use_container_width=True,
+                width="stretch",
                 on_click=selecionar_interesse_curso,
                 args=(posicao, "Não me interessou"),
             )
@@ -1762,7 +1764,7 @@ def main():
                     if (!card) return;
 
                     const intensidade = (cor) => {
-                        const rgb = cor.match(/rgba?\(([^)]+)\)/i);
+                        const rgb = cor.match(/rgba?\\(([^)]+)\\)/i);
                         if (!rgb) return null;
                         const valores = rgb[1].split(',').map(v => Number.parseFloat(v));
                         if (valores.length < 3 ||
@@ -1809,7 +1811,7 @@ def main():
         # Ação imediata para quem já conhece a proposta do projeto.
         if st.button(
             "Começar questionário", type="primary",
-            key="evg_comecar_topo", use_container_width=True,
+            key="evg_comecar_topo", width="stretch",
         ):
             st.session_state["evg_tela"] = "p01"
             solicitar_rolagem_topo()
@@ -1825,7 +1827,7 @@ def main():
         # Segunda ação para quem preferiu ler as informações antes de começar.
         if st.button(
             "Começar questionário", type="primary",
-            key="evg_comecar_final", use_container_width=True,
+            key="evg_comecar_final", width="stretch",
         ):
             st.session_state["evg_tela"] = "p01"
             solicitar_rolagem_topo()

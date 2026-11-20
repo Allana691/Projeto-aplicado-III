@@ -8,13 +8,13 @@ até avaliação qualitativa com perfis.
 from __future__ import annotations
 
 import json
+import re
 import unicodedata
+from collections import Counter
 from pathlib import Path
+
 import numpy as np
 import pandas as pd
-from collections import defaultdict
-import re
-from collections import Counter
 
 
 # --------------------------------------------------------------------
@@ -22,6 +22,10 @@ from collections import Counter
 # --------------------------------------------------------------------
 
 SEPARADOR = " | "
+
+# Peso do conteúdo (α) na combinação híbrida, escolhido na validação do
+# notebook 03. É o mesmo valor salvo em arquivos_do_modelo/informacoes_do_modelo.json.
+PESO_CONTEUDO = 0.55
 
 
 AJUSTES_PADRAO = {
@@ -255,7 +259,7 @@ def validar_respostas(respostas, opcoes):
         erros.append('P06: selecione seu objetivo principal')
     exp = _unicos(respostas.get('experiencia', []), 'P02', erros)
     if len(exp) > opcoes['max_experiencia']:
-        erros.append('P02: selecione no máximo 3 áreas profissionais')
+        erros.append(f"P02: selecione no máximo {opcoes['max_experiencia']} áreas profissionais")
     if situacao == 'primeiro' and exp:
         erros.append('P02: não deve ser respondida ao procurar o primeiro emprego')
     nomes_profissionais = set(profissionais) | {opcoes['opcao_experiencia_outras']}
@@ -264,7 +268,7 @@ def validar_respostas(respostas, opcoes):
             erros.append(f'P02: opção desconhecida: {item}')
     formacao = _unicos(respostas.get('formacao', []), 'P04', erros)
     if len(formacao) > opcoes['max_formacao']:
-        erros.append('P04: selecione no máximo 3 áreas de conhecimento')
+        erros.append(f"P04: selecione no máximo {opcoes['max_formacao']} áreas de conhecimento")
     for item in formacao:
         if item not in areas:
             erros.append(f'P04: área desconhecida: {item}')
@@ -275,7 +279,7 @@ def validar_respostas(respostas, opcoes):
         erros.append('P04: opção geral não pode ser combinada com áreas')
     temas = _unicos(respostas.get('interesses', []), 'P05', erros)
     if len(temas) > opcoes['max_interesses']:
-        erros.append('P05: selecione no máximo 3 assuntos')
+        erros.append(f"P05: selecione no máximo {opcoes['max_interesses']} assuntos")
     for t in temas:
         if t not in assuntos:
             erros.append(f'P05: assunto não disponível: {t}')
@@ -521,6 +525,11 @@ def recomendar_experimental(perfil, objetivo, matriz, ids_modelo, semelhanca_con
 
     Mantém idioma/link válidos, inclui cursos de acesso restrito e prefere
     cursos abertos quando a relevância é próxima. Não grava histórico.
+
+    Os parâmetros `incluir_outros_idiomas` e `explorar_novos_temas` são
+    aceitos por compatibilidade, mas não alteram o resultado: a lista
+    principal é sempre em português, e "Ainda não sei" (P05) já é tratado
+    pela ausência de assuntos.
     """
     ids = np.asarray(ids_modelo)
     n = len(matriz)
@@ -538,10 +547,6 @@ def recomendar_experimental(perfil, objetivo, matriz, ids_modelo, semelhanca_con
     pop = np.asarray(popularidade, dtype=float)
     permitido = _dados_elegiveis(matriz)
     restritos = _cursos_restritos(matriz)
-    if incluir_outros_idiomas:
-        # A opção é para ver versões de cursos ofertados; a lista principal
-        # continua em português, conforme decisão do questionário.
-        pass
     indices_elegiveis = np.flatnonzero(permitido)
     assuntos = list(dict.fromkeys(perfil.get('interesses',{}).get('assuntos', [])))
     if not assuntos:
@@ -556,7 +561,7 @@ def recomendar_experimental(perfil, objetivo, matriz, ids_modelo, semelhanca_con
             motivo = 'popularidade histórica da EV.G'
             notas = pop
         else:
-            sim = _modelo(base, semelhanca_conteudo, semelhanca_matriculas,pop,.55)
+            sim = _modelo(base, semelhanca_conteudo, semelhanca_matriculas, pop, PESO_CONTEUDO)
             notas = .50*base + .50*sim
             ordem = sorted(indices_elegiveis, key=lambda i: (
                 -_nota_preferencia_aberto(notas[i], restritos[i]),
@@ -600,7 +605,7 @@ def recomendar_experimental(perfil, objetivo, matriz, ids_modelo, semelhanca_con
     afin_interesse = np.maximum.reduce([x['valores'] for x in topicos])
     afin_interesse = np.minimum(1., afin_interesse + .04*np.maximum(0.,contagem-1))
     referencias = np.maximum(afin_interesse, 0.)
-    sim = _modelo(referencias, semelhanca_conteudo, semelhanca_matriculas, pop,.55)
+    sim = _modelo(referencias, semelhanca_conteudo, semelhanca_matriculas, pop, PESO_CONTEUDO)
     wi,wb,ws = PESOS_POR_OBJETIVO[obj]
     if not np.any(base):
         wi += wb  # Ausência de P02/P04 não é tratada como zero na nota.

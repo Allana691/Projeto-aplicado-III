@@ -11,6 +11,9 @@ Ele nunca mais precisa abrir a base grande.
 
 Quando rodar de novo? Só se a base de matrículas ou o catálogo mudarem.
 
+Bibliotecas necessárias (além das do aplicativo): duckdb, scipy e scikit-learn.
+Os arquivos Parquet precisam ter sido baixados com o Git LFS.
+
 Arquivos criados:
   ids_dos_cursos.npy             -> o ID de cada curso, na ordem das tabelas
   semelhanca_por_conteudo.npy    -> quanto cada curso se parece com os outros pelo CONTEÚDO
@@ -33,11 +36,15 @@ from sklearn.metrics.pairwise import cosine_similarity
 # ---------------------------------------------------------------
 # 1. CONFIGURAÇÕES (se algo estiver em outra pasta, ajuste aqui)
 # ---------------------------------------------------------------
-PASTA_DADOS = Path("../dados/processados")
+# Caminhos calculados a partir deste arquivo: o script funciona tanto
+# executado da raiz do repositório quanto da pasta "codigo".
+RAIZ = Path(__file__).resolve().parent.parent
+PASTA_DADOS = RAIZ / "dados" / "processados"
 ARQUIVO_MATRICULAS = PASTA_DADOS / "interacoes_cursos_atuais.parquet"
 ARQUIVO_CATALOGO = PASTA_DADOS / "catalogo_canonico.parquet"
 
-PASTA_SAIDA = Path("arquivos_do_modelo")
+# Mesma pasta lida pelo aplicativo (streamlit_app.py).
+PASTA_SAIDA = RAIZ / "arquivos_do_modelo"
 
 # Só entram matrículas ANTES desta data.
 # A base vai até 2 de setembro de 2026, então esta data usa tudo o que existe.

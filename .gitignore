@@ -1,0 +1,7 @@
+# Python
+__pycache__/
+*.pyc
+.ipynb_checkpoints/
+
+# Credenciais do Streamlit (Google Sheets): nunca enviar ao GitHub
+.streamlit/secrets.toml
