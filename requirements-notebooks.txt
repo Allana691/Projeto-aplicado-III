@@ -1,0 +1,12 @@
+# Dependências para reproduzir os notebooks e gerar os arquivos do modelo.
+# O aplicativo Streamlit usa apenas o requirements.txt (lido pelo Streamlit Cloud).
+#   pip install -r requirements-notebooks.txt
+pandas
+numpy
+pyarrow
+duckdb
+scipy
+scikit-learn
+matplotlib
+jupyter
+openpyxl

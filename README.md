@@ -1,108 +1,126 @@
-
 # Sistema Híbrido de Recomendação de Cursos para Desenvolvimento Profissional
 
-## Identificação
+Projeto Aplicado III · Universidade Presbiteriana Mackenzie
+Curso de Banco de Dados – Análise, Mineração e Engenharia de Dados · 2º semestre de 2026
 
-**Instituição:** Universidade Presbiteriana Mackenzie  
-**Curso:** Banco de Dados – Análise, Mineração e Engenharia de Dados  
-**Disciplina:** Projeto Aplicado III  
-**Semestre:** 2º semestre de 2026
+**Status:** concluído. Relatório final entregue em 19/11/2026.
+
+| | |
+|---|---|
+| 📄 Relatório final (Etapa 4) | [`documentacao/Etapa_4_Versao_Entregue.pdf`](documentacao/Etapa_4_Versao_Entregue.pdf) |
+| 🌐 Aplicação web | <https://encontre-cursos-evg-projeto-mackenzie.streamlit.app> |
+| 🎥 Vídeo (apresentação do projeto e aplicação na comunidade) | <https://www.youtube.com/watch?v=a5bN-BiBJ_0> |
 
 ## Sobre o projeto
 
-Este projeto tem como objetivo desenvolver e avaliar um sistema híbrido de recomendação de cursos gratuitos voltados ao desenvolvimento profissional, utilizando dados públicos da Escola Virtual de Governo (EV.G).
+Com centenas de cursos gratuitos disponíveis, escolher o que estudar virou um problema. O projeto
+desenvolveu um **sistema híbrido de recomendação** para o catálogo da **Escola Virtual de Governo
+(EV.G/Enap)**. Ele combina:
 
-A proposta combina técnicas de recomendação baseada em conteúdo (*Content-Based Filtering*) e filtragem colaborativa (*Collaborative Filtering*) para identificar cursos potencialmente relevantes aos usuários.
+- **Recomendação baseada em conteúdo:** TF-IDF sobre nome, eixos temáticos, competências,
+  apresentação, público-alvo e conteúdo programático dos cursos, com similaridade do cosseno;
+- **Filtragem colaborativa item-based:** similaridade do cosseno entre cursos, calculada a partir de
+  21,4 milhões de matrículas reais (feedback implícito binário);
+- **Combinação ponderada:** `S = α · conteúdo + (1 − α) · colaborativo`, com escores normalizados
+  por usuário e **α = 0,55** escolhido na validação.
 
-O sistema busca facilitar a descoberta de oportunidades de capacitação, considerando características dos cursos e padrões de interação presentes no histórico de matrículas.
+O sistema foi levado à comunidade em um aplicativo web. Nele, a pessoa responde a um questionário
+de perfil e recebe cinco cursos da EV.G.
 
-## Base de dados
+## Principais resultados
 
-Foram utilizadas duas fontes de dados disponibilizadas pela Escola Virtual de Governo (EV.G):
+**Avaliação offline.** A divisão foi temporal: treino até 2024, validação em 2025 e teste de
+01/01 a 02/09/2026. O teste avaliou 617.448 usuários com histórico prévio:
 
-- **Catálogo de cursos:** informações e características dos cursos ofertados.
-- **Histórico de matrículas:** registros de interações dos usuários com os cursos, incluindo informações sobre a situação das matrículas.
+| Modelo | Recall@10 | Hit Rate@10 | NDCG@10 | Ganho de NDCG@10 sobre o baseline |
+|---|---|---|---|---|
+| Popularidade (baseline) | 0,0830 | 0,1481 | 0,0515 | — |
+| Content-Based | 0,0957 | 0,1649 | 0,0655 | +27,3% |
+| Filtragem colaborativa | 0,1139 | 0,1893 | 0,0761 | +47,9% |
+| **Híbrido (α = 0,55)** | **0,1151** | **0,1914** | **0,0780** | **+51,6%** |
 
-As bases passaram por procedimentos de preparação, padronização e integração para permitir a análise exploratória e o desenvolvimento dos modelos de recomendação.
+A diferença entre o híbrido e o colaborativo é pequena e não passou por teste de significância
+estatística (ver seção 4.2.1 do relatório).
 
-## Abordagem metodológica
+**Aplicação na comunidade (13 a 17/11/2026).** Foram 47 participações, 235 recomendações e
+26 avaliações gerais. Na escala de 1 a 5, a utilidade da lista teve média de **3,77** (61,5% deram
+nota 4 ou 5) e a compatibilidade com os interesses, média de **3,58**. Das 88 avaliações individuais
+de cursos, **71,6%** foram "Me interessou". A amostra é voluntária e não probabilística.
 
-O desenvolvimento técnico contempla três abordagens:
+## Estrutura do repositório
 
-1. **Recomendação baseada em conteúdo (Content-Based):** utiliza características dos cursos para identificar similaridades e gerar recomendações.
+```
+├── codigo/                  notebooks da pesquisa e código do aplicativo
+│   ├── 01_preparacao_de_dados.ipynb      integração catálogo × matrículas (ID canônico)
+│   ├── 02_analise_exploratoria.ipynb     análise exploratória
+│   ├── 03_modelo_recomendacao.ipynb      modelos, divisão temporal, α e avaliação offline
+│   ├── preparar_arquivos_do_modelo.py    gera as matrizes usadas pelo app
+│   ├── motor_recomendador.py             regras de recomendação do app (questionário → 5 cursos)
+│   ├── streamlit_app.py                  interface web
+│   ├── estilo.css                        identidade visual do app
+│   ├── registro_sheets.py                registro anônimo das participações (Google Sheets)
+│   └── teste_motor.py                    teste rápido do motor com perfis aleatórios
+├── arquivos_do_modelo/      matrizes pré-calculadas e opções do questionário (lidas pelo app)
+├── dados/                   descrição das fontes e bases processadas (Parquet via Git LFS)
+├── documentacao/            documentos das Etapas 1 a 4, especificações e cronograma
+├── apresentacoes/           slides de acompanhamento
+├── .streamlit/config.toml   tema do aplicativo
+├── requirements.txt         dependências do aplicativo (usadas pelo Streamlit Cloud)
+└── requirements-notebooks.txt  dependências para reproduzir os notebooks
+```
 
-2. **Filtragem colaborativa (Collaborative Filtering):** explora padrões de interação dos usuários com os cursos para identificar relações e preferências.
+Cada pasta tem um README com mais detalhes.
 
-3. **Sistema híbrido:** combina as duas abordagens para produzir recomendações personalizadas.
+## Como reproduzir
 
-A avaliação utiliza uma divisão temporal dos dados em conjuntos de treinamento, validação e teste, buscando simular recomendações para interações futuras.
+**Pré-requisitos:** Python 3.11 ou superior e [Git LFS](https://git-lfs.com). O Git LFS é
+necessário para baixar os arquivos Parquet.
 
-Entre as métricas utilizadas estão:
+```bash
+git lfs install
+git clone https://github.com/Allana691/Projeto-aplicado-III.git
+cd Projeto-aplicado-III
+```
 
-- **Recall@10:** proporção de itens relevantes recuperados entre as recomendações.
-- **Hit Rate@10:** proporção de usuários para os quais pelo menos um item relevante aparece entre as recomendações.
-- **NDCG@10:** avalia a qualidade da ordenação das recomendações, considerando a posição dos itens relevantes.
+**Executar o aplicativo localmente**
 
-Também está prevista a comparação com um modelo de referência baseado na popularidade dos cursos (*baseline de popularidade*).
+```bash
+pip install -r requirements.txt
+streamlit run codigo/streamlit_app.py
+```
 
-## Objetivo extensionista
+As recomendações funcionam sem configuração extra. O registro na planilha só funciona com as
+credenciais do Google nos *Secrets* do Streamlit; veja [`codigo/README.md`](codigo/README.md).
+Sem elas, o app avisa que não conseguiu salvar e continua funcionando.
 
-O projeto prevê a aplicação do sistema junto à comunidade, permitindo que participantes recebam recomendações de cursos gratuitos de acordo com seus interesses, conhecimentos prévios e objetivos profissionais.
+**Reproduzir a pesquisa**
 
-Para essa etapa, está sendo planejada uma aplicação web com:
+```bash
+pip install -r requirements-notebooks.txt
+```
 
-- Questionário para identificação do perfil e dos interesses dos participantes;
-- Geração de recomendações personalizadas de cursos;
-- Apresentação de informações e links para os cursos recomendados;
-- Coleta de avaliações sobre a relevância e a utilidade das recomendações.
+1. `01_preparacao_de_dados.ipynb`: só é necessário para refazer a integração e exige as bases
+   originais de cerca de 9 GB (veja [`dados/README.md`](dados/README.md)). Os arquivos que ele gera já
+   estão em `dados/processados/`.
+2. `02_analise_exploratoria.ipynb` e `03_modelo_recomendacao.ipynb`: rodam a partir de
+   `dados/processados/`.
+3. `python codigo/preparar_arquivos_do_modelo.py`: recalcula as matrizes do app em
+   `arquivos_do_modelo/`.
 
-A proposta está relacionada aos Objetivos de Desenvolvimento Sustentável (ODS) da Organização das Nações Unidas (ONU):
+## Dados e privacidade
 
-- **ODS 4 – Educação de Qualidade**
-- **ODS 8 – Trabalho Decente e Crescimento Econômico**
+Os dados vêm de fontes públicas da EV.G: o catálogo de cursos e o portal *EV.G em Números*. Em
+linha com a LGPD (Lei nº 13.709/2018), o projeto **não usa atributos pessoais** da base de
+matrículas, como sexo e idade, e as matrizes publicadas descrevem apenas relações entre cursos.
+O aplicativo não pede nome, e-mail, login ou CPF e não consulta o histórico do participante na EV.G.
+As respostas são registradas de forma anônima, ligadas a um identificador aleatório, numa planilha
+privada do projeto.
 
-A aplicação busca contribuir para a democratização do acesso à capacitação gratuita e para o desenvolvimento de competências profissionais.
-
-## Organização do repositório
-
-O repositório reúne os arquivos acadêmicos e técnicos produzidos durante o desenvolvimento do projeto.
-
-- **`documentacao/`** – Documentos das etapas acadêmicas, cronograma e registros do projeto.
-- **`codigo/`** – Notebooks e códigos utilizados na preparação dos dados, análise exploratória e desenvolvimento dos modelos.
-- **`dados/`** – Arquivos e informações relacionados às bases utilizadas.
-- **`apresentacoes/`** – Materiais utilizados nas apresentações de acompanhamento.
-
-Os diretórios poderão ser atualizados conforme o avanço das etapas.
-
-## Integrantes
+## Equipe
 
 - Allana Rayssa Vieira de Oliveira
 - Erika Cristina Alves Benesi Gomes
 - Nicole Fernandes Moreira
 - Tawany Nascimento Santos
 
-## Status do projeto
-
-**Projeto em desenvolvimento – 2º semestre de 2026.**
-
-### Etapas acadêmicas
-
-- **Etapa 1 – Concepção do projeto:** concluída.
-- **Etapa 2 – Fundamentação teórica:** concluída e avaliada com nota máxima, sem necessidade de correções.
-- **Etapa 3 – Metodologia:** em desenvolvimento.
-- **Etapa 4 – Aplicação extensionista e finalização:** planejada.
-
-### Desenvolvimento técnico
-
-- [x] Identificação e integração das bases da EV.G.
-- [x] Preparação e análise exploratória dos dados.
-- [x] Implementação da recomendação baseada em conteúdo.
-- [x] Implementação da filtragem colaborativa.
-- [x] Implementação do sistema híbrido.
-- [x] Divisão temporal em treinamento, validação e teste.
-- [x] Avaliação inicial com Recall@10, Hit Rate@10 e NDCG@10.
-- [x] Comparação com baseline de popularidade.
-- [x] Consolidação da metodologia acadêmica.
-- [x] Desenvolvimento da aplicação web extensionista.
-- [ ] Aplicação junto à comunidade e análise do feedback.
-- [ ] Finalização e entrega do projeto.
+O aplicativo é um protótipo acadêmico independente, sem vínculo oficial com a EV.G ou a Enap.

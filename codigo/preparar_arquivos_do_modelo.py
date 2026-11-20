@@ -1,18 +1,19 @@
 """
-PREPARAR OS ARQUIVOS DO MODELO (rodar UMA vez, no seu computador)
+Gera as matrizes pré-calculadas que o aplicativo usa (pasta arquivos_do_modelo/).
 
-O que este código faz:
-  1. Lê a base GRANDE (as matrículas) e o catálogo de cursos.
-  2. Faz os cálculos pesados do seu modelo (os mesmos do notebook 03).
-  3. Salva só o resultado em arquivos PEQUENOS, dentro da pasta "arquivos_do_modelo".
+O que este script faz:
+  1. Lê os arquivos processados pelo notebook 01 (dados/processados/).
+  2. Refaz os cálculos do notebook 03 com TODO o histórico disponível:
+     TF-IDF + cosseno (conteúdo) e cosseno item-item (matrículas).
+  3. Salva só os resultados, em arquivos pequenos, na pasta arquivos_do_modelo/.
 
-Depois disso, o aplicativo (Streamlit) usa apenas a pasta "arquivos_do_modelo".
-Ele nunca mais precisa abrir a base grande.
+O aplicativo nunca abre a base de matrículas: ele usa apenas esses arquivos.
+Rode de novo só se a base de matrículas ou o catálogo mudarem.
 
-Quando rodar de novo? Só se a base de matrículas ou o catálogo mudarem.
+Bibliotecas: duckdb, scipy e scikit-learn (requirements-notebooks.txt).
 
-Bibliotecas necessárias (além das do aplicativo): duckdb, scipy e scikit-learn.
-Os arquivos Parquet precisam ter sido baixados com o Git LFS.
+Como executar (de qualquer pasta, com o Git LFS instalado):
+    python codigo/preparar_arquivos_do_modelo.py
 
 Arquivos criados:
   ids_dos_cursos.npy             -> o ID de cada curso, na ordem das tabelas
@@ -34,23 +35,21 @@ from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
 
 # ---------------------------------------------------------------
-# 1. CONFIGURAÇÕES (se algo estiver em outra pasta, ajuste aqui)
+# 1. CONFIGURAÇÕES (caminhos relativos à raiz do repositório)
 # ---------------------------------------------------------------
-# Caminhos calculados a partir deste arquivo: o script funciona tanto
-# executado da raiz do repositório quanto da pasta "codigo".
 RAIZ = Path(__file__).resolve().parent.parent
 PASTA_DADOS = RAIZ / "dados" / "processados"
 ARQUIVO_MATRICULAS = PASTA_DADOS / "interacoes_cursos_atuais.parquet"
 ARQUIVO_CATALOGO = PASTA_DADOS / "catalogo_canonico.parquet"
 
-# Mesma pasta lida pelo aplicativo (streamlit_app.py).
 PASTA_SAIDA = RAIZ / "arquivos_do_modelo"
 
 # Só entram matrículas ANTES desta data.
 # A base vai até 2 de setembro de 2026, então esta data usa tudo o que existe.
 DATA_CORTE = "2026-09-03"
 
-# Quanto o conteúdo pesa na nota híbrida (o α que você escolheu na validação).
+# α escolhido na validação de 2025 (notebook 03, seção 6.4). O app usa o
+# mesmo valor em motor_recomendador.PESO_CONTEUDO; aqui ele só é registrado.
 PESO_CONTEUDO = 0.55
 
 

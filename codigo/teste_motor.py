@@ -18,9 +18,8 @@ import pandas as pd
 
 from motor_recomendador import (
     carregar_opcoes,
-    corrigir_opcoes_p01,
     montar_perfil,
-    recomendar_experimental,
+    recomendar_cursos,
     validar_perfil,
 )
 
@@ -29,7 +28,7 @@ SEM_P02 = {"primeiro", "estudo", "outra"}  # mesma regra da interface
 
 
 def carregar():
-    opcoes = corrigir_opcoes_p01(carregar_opcoes(MODELO / "opcoes_questionario.json"))
+    opcoes = carregar_opcoes(MODELO / "opcoes_questionario.json")
     matriz = pd.read_csv(MODELO / "matriz_cursos_resumida.csv").fillna("")
     arrays = [
         np.load(MODELO / nome, allow_pickle=False)
@@ -76,11 +75,9 @@ def main(quantidade=300):
     for _ in range(quantidade):
         respostas = perfil_aleatorio(opcoes, sorteio)
         try:
-            perfil, objetivo, explorar = montar_perfil(respostas, opcoes)
+            perfil, objetivo = montar_perfil(respostas, opcoes)
             validar_perfil(perfil, opcoes)
-            resultado = recomendar_experimental(
-                perfil, objetivo, matriz, *arrays, explorar_novos_temas=explorar
-            )
+            resultado = recomendar_cursos(perfil, objetivo, matriz, *arrays)
         except Exception as erro:  # registrar e seguir para o próximo perfil
             problemas.append((respostas, repr(erro)))
             continue

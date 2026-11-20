@@ -1,33 +1,45 @@
-"""Interface de entrega do recomendador de cursos da EV.G.
+"""Aplicativo da etapa extensionista: "Encontre cursos na EV.G".
 
-Execute na raiz do projeto:
-    python -m streamlit run codigo/streamlit_app.py
+O participante responde a um questionário (P01 a P06), recebe cinco cursos
+da EV.G e pode avaliar a lista. As recomendações vêm de motor_recomendador.py;
+os registros anônimos vão para o Google Sheets (registro_sheets.py).
 
-O aplicativo usa o motor híbrido já validado e não altera suas matrizes.
+Execute na raiz do repositório:
+    streamlit run codigo/streamlit_app.py
+
+Organização deste arquivo:
+    1. Configuração da página, estilo e carregamento do modelo
+    2. Textos e opções do questionário
+    3. Estado da sessão e navegação entre as perguntas
+    4. Tela de resultados e avaliação
+    5. main()
 """
-from pathlib import Path
-import unicodedata
 from datetime import datetime, timezone
+from pathlib import Path
 from uuid import uuid4
 
 import numpy as np
 import pandas as pd
 import streamlit as st
 
-from registro_sheets import registrar_participacao, registrar_avaliacao, registrar_interesse
-
 from motor_recomendador import (
     carregar_opcoes,
-    corrigir_opcoes_p01,
+    eh_verdadeiro,
     montar_perfil,
-    recomendar_experimental,
-    validar_perfil,
+    normalizar_texto,
+    recomendar_cursos,
     separar_lista,
+    validar_perfil,
 )
+from registro_sheets import registrar_avaliacao, registrar_interesse, registrar_participacao
 
 
-RAIZ = Path(__file__).resolve().parent.parent
-MODELO = RAIZ / "arquivos_do_modelo"
+# ====================================================================
+# 1. Configuração da página, estilo e carregamento do modelo
+# ====================================================================
+
+PASTA_CODIGO = Path(__file__).resolve().parent
+MODELO = PASTA_CODIGO.parent / "arquivos_do_modelo"
 
 st.set_page_config(
     page_title="Encontre cursos na EV.G",
@@ -36,774 +48,12 @@ st.set_page_config(
     initial_sidebar_state="collapsed",
 )
 
-st.markdown(
-    """
-<style>
-    @import url('https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap');
+# Identidade visual (fonte, cores, cards, tema escuro) fica em estilo.css.
+st.markdown("\n<style>" + (PASTA_CODIGO / "estilo.css").read_text(encoding="utf-8") + "</style>\n",
+            unsafe_allow_html=True)
 
-    /* Tipografia geral: mesma família em textos e widgets do Streamlit,
-       sem substituir a fonte usada por ícones e componentes internos. */
-    body, .stApp,
-    .stApp button, .stApp input, .stApp textarea,
-    .stApp select, .stApp label,
-    .stApp [data-testid="stMarkdownContainer"],
-    .stApp [data-testid="stCaptionContainer"],
-    .stApp [data-testid="stWidgetLabel"],
-    .stApp [data-testid="stRadio"] {
-        font-family: 'Manrope', 'Segoe UI', sans-serif !important;
-    }
-    .stApp {font-weight: 400; line-height: 1.55;}
-    .stApp h1, .stApp h2, .stApp h3,
-    .stApp [data-testid="stMarkdownContainer"] h1,
-    .stApp [data-testid="stMarkdownContainer"] h2,
-    .stApp [data-testid="stMarkdownContainer"] h3 {
-        font-family: 'Manrope', 'Segoe UI', sans-serif !important;
-        font-weight: 700;
-        letter-spacing: -0.025em;
-        line-height: 1.25;
-    }
-    .stApp button, .stApp .stLinkButton > a {
-        font-family: 'Manrope', 'Segoe UI', sans-serif !important;
-        font-weight: 600;
-    }
-    .stApp [data-testid="stWidgetLabel"] label,
-    .stApp [data-testid="stRadio"] label {
-        font-weight: 500;
-    }
-    .stApp [data-testid="stMarkdownContainer"] strong {
-        font-weight: 700;
-    }
-
-    /* Titulos da pagina: cor roxa no claro, lilas no escuro. */
-    .stApp h1, .stApp h2,
-    .stApp [data-testid="stMarkdownContainer"] h1,
-    .stApp [data-testid="stMarkdownContainer"] h2 {
-        color: #74258F;
-    }
-    html.evg-tema-escuro .stApp h1,
-    html.evg-tema-escuro .stApp h2,
-    html.evg-tema-escuro .stApp [data-testid="stMarkdownContainer"] h1,
-    html.evg-tema-escuro .stApp [data-testid="stMarkdownContainer"] h2 {
-        color: #DDB5EE;
-    }
-    /* Aparência padrão dos links da aplicação. */
-    .stApp .stLinkButton > a {
-        color: var(--st-link-color, var(--link-color, #74258F));
-        border-color: var(--st-border-color,
-            var(--border-color, #E7D8EF));
-        background: var(--st-secondary-background-color,
-            var(--secondary-background-color, transparent));
-    }
-    .stApp .stLinkButton > a:hover {
-        border-color: var(--st-primary-color, var(--primary-color, #74258F));
-        background: color-mix(in srgb,
-            var(--st-primary-color, var(--primary-color, #74258F)) 7%,
-            var(--st-secondary-background-color,
-                var(--secondary-background-color, transparent)));
-    }
-    /* Texto dos links "Abrir curso na EV.G" em negrito nos dois temas. */
-    .stApp :is(.st-key-evg_curso_card_1, .st-key-evg_curso_card_2,
-               .st-key-evg_curso_card_3, .st-key-evg_curso_card_4,
-               .st-key-evg_curso_card_5) .stLinkButton > a,
-    .stApp :is(.st-key-evg_curso_card_1, .st-key-evg_curso_card_2,
-               .st-key-evg_curso_card_3, .st-key-evg_curso_card_4,
-               .st-key-evg_curso_card_5) .stLinkButton > a p {
-        font-weight: 700 !important;
-    }
-    /* No tema escuro, garantir texto branco nos links dos cinco cursos,
-       inclusive no conteúdo interno e no hover/foco. */
-    html.evg-tema-escuro .stApp
-    :is(.st-key-evg_curso_card_1, .st-key-evg_curso_card_2,
-        .st-key-evg_curso_card_3, .st-key-evg_curso_card_4,
-        .st-key-evg_curso_card_5) .stLinkButton > a,
-    html.evg-tema-escuro .stApp
-    :is(.st-key-evg_curso_card_1, .st-key-evg_curso_card_2,
-        .st-key-evg_curso_card_3, .st-key-evg_curso_card_4,
-        .st-key-evg_curso_card_5) .stLinkButton > a * {
-        color: #FFFFFF !important;
-    }
-    /* Links dos cinco cursos no tema claro: contorno e fundo suave em
-       repouso; roxo intenso ao passar o mouse ou usar o teclado. */
-    html:not(.evg-tema-escuro) .stApp
-    :is(.st-key-evg_curso_card_1, .st-key-evg_curso_card_2,
-        .st-key-evg_curso_card_3, .st-key-evg_curso_card_4,
-        .st-key-evg_curso_card_5) .stLinkButton > a {
-        color: #74258F;
-        border-color: #74258F;
-        background: color-mix(in srgb, #74258F 7%, #FFFFFF);
-        transition: background-color 160ms ease, color 160ms ease;
-    }
-    html:not(.evg-tema-escuro) .stApp
-    :is(.st-key-evg_curso_card_1, .st-key-evg_curso_card_2,
-        .st-key-evg_curso_card_3, .st-key-evg_curso_card_4,
-        .st-key-evg_curso_card_5) .stLinkButton > a:is(:hover, :focus-visible) {
-        color: #FFFFFF;
-        border-color: #74258F;
-        background: #74258F;
-    }
-    @media (prefers-reduced-motion: reduce) {
-        html:not(.evg-tema-escuro) .stApp
-        :is(.st-key-evg_curso_card_1, .st-key-evg_curso_card_2,
-            .st-key-evg_curso_card_3, .st-key-evg_curso_card_4,
-            .st-key-evg_curso_card_5) .stLinkButton > a {
-            transition: none;
-        }
-    }
-
-    /* Largura da página: uma coluna centralizada, confortável de ler */
-    /* O espaço no topo (5rem) evita que a primeira linha fique escondida
-       atrás da barra fixa do Streamlit, onde aparece o botão Deploy */
-    .block-container {max-width: 760px; padding-top: 5rem; padding-bottom: 4rem;}
-
-    /* Cabecalhos do questionario e dos resultados. */
-    .evg-titulo {
-        color: #74258F;
-        font-size: clamp(1.6rem, 4vw, 2.1rem);
-        font-weight: 700; letter-spacing: -.025em;
-        line-height: 1.25; margin: .4rem 0 1rem 0;
-    }
-    .evg-subtitulo {
-        color: #74258F;
-        font-size: 1.25rem; font-weight: 700;
-        letter-spacing: -.015em; margin: 1.2rem 0 .6rem 0;
-    }
-    html.evg-tema-escuro .stApp .evg-titulo,
-    html.evg-tema-escuro .stApp .evg-subtitulo {
-        color: #DDB5EE;
-    }
-
-    /* Etapa 1: atalho visível para a avaliação, sem modificar os cursos. */
-    .evg-cabecalho-resultado {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        flex-wrap: wrap;
-        gap: 1rem;
-        margin: .4rem 0 1rem;
-    }
-    .evg-cabecalho-resultado .evg-titulo {margin: 0;}
-    .evg-atalho-avaliacao {
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        gap: .55rem;
-        min-height: 2.75rem;
-        padding: .65rem 1rem;
-        background: #74258F;
-        border: 1px solid #74258F;
-        border-radius: 10px;
-        color: #FFFFFF !important;
-        font-family: 'Manrope', 'Segoe UI', sans-serif;
-        font-size: .9rem;
-        font-weight: 700;
-        line-height: 1.3;
-        text-decoration: none !important;
-        white-space: nowrap;
-        transition: background 160ms ease, border-color 160ms ease;
-    }
-    .evg-atalho-avaliacao:hover,
-    .evg-atalho-avaliacao:focus-visible {
-        background: var(--evg-hover, #5F1E74);
-        border-color: var(--evg-hover, #5F1E74);
-        color: #FFFFFF !important;
-        text-decoration: none !important;
-    }
-    .evg-atalho-avaliacao:focus-visible {
-        outline: 3px solid #C7A6D8;
-        outline-offset: 3px;
-    }
-    #evg-avaliacao-geral {scroll-margin-top: 5rem;}
-    @media (max-width: 640px) {
-        .evg-cabecalho-resultado {align-items: stretch;}
-        .evg-atalho-avaliacao {width: 100%;}
-    }
-    @media (prefers-reduced-motion: reduce) {
-        .evg-atalho-avaliacao {transition: none;}
-    }
-
-    /* Orientação: lilás translúcido sobre o fundo REAL da tela. Não misturar
-       com variáveis de tema que podem permanecer no modo claro após a troca
-       para escuro pelo menu do Streamlit. A letra acompanha a cor corrente. */
-    .evg-orientacao {
-        background: rgba(116, 37, 143, 0.11);
-        color: inherit;
-        border: 1px solid rgba(116, 37, 143, 0.30);
-        border-radius: 10px;
-        padding: .85rem 1.1rem; margin-bottom: 1.2rem; line-height: 1.55;
-    }
-    .evg-orientacao strong {color: inherit; font-weight: 700;}
-
-    /* Os elementos nativos usam primaryColor do tema; mantemos hover definido. */
-    .stButton > button[kind="primary"],
-    .stButton > button[data-testid="stBaseButton-primary"],
-    .stDownloadButton > button[kind="primary"],
-    .stDownloadButton > button[data-testid="stBaseButton-primary"] {
-        background: var(--st-primary-color, var(--primary-color, #74258F));
-        border-color: var(--st-primary-color, var(--primary-color, #74258F));
-        color: #FFFFFF;
-        font-weight: 600;
-    }
-    .stButton > button[kind="primary"]:hover,
-    .stButton > button[data-testid="stBaseButton-primary"]:hover,
-    .stDownloadButton > button[kind="primary"]:hover,
-    .stDownloadButton > button[data-testid="stBaseButton-primary"]:hover {
-        background: var(--evg-hover, #5F1E74);
-        border-color: var(--evg-hover, #5F1E74);
-        color: #FFFFFF;
-    }
-    .stButton > button, .stDownloadButton > button, .stLinkButton > a {
-        border-radius: 10px; min-height: 2.75rem;
-    }
-
-    /* Bordas e superfícies acompanhando o tema ativo. */
-    [data-testid="stExpander"] {
-        background: var(--st-secondary-background-color,
-            var(--secondary-background-color, transparent));
-        border: 1px solid var(--st-border-color,
-            var(--border-color, color-mix(in srgb, currentColor 20%, transparent)));
-        border-radius: 10px;
-    }
-    [data-testid="stAlert"] {border-radius: 10px;}
-
-    /* Avisos informativos independentes do st.info: este componente nativo
-       impõe sua paleta azul mesmo com as cores roxas do tema. */
-    .evg-aviso-academico, .evg-aviso-secundario {
-        display: flex;
-        align-items: flex-start;
-        gap: 0.85rem;
-        padding: 1rem 1.15rem;
-        border: 1px solid var(--st-border-color,
-            var(--border-color, #E7D8EF));
-        border-radius: 12px;
-        background: var(--st-secondary-background-color,
-            var(--secondary-background-color, #FFFFFF));
-        color: var(--st-text-color, var(--text-color, #2F2336));
-        line-height: 1.6;
-    }
-    /* Fundo exclusivo do aviso academico. A sincronizacao com o tema ativo
-       do Streamlit e feita pelo script do proprio aviso, nao pelo tema do SO. */
-    .evg-aviso-academico {
-        background: #EEE2F2;
-        box-shadow: 0 6px 18px rgba(0, 0, 0, 0.10),
-                    0 1px 4px rgba(0, 0, 0, 0.05);
-    }
-    .evg-aviso-academico .evg-aviso-icone {
-        color: var(--evg-aviso-icon, #74258F);
-        border-color: var(--evg-aviso-icon, #74258F);
-    }
-    .evg-aviso-secundario {
-        margin-top: 0.6rem;
-        background: color-mix(in srgb,
-            var(--st-primary-color, var(--primary-color, #74258F)) 8%,
-            var(--st-secondary-background-color,
-                var(--secondary-background-color, #FFFFFF)));
-    }
-    .evg-aviso-icone {
-        flex: 0 0 23px;
-        width: 23px;
-        height: 23px;
-        display: inline-flex;
-        justify-content: center;
-        align-items: center;
-        margin-top: 0.1rem;
-        border: 1.7px solid var(--st-link-color,
-            var(--link-color, #74258F));
-        border-radius: 50%;
-        color: var(--st-link-color, var(--link-color, #74258F));
-        background: color-mix(in srgb,
-            var(--st-primary-color, var(--primary-color, #74258F)) 9%, transparent);
-        font-family: 'Manrope', 'Segoe UI', sans-serif;
-        font-size: 0.85rem;
-        font-weight: 800;
-        font-style: normal;
-        line-height: 1;
-    }
-    .evg-aviso-conteudo {flex: 1; min-width: 0; font-size: 0.96rem;}
-    .evg-aviso-conteudo p {margin: 0;}
-    .evg-aviso-conteudo strong {font-weight: 700;}
-    @media (max-width: 400px) {
-        .evg-aviso-academico, .evg-aviso-secundario {padding: 0.8rem; gap: 0.65rem;}
-        .evg-aviso-conteudo {font-size: 0.9rem;}
-    }
-    div[data-testid="stRadio"] label, div[data-testid="stCheckbox"] label {
-        line-height: 1.5;
-    }
-    /* P01/P06: o botão é um bloco, não grid nem flex. O texto nativo
-       ocupa toda a largura disponível e o ícone fica posicionado à esquerda.
-       Isso evita colunas implícitas do Streamlit que espremem o título. */
-    :is([class*="st-key-evg_card_p01_"], [class*="st-key-evg_card_p06_"])
-    button {
-        display: block !important;
-        position: relative;
-        width: 100%;
-        min-height: 100px;
-        height: auto;
-        padding: 1rem 1.1rem 1rem 4.9rem !important;
-        box-sizing: border-box;
-        border: 1.5px solid #E7D8EF;
-        border-radius: 16px;
-        background: #FFFFFF;
-        color: #2F2336;
-        text-align: left !important;
-        white-space: normal;
-        box-shadow: 0 2px 9px rgba(48, 34, 53, 0.06);
-        transition: transform 150ms ease, border-color 150ms ease,
-                    box-shadow 150ms ease, background-color 150ms ease;
-    }
-    :is([class*="st-key-evg_card_p01_"], [class*="st-key-evg_card_p06_"])
-    button > :not([data-testid="stIconMaterial"]) {
-        display: block;
-        width: 100%;
-        max-width: 100%;
-        text-align: left !important;
-        margin: 0;
-    }
-    :is([class*="st-key-evg_card_p01_"], [class*="st-key-evg_card_p06_"])
-    button [data-testid="stMarkdownContainer"] {
-        display: block;
-        width: 100%;
-        min-width: 0;
-        text-align: left !important;
-        margin: 0;
-    }
-    :is([class*="st-key-evg_card_p01_"], [class*="st-key-evg_card_p06_"])
-    button [data-testid="stMarkdownContainer"] p {
-        font-size: 1.02rem;
-        font-weight: 700;
-        line-height: 1.4;
-        color: #2F2336;
-        text-align: left !important;
-        white-space: normal;
-        margin: 0;
-    }
-    :is([class*="st-key-evg_card_p01_"], [class*="st-key-evg_card_p06_"])
-    button [data-testid="stIconMaterial"] {
-        position: absolute;
-        left: 1.1rem;
-        top: 50%;
-        transform: translateY(-50%);
-        width: 2.8rem;
-        height: 2.8rem;
-        background: #F1E8F6;
-        color: #74258F;
-        border-radius: 12px;
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 1.45rem;
-        flex-shrink: 0;
-    }
-    /* Descrição no mesmo parágrafo do título: início horizontal idêntico. */
-    :is([class*="st-key-evg_card_p01_"], [class*="st-key-evg_card_p06_"])
-    button [data-testid="stMarkdownContainer"] p::after {
-        content: var(--evg-card-descricao, "");
-        display: block;
-        margin-top: 0.25rem;
-        text-align: left;
-        color: #5E4C68;
-        font-family: 'Manrope', 'Segoe UI', sans-serif;
-        font-size: 0.9rem;
-        font-weight: 400;
-        line-height: 1.5;
-        white-space: normal;
-        overflow-wrap: anywhere;
-    }
-    :is([class*="st-key-evg_card_p01_"], [class*="st-key-evg_card_p06_"])
-    button:focus-visible {
-        outline: 3px solid #C7A6D8;
-        outline-offset: 2px;
-    }
-    @media (hover: hover) and (pointer: fine) {
-        :is([class*="st-key-evg_card_p01_"], [class*="st-key-evg_card_p06_"])
-        button:hover {
-            transform: translateY(-2px);
-            border-color: #C7A6D8;
-            box-shadow: 0 8px 18px rgba(48, 34, 53, 0.10);
-        }
-    }
-    html.evg-tema-escuro .stApp
-    :is([class*="st-key-evg_card_p01_"], [class*="st-key-evg_card_p06_"])
-    button {
-        background: #2B2233;
-        border-color: #584365;
-        color: #F4ECF7;
-        box-shadow: 0 2px 9px rgba(0, 0, 0, 0.16);
-    }
-    html.evg-tema-escuro .stApp
-    :is([class*="st-key-evg_card_p01_"], [class*="st-key-evg_card_p06_"])
-    button [data-testid="stMarkdownContainer"] p {
-        color: #F4ECF7;
-    }
-    html.evg-tema-escuro .stApp
-    :is([class*="st-key-evg_card_p01_"], [class*="st-key-evg_card_p06_"])
-    button [data-testid="stIconMaterial"] {
-        background: #3A2944;
-        color: #DDB5EE;
-    }
-    html.evg-tema-escuro .stApp
-    :is([class*="st-key-evg_card_p01_"], [class*="st-key-evg_card_p06_"])
-    button [data-testid="stMarkdownContainer"] p::after {
-        color: #D7C6DE;
-    }
-    @media (hover: hover) and (pointer: fine) {
-        html.evg-tema-escuro .stApp
-        :is([class*="st-key-evg_card_p01_"], [class*="st-key-evg_card_p06_"])
-        button:hover {
-            border-color: #DDB5EE;
-            box-shadow: 0 8px 18px rgba(0, 0, 0, 0.28);
-        }
-    }
-    @media (max-width: 560px) {
-        :is([class*="st-key-evg_card_p01_"], [class*="st-key-evg_card_p06_"])
-        button {
-            min-height: 94px;
-            padding: 0.9rem 0.9rem 0.9rem 4.25rem !important;
-        }
-        :is([class*="st-key-evg_card_p01_"], [class*="st-key-evg_card_p06_"])
-        button [data-testid="stIconMaterial"] {
-            left: 0.9rem;
-            width: 2.5rem;
-            height: 2.5rem;
-        }
-    }
-    @media (prefers-reduced-motion: reduce) {
-        :is([class*="st-key-evg_card_p01_"], [class*="st-key-evg_card_p06_"])
-        button {transition: none; transform: none !important;}
-    }
-    /* Hover usa a variante mais profunda; o tema escuro ajusta o tom. */
-    :root {--evg-hover: #5F1E74;}
-    @media (prefers-color-scheme: dark) {
-        :root {--evg-hover: #6D2584;}
-    }
-    .evg-lead {opacity: .9; font-size: 1.08rem; font-weight: 500; line-height: 1.65;}
-
-    /* Cards de apresentação: ilustrações em ameixa/lilás (SVG como CSS)
-       para evitar o filtro de SVG inline do Streamlit. */
-    .evg-como-grid {
-        display: grid;
-        grid-template-columns: repeat(3, minmax(0, 1fr));
-        align-items: stretch;
-        gap: 1rem;
-        margin: 0.75rem 0 1.45rem;
-    }
-    .evg-como-card {
-        min-width: 0;
-        min-height: 205px;
-        border: 1px solid var(--st-border-color,
-            var(--border-color, color-mix(in srgb, currentColor 15%, transparent)));
-        border-radius: 14px;
-        background: var(--st-secondary-background-color,
-            var(--secondary-background-color, color-mix(in srgb, currentColor 2%, transparent)));
-        padding: 1.1rem;
-        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.11);
-        transition: transform 180ms ease, box-shadow 180ms ease;
-    }
-    .evg-como-topo {
-        display: flex;
-        align-items: center;
-        gap: 0.85rem;
-        min-height: 60px;
-        margin-bottom: 0.6rem;
-    }
-    .evg-como-icone {
-        flex: 0 0 56px;
-        width: 56px;
-        height: 56px;
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        border-radius: 11px;
-        background: linear-gradient(140deg, #E9D8F0, #F1E8F6);
-    }
-    .evg-como-icone::before {
-        content: "";
-        display: block;
-        width: 47px;
-        height: 47px;
-        background-size: contain;
-        background-repeat: no-repeat;
-        background-position: center;
-    }
-    .evg-icone-responde::before {
-        background-image: url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2064%2064%22%20fill%3D%22none%22%20stroke%3D%22%2374258F%22%20stroke-width%3D%222.8%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Crect%20x%3D%2211%22%20y%3D%227%22%20width%3D%2239%22%20height%3D%2249%22%20rx%3D%225%22%20fill%3D%22%23F1E8F6%22%2F%3E%3Cpath%20d%3D%22M20%2019h21M20%2026h18M20%2033h11M20%2041h12%22%2F%3E%3Cpath%20d%3D%22m36%2044%2016-17a4%204%200%200%201%205%205L41%2049l-9%203%204-8Z%22%20fill%3D%22%23C7A6D8%22%20stroke%3D%22%235F1E74%22%2F%3E%3Cpath%20d%3D%22m49%2030%205%205%22%2F%3E%3C%2Fsvg%3E");
-    }
-    .evg-icone-compara::before {
-        background-image: url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2064%2064%22%20fill%3D%22none%22%20stroke%3D%22%2374258F%22%20stroke-width%3D%222.6%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Crect%20x%3D%2218%22%20y%3D%2217%22%20width%3D%2228%22%20height%3D%2230%22%20rx%3D%225%22%20fill%3D%22%23F1E8F6%22%2F%3E%3Cpath%20d%3D%22M11%2010l8%208M52%2010l-7%208M10%2054l9-9M53%2054l-8-9M32%208v9M32%2047v9M8%2032h10M46%2032h10%22%2F%3E%3Ccircle%20cx%3D%229%22%20cy%3D%229%22%20r%3D%224%22%20fill%3D%22%23C7A6D8%22%2F%3E%3Ccircle%20cx%3D%2255%22%20cy%3D%229%22%20r%3D%224%22%20fill%3D%22%23C7A6D8%22%2F%3E%3Ccircle%20cx%3D%229%22%20cy%3D%2255%22%20r%3D%224%22%20fill%3D%22%23C7A6D8%22%2F%3E%3Ccircle%20cx%3D%2255%22%20cy%3D%2255%22%20r%3D%224%22%20fill%3D%22%23C7A6D8%22%2F%3E%3Ccircle%20cx%3D%2232%22%20cy%3D%226%22%20r%3D%223%22%20fill%3D%22%23C7A6D8%22%2F%3E%3Ccircle%20cx%3D%2232%22%20cy%3D%2258%22%20r%3D%223%22%20fill%3D%22%23C7A6D8%22%2F%3E%3Ccircle%20cx%3D%226%22%20cy%3D%2232%22%20r%3D%223%22%20fill%3D%22%23C7A6D8%22%2F%3E%3Ccircle%20cx%3D%2258%22%20cy%3D%2232%22%20r%3D%223%22%20fill%3D%22%23C7A6D8%22%2F%3E%3Cpath%20d%3D%22M25%2025h14M25%2031h14M25%2037h14%22%20stroke%3D%22%23A76ABF%22%2F%3E%3C%2Fsvg%3E");
-    }
-    .evg-icone-lista::before {
-        background-image: url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2064%2064%22%20fill%3D%22none%22%20stroke%3D%22%2374258F%22%20stroke-width%3D%222.8%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Crect%20x%3D%229%22%20y%3D%226%22%20width%3D%2246%22%20height%3D%2252%22%20rx%3D%225%22%20fill%3D%22%23F1E8F6%22%2F%3E%3Cpath%20d%3D%22m17%2019%204%204%207-8M33%2020h14M17%2034l4%204%207-8M33%2035h14M17%2049l4%204%207-8M33%2050h14%22%20stroke%3D%22%2374258F%22%2F%3E%3C%2Fsvg%3E");
-    }
-    .evg-como-card h3 {
-        font-family: 'Manrope', 'Segoe UI', sans-serif !important;
-        font-size: 1.04rem;
-        font-weight: 700;
-        line-height: 1.35;
-        letter-spacing: -.02em;
-        margin: 0;
-        color: inherit;
-    }
-    .evg-como-card p {
-        font-family: 'Manrope', 'Segoe UI', sans-serif;
-        font-size: 0.93rem;
-        line-height: 1.6;
-        opacity: 0.94;
-        margin: 0;
-    }
-    @media (hover: hover) and (pointer: fine) {
-        .evg-como-card:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 9px 22px rgba(0, 0, 0, 0.16),
-                0 0 0 1px color-mix(in srgb, currentColor 10%, transparent);
-        }
-    }
-    @media (max-width: 720px) {
-        .evg-como-grid {grid-template-columns: 1fr;}
-        .evg-como-card {min-height: 0;}
-    }
-    @media (prefers-reduced-motion: reduce) {
-        .evg-como-card {transition: none; transform: none !important;}
-    }
-
-    /* Legibilidade das legendas em todo o aplicativo: no tema claro e
-       no escuro, partem da cor do texto corrente em vez do cinza claro
-       usado por padrao no st.caption. Mantem hierarquia com leve opacidade. */
-    .stApp [data-testid="stCaptionContainer"] {
-        color: var(--st-text-color, var(--text-color, inherit)) !important;
-        opacity: 0.9;
-        font-size: 0.9rem !important;
-        font-weight: 400;
-        line-height: 1.55;
-    }
-    .stApp [data-testid="stCaptionContainer"] * {
-        color: inherit !important;
-    }
-
-    /* A nota antes da avaliacao precisa ser secundaria, mas nao desbotada. */
-    .evg-nota-avaliacao {
-        color: inherit;
-        opacity: 0.9;
-        font-size: 0.93rem;
-        font-weight: 500;
-        line-height: 1.6;
-        margin: 0.25rem 0 1.05rem;
-    }
-
-    /* Etapa 3: convite de avaliação no sexto espaço da grade.
-       Visual diferente dos cursos e legível nos temas claro e escuro. */
-    .evg-convite-avaliacao {
-        display: flex;
-        flex-direction: column;
-        align-items: flex-start;
-        justify-content: center;
-        gap: 0.85rem;
-        box-sizing: border-box;
-        width: 100%;
-        padding: 1.5rem;
-        border: 1px solid rgba(116, 37, 143, 0.42);
-        border-radius: 12px;
-        background: rgba(116, 37, 143, 0.09);
-        color: inherit;
-    }
-    .evg-convite-icone {
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        width: 3.3rem;
-        height: 3.3rem;
-        border-radius: 12px;
-        background: rgba(116, 37, 143, 0.15);
-        color: #74258F;
-    }
-    /* O Streamlit pode filtrar SVG inline em st.html: usamos imagens SVG
-       como fundos CSS, padrão já aplicado aos ícones da página inicial. */
-    .evg-convite-icone::before {
-        content: "";
-        display: block;
-        width: 2rem;
-        height: 2rem;
-        background: url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22%2374258F%22%20stroke-width%3D%221.8%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Crect%20x%3D%225%22%20y%3D%224%22%20width%3D%2214%22%20height%3D%2217%22%20rx%3D%222%22%2F%3E%3Crect%20x%3D%229%22%20y%3D%222%22%20width%3D%226%22%20height%3D%224%22%20rx%3D%221%22%2F%3E%3Cpath%20d%3D%22m8%2012%202%202%204-4M8%2018h8%22%2F%3E%3C%2Fsvg%3E") center / contain no-repeat;
-    }
-    html.evg-tema-escuro .evg-convite-icone::before {
-        background-image: url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22%23DDB5EE%22%20stroke-width%3D%221.8%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Crect%20x%3D%225%22%20y%3D%224%22%20width%3D%2214%22%20height%3D%2217%22%20rx%3D%222%22%2F%3E%3Crect%20x%3D%229%22%20y%3D%222%22%20width%3D%226%22%20height%3D%224%22%20rx%3D%221%22%2F%3E%3Cpath%20d%3D%22m8%2012%202%202%204-4M8%2018h8%22%2F%3E%3C%2Fsvg%3E");
-    }
-    .evg-convite-avaliacao h3 {
-        margin: 0;
-        font-size: 1.22rem;
-        font-weight: 800;
-        line-height: 1.3;
-        color: #74258F;
-    }
-    html.evg-tema-escuro .evg-convite-avaliacao h3 {color: #DDB5EE;}
-    .evg-convite-avaliacao p {
-        margin: 0;
-        font-size: 0.97rem;
-        line-height: 1.6;
-        color: inherit;
-    }
-    .evg-convite-botao {
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        gap: .45rem;
-        width: 100%;
-        min-height: 2.8rem;
-        margin-top: .45rem;
-        padding: .65rem .75rem;
-        box-sizing: border-box;
-        border: 1px solid #74258F;
-        border-radius: 10px;
-        background: #74258F;
-        color: #FFFFFF !important;
-        text-align: center;
-        text-decoration: none !important;
-        font-weight: 700;
-        font-size: 0.9rem;
-        line-height: 1.35;
-        transition: background 160ms ease, border-color 160ms ease;
-    }
-    .evg-convite-botao::before,
-    .evg-convite-botao::after {
-        content: "";
-        display: block;
-        flex: 0 0 1.05rem;
-        width: 1.05rem;
-        height: 1.05rem;
-        background-position: center;
-        background-repeat: no-repeat;
-        background-size: contain;
-    }
-    .evg-convite-botao::before {background-image: url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22%23FFFFFF%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpath%20d%3D%22m12%2019%207-7%203%203-7%207-4%201%201-4Z%22%2F%3E%3Cpath%20d%3D%22m17%2014%203%203%22%2F%3E%3C%2Fsvg%3E");}
-    .evg-convite-botao::after {background-image: url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22%23FFFFFF%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpath%20d%3D%22M5%2012h14m-6-6%206%206-6%206%22%2F%3E%3C%2Fsvg%3E");}
-    .evg-convite-botao:hover, .evg-convite-botao:focus-visible {
-        background: var(--evg-hover, #5F1E74);
-        border-color: var(--evg-hover, #5F1E74);
-        color: #FFFFFF !important;
-    }
-    .evg-convite-botao:focus-visible {
-        outline: 3px solid #C7A6D8;
-        outline-offset: 3px;
-    }
-    @media (prefers-reduced-motion: reduce) {
-        .evg-convite-botao {transition: none;}
-    }
-
-    /* Avaliação geral: caixa branca somente no tema claro, para contrastar
-       com o novo fundo lavanda. No tema escuro, preservar o estilo original. */
-    html:not(.evg-tema-escuro) .stApp .st-key-evg_avaliacao_card {
-        background-color: #FFFFFF;
-        border-color: #D8B9E3;
-    }
-
-    /* Avaliação individual: botões de interesse destacados nos cinco cursos.
-       A chave do botão indica apenas a apresentação (ativo ou neutro);
-       a resposta registrada permanece controlada pelo estado da sessão. */
-    .stApp :is([class*="st-key-evg_interesse_sim_"],
-               [class*="st-key-evg_interesse_nao_"]) button {
-        width: 100%;
-        min-height: 3rem;
-        padding: .55rem .5rem;
-        border: 1px solid #D8B9E3;
-        border-radius: 10px;
-        background: #FFF9FC;
-        color: #74258F;
-        white-space: normal;
-        font-size: .86rem;
-        font-weight: 700;
-        line-height: 1.3;
-    }
-    .stApp :is([class*="st-key-evg_interesse_sim_"],
-               [class*="st-key-evg_interesse_nao_"]) button:hover {
-        border-color: #74258F;
-        background: #F1E8F6;
-        color: #74258F;
-    }
-    .stApp :is([class*="st-key-evg_interesse_sim_"][class*="_ativo"],
-               [class*="st-key-evg_interesse_nao_"][class*="_ativo"]) button,
-    .stApp :is([class*="st-key-evg_interesse_sim_"][class*="_ativo"],
-               [class*="st-key-evg_interesse_nao_"][class*="_ativo"]) button:hover {
-        background: #74258F;
-        border-color: #74258F;
-        color: #FFFFFF;
-    }
-    html.evg-tema-escuro .stApp
-    :is([class*="st-key-evg_interesse_sim_"],
-        [class*="st-key-evg_interesse_nao_"]) button {
-        background: #2B2233;
-        border-color: #584365;
-        color: #DDB5EE;
-    }
-    html.evg-tema-escuro .stApp
-    :is([class*="st-key-evg_interesse_sim_"],
-        [class*="st-key-evg_interesse_nao_"]) button:hover {
-        background: #3A2944;
-        border-color: #DDB5EE;
-        color: #F4ECF7;
-    }
-    html.evg-tema-escuro .stApp
-    :is([class*="st-key-evg_interesse_sim_"][class*="_ativo"],
-        [class*="st-key-evg_interesse_nao_"][class*="_ativo"]) button,
-    html.evg-tema-escuro .stApp
-    :is([class*="st-key-evg_interesse_sim_"][class*="_ativo"],
-        [class*="st-key-evg_interesse_nao_"][class*="_ativo"]) button:hover {
-        background: #803199;
-        border-color: #DDB5EE;
-        color: #FFFFFF;
-    }
-
-    /* Cinco cards dos cursos: no tema claro, o mesmo fundo lavanda do
-       convite "Antes de finalizar". Manter o tom anterior no tema escuro. */
-    :is(.st-key-evg_curso_card_1, .st-key-evg_curso_card_2,
-        .st-key-evg_curso_card_3, .st-key-evg_curso_card_4,
-        .st-key-evg_curso_card_5) {
-        background: rgba(116, 37, 143, 0.09);
-        border-radius: 12px;
-        /* Altura sincronizada com o maior dos cinco cards pelo script abaixo.
-           min-height permite crescimento sem cortar conteúdo. */
-        box-sizing: border-box;
-    }
-    html.evg-tema-escuro .stApp
-    :is(.st-key-evg_curso_card_1, .st-key-evg_curso_card_2,
-        .st-key-evg_curso_card_3, .st-key-evg_curso_card_4,
-        .st-key-evg_curso_card_5) {
-        background: var(--st-secondary-background-color,
-            var(--secondary-background-color, color-mix(in srgb, currentColor 2%, transparent)));
-    }
-
-    /* Elevação discreta somente nos cinco cards dos cursos.
-       Os seletores st-key são gerados pelo key= do st.container. */
-    @media (hover: hover) and (pointer: fine) {
-        :is(.st-key-evg_curso_card_1, .st-key-evg_curso_card_2,
-            .st-key-evg_curso_card_3, .st-key-evg_curso_card_4,
-            .st-key-evg_curso_card_5) {
-            transition: transform 180ms ease, box-shadow 180ms ease;
-        }
-        :is(.st-key-evg_curso_card_1, .st-key-evg_curso_card_2,
-            .st-key-evg_curso_card_3, .st-key-evg_curso_card_4,
-            .st-key-evg_curso_card_5):hover {
-            transform: translateY(-5px);
-            /* A sombra escura dá profundidade; o contorno e brilho usam
-               a cor do texto do tema atual, ficando visíveis também no escuro. */
-            box-shadow:
-                0 10px 24px rgba(0, 0, 0, 0.22),
-                0 0 0 1px color-mix(in srgb, currentColor 24%, transparent),
-                0 0 18px color-mix(in srgb, currentColor 12%, transparent);
-        }
-    }
-    @media (prefers-reduced-motion: reduce) {
-        :is(.st-key-evg_curso_card_1, .st-key-evg_curso_card_2,
-            .st-key-evg_curso_card_3, .st-key-evg_curso_card_4,
-            .st-key-evg_curso_card_5) {
-            transition: none !important;
-            transform: none !important;
-        }
-    }
-</style>
-""",
-    unsafe_allow_html=True,
-)
-
-# Sincroniza a cor dos titulos com o tema realmente exibido pelo Streamlit.
-# Isso inclui trocas de tema pelo menu, sem recarregar a pagina.
+# Marca <html> com a classe "evg-tema-escuro" quando o tema escuro está ativo
+# (inclusive após trocar o tema pelo menu), para o CSS ajustar as cores.
 st.html(
     """
     <script>
@@ -866,25 +116,18 @@ def carregar_modelo():
     return matriz, ids, conteudo, matriculas, popularidade
 
 
-OPCOES = corrigir_opcoes_p01(carregar_opcoes(MODELO / "opcoes_questionario.json"))
+# ====================================================================
+# 2. Textos e opções do questionário
+# ====================================================================
+
+# Áreas, assuntos, situações (P01) e objetivos (P06) vêm do JSON do modelo.
+OPCOES = carregar_opcoes(MODELO / "opcoes_questionario.json")
 GRUPOS = OPCOES["grupos"]
+ROTULOS_P01 = {item["codigo"]: item["texto"] for item in OPCOES["situacoes_p01"]}
 OBJETIVOS = {item["codigo"]: item["texto"] for item in OPCOES["objetivos_p06"]}
 
-# Textos exibidos diretamente pela interface. Os códigos continuam iguais aos
-# exigidos pelo motor, mas as frases não dependem de versões antigas dele.
-ROTULOS_P01 = {
-    "trabalho": "Estou trabalhando",
-    "trabalho_estudo": "Trabalho e estudo",
-    "estudo": "Estou estudando",
-    "primeiro": "Estou procurando meu primeiro emprego",
-    "oportunidade": "Estou procurando uma nova oportunidade",
-    "transicao": "Quero mudar de área profissional",
-    "outra": "Outra situação / Prefiro não informar",
-}
-
-# P01 e P06 permanecem perguntas de escolha unica. Os códigos, títulos e
-# pesos do modelo continuam inalterados; apenas a interface usa st.button.
-# Cada metadado contém o nome de um ícone Material e uma descrição curta.
+# P01 e P06 são de escolha única e aparecem como cards clicáveis.
+# Cada card: (ícone do Material Symbols, descrição curta).
 CARDS_P01 = {
     "trabalho": ("work", "Atualmente exerço uma atividade profissional."),
     "trabalho_estudo": ("menu_book", "Divido meu tempo entre trabalho e estudos."),
@@ -906,26 +149,24 @@ CARDS_P06 = {
 }
 
 
-def selecionar_card(etapa, resposta):
-    """Guarda a mesma resposta que o radio anterior, sem criar um widget radio."""
+def selecionar_card(etapa, codigo):
+    """Guarda o código da opção escolhida (ex.: 'trabalho', 'crescer')."""
     chave = f"evg_{etapa}"
-    st.session_state[chave] = resposta
-    st.session_state.setdefault("evg_valores", {})[chave] = resposta
+    st.session_state[chave] = codigo
+    st.session_state.setdefault("evg_valores", {})[chave] = codigo
 
 
 def mostrar_cards_escolha_unica(etapa):
-    """Cards inteiros clicáveis; mantêm o valor original de P01 e P06."""
+    """Mostra P01 ou P06 como cards clicáveis, dois por linha."""
     if etapa == "p01":
-        opcoes = ROTULOS_P01
-        metadados = CARDS_P01
-        selecionado = situacao_atual()
+        opcoes, metadados = ROTULOS_P01, CARDS_P01
     else:
-        opcoes = OBJETIVOS
-        metadados = CARDS_P06
-        selecionado = valor("evg_p06")
+        opcoes, metadados = OBJETIVOS, CARDS_P06
+    selecionado = valor(f"evg_{etapa}")
 
+    # A descrição de cada card entra como variável CSS (o st.button só aceita o título).
     estilos = []
-    for codigo, (icone, descricao) in metadados.items():
+    for codigo, (_, descricao) in metadados.items():
         seletor = f".st-key-evg_card_{etapa}_{codigo} button"
         # Uma string CSS, não HTML: cada descrição aparece dentro do botão.
         texto_css = descricao.replace("\\", "\\\\").replace('"', '\\"')
@@ -946,8 +187,7 @@ def mostrar_cards_escolha_unica(etapa):
     for inicio in range(0, len(itens), 2):
         colunas = st.columns(2, gap="medium")
         for coluna, (codigo, titulo) in zip(colunas, itens[inicio:inicio + 2]):
-            icone, _descricao = metadados[codigo]
-            # Mantém as mesmas chaves e valores consumidos pelo recomendador.
+            icone, _ = metadados[codigo]
             with coluna:
                 st.button(
                     titulo,
@@ -955,7 +195,7 @@ def mostrar_cards_escolha_unica(etapa):
                     icon=f":material/{icone}:",
                     width="stretch",
                     on_click=selecionar_card,
-                    args=(etapa, titulo if etapa == "p01" else codigo),
+                    args=(etapa, codigo),
                 )
 
     # P01 e P06: igualar a altura de TODOS os cards à maior altura natural
@@ -1030,8 +270,8 @@ def mostrar_cards_escolha_unica(etapa):
 SITUACOES_COM_P02 = {"trabalho", "trabalho_estudo", "oportunidade", "transicao"}
 
 # Textos de cada etapa: (pergunta exibida, orientação complementar).
-# Para mudar qualquer frase da tela, é só editar aqui.
-# Centralizar os enunciados evita duplicar a pergunta em cada tela.
+# Não existe P03: a "confirmação da situação profissional" prevista na especificação
+# funcional não entrou na versão final. Os códigos seguem os da especificação.
 PERGUNTAS = {
     "p01": (
         "Qual é sua situação atualmente?",
@@ -1177,6 +417,10 @@ fins de pesquisa e aprendizagem. Não é um serviço oficial da EV.G.
 """
 
 
+# ====================================================================
+# 3. Estado da sessão e navegação entre as perguntas
+# ====================================================================
+
 def valor(chave, padrao=None):
     """Lê a resposta guardada mesmo após o Streamlit ocultar o widget."""
     return st.session_state.get(
@@ -1201,12 +445,8 @@ def restaurar_etapa(etapa):
 
 
 def situacao_atual():
-    """Traduz o texto visível da P01 para o código usado pelo modelo."""
-    escolha = valor("evg_p01")
-    for codigo, rotulo in ROTULOS_P01.items():
-        if escolha == rotulo:
-            return codigo
-    return escolha  # compatibilidade com uma sessão criada antes desta versão
+    """Código da situação escolhida na P01 (ex.: 'trabalho')."""
+    return valor("evg_p01")
 
 
 def sequencia():
@@ -1370,7 +610,7 @@ def aplicar_rolagem_topo():
                     document.documentElement,
                     document.body,
                     ...document.querySelectorAll(
-                        'section[data-testid="stMain"],' +
+                        '[data-testid="stMain"],' +
                         '[data-testid="stAppViewContainer"],' +
                         '[data-testid="stMainBlockContainer"]'
                     ),
@@ -1380,7 +620,7 @@ def aplicar_rolagem_topo():
                 }});
                 window.scrollTo({{top: 0, left: 0, behavior: 'instant'}});
                 const topContent = document.querySelector(
-                    'section[data-testid="stMain"] .block-container'
+                    '[data-testid="stMain"] .block-container'
                 ) || document.querySelector('.block-container');
                 if (topContent) {{
                     topContent.scrollIntoView({{block: 'start', behavior: 'instant'}});
@@ -1404,13 +644,12 @@ def avancar(etapa):
     if etapa == "p06":
         try:
             respostas = coletar_respostas()
-            perfil, objetivo, explorar = montar_perfil(respostas, OPCOES)
+            perfil, objetivo = montar_perfil(respostas, OPCOES)
             validar_perfil(perfil, OPCOES)
             matriz, ids, conteudo, matriculas, popularidade = carregar_modelo()
             with st.spinner("Buscando cinco cursos para você..."):
-                resultado = recomendar_experimental(
-                    perfil, objetivo, matriz, ids, conteudo, matriculas,
-                    popularidade, explorar_novos_temas=explorar,
+                resultado = recomendar_cursos(
+                    perfil, objetivo, matriz, ids, conteudo, matriculas, popularidade,
                 )
             if resultado["quantidade"] != 5:
                 st.error("Não foi possível encontrar cinco cursos elegíveis para este perfil.")
@@ -1422,7 +661,7 @@ def avancar(etapa):
             st.session_state["evg_registro_status"] = "pendente"
             st.session_state["evg_avaliacao_enviada"] = False
             for chave in list(st.session_state):
-                if chave in ("evg_p07", "evg_p08", "evg_p09") or chave.startswith("evg_interesse_curso_"):
+                if chave in ("evg_p07", "evg_p09") or chave.startswith("evg_interesse_curso_"):
                     st.session_state.pop(chave, None)
             st.session_state["evg_interesses_salvos"] = {}
             # Mensagens de erro da lista anterior não devem aparecer na nova.
@@ -1465,14 +704,9 @@ def botoes_navegacao(etapa):
             avancar(etapa)
 
 
-def normalizar(texto):
-    return " ".join(
-        "".join(
-            letra for letra in unicodedata.normalize("NFKD", str(texto).casefold())
-            if not unicodedata.combining(letra)
-        ).split()
-    )
-
+# ====================================================================
+# 4. Tela de resultados e avaliação
+# ====================================================================
 
 # Pares de versões do mesmo curso conferidos no catálogo EV.G.
 # Não confiar apenas no nome: títulos traduzidos são diferentes.
@@ -1510,8 +744,8 @@ def idiomas_alternativos(curso, matriz):
     for _, linha in correspondentes.iterrows():
         idioma = str(linha.get("idioma", ""))
         url = str(linha.get("link_do_curso", ""))
-        restrito = normalizar(linha.get("acesso_restrito", "")) in ("true", "1", "sim")
-        if normalizar(idioma) != "portugues" and url.startswith("https://") and not restrito:
+        restrito = eh_verdadeiro(linha.get("acesso_restrito", ""))
+        if normalizar_texto(idioma) != "portugues" and url.startswith("https://") and not restrito:
             item = idioma, url
             if item not in opcoes:
                 opcoes.append(item)
@@ -1541,12 +775,12 @@ def explicar_recomendacao(curso, linha, respostas):
     """
     if linha is not None:
         termos = [
-            normalizar(item)
+            normalizar_texto(item)
             for campo in ("assuntos", "termos_busca")
             for item in separar_lista(linha.get(campo, ""))
         ]
         for interesse in respostas.get("interesses", []):
-            if any(normalizar(interesse) in termo for termo in termos):
+            if any(normalizar_texto(interesse) in termo for termo in termos):
                 return f"Relacionado ao interesse que você marcou: **{interesse}**."
 
         area = str(linha.get("area_principal", ""))
@@ -1606,7 +840,7 @@ def mostrar_curso(posicao, curso, matriz, respostas):
         # Mostrar o aviso antes do link: a pessoa deve saber sobre a
         # restrição antes de tentar fazer a matrícula.
         if linha is not None:
-            restrito = normalizar(linha.get("acesso_restrito", "")) in ("true", "1", "sim")
+            restrito = eh_verdadeiro(linha.get("acesso_restrito", ""))
         else:
             restrito = bool(curso.get("acesso_restrito", False))
         if restrito:
@@ -1618,7 +852,7 @@ def mostrar_curso(posicao, curso, matriz, respostas):
                 str(linha.get("vinculo_exigido", "")).strip()
                 if linha is not None else str(curso.get("vinculo_exigido", "")).strip()
             )
-            if requisito and normalizar(requisito) not in ("nan", "none"):
+            if requisito and normalizar_texto(requisito) not in ("nan", "none"):
                 st.caption(f"Requisito de acesso informado no catálogo: {requisito}")
 
         st.link_button("Abrir curso na EV.G", curso["link_do_curso"], width="stretch")
@@ -1719,7 +953,7 @@ def tentar_registrar_participacao():
             registrar_participacao(
                 st.session_state["evg_participacao_id"],
                 st.session_state["evg_participacao_utc"],
-                "",  # Coluna histórica de nome mantida vazia por compatibilidade.
+                "",  # coluna "nome_opcional" da planilha: o app não pede nome, fica vazia
                 st.session_state["evg_respostas"],
                 st.session_state["evg_resultado"]["cursos"][:5],
             )
@@ -1734,6 +968,10 @@ def tentar_registrar_participacao():
             st.rerun()
 
 
+
+# ====================================================================
+# 5. Fluxo principal
+# ====================================================================
 
 def main():
     st.session_state.setdefault("evg_tela", "inicio")
@@ -1900,9 +1138,8 @@ def main():
         )
         cursos = resultado["cursos"][:5]
         respostas = st.session_state.get("evg_respostas", {})
-        # Etapa 2: tres colunas de mesma largura em cada linha.
-        # Cursos 4 e 5 ocupam as duas primeiras colunas; a terceira fica
-        # disponivel para o convite de avaliacao da proxima etapa.
+        # Grade de três colunas: cursos 1 a 3 na primeira linha; cursos 4 e 5
+        # na segunda, com o convite para a avaliação na terceira coluna.
         primeira_linha = st.columns(3, gap="medium")
         for posicao, curso in enumerate(cursos[:3], start=1):
             with primeira_linha[posicao - 1]:
@@ -1931,7 +1168,7 @@ def main():
                 """
             )
 
-        # A primeira e a segunda linha sao blocos Streamlit independentes.
+        # A primeira e a segunda linha são blocos Streamlit independentes.
         # Sincronizar os cinco cards de cursos e o convite com a maior
         # altura natural evita cortes e mantém as duas linhas alinhadas.
         st.html(

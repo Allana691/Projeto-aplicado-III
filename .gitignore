@@ -1,7 +1,19 @@
-# Python
+# Credenciais (nunca enviar ao GitHub)
+.streamlit/secrets.toml
+*.json.key
+service_account*.json
+
+# Python e Jupyter
 __pycache__/
 *.pyc
 .ipynb_checkpoints/
+.venv/
+venv/
 
-# Credenciais do Streamlit (Google Sheets): nunca enviar ao GitHub
-.streamlit/secrets.toml
+# Bases originais da EV.G (cerca de 9 GB; baixar pelos links de dados/README.md)
+catalogo.csv
+*_escolavirtual_dadosabertos_matriculas*.csv
+
+# Sistema
+.DS_Store
+Thumbs.db

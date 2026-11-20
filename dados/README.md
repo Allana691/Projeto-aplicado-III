@@ -65,50 +65,20 @@ Os identificadores originais são preservados. Nos cursos que reúnem mais de um
 
 A versão em espanhol do curso "Inteligência Emocional" (`id_curso` 627) é mantida como um curso distinto da versão em português (`id_curso` 318).
 
-## Matriz Preliminar de Classificação do Catálogo
+## Matriz preliminar de classificação do catálogo (`processados/matriz_classificacao_catalogo_EVG.xlsx`)
 
-**Arquivo:** `matriz_preliminar_classificacao_catalogo_EVG.xlsx`
+É a primeira versão da classificação temática dos 1.030 cursos canônicos. Ela foi gerada por regras
+de palavras-chave sobre o nome, o eixo temático, a apresentação e o conteúdo programático, e
+serviu de ponto de partida para organizar o catálogo e montar as perguntas do questionário.
 
-Planilha desenvolvida como material complementar à análise e estruturação do catálogo de cursos da Escola Virtual de Governo (EV.G).
+A planilha tem cinco abas: `Matriz de cursos`, `Resumo por área`, `Áreas`, `Assuntos por área` e
+`Leia-me`. A aba `Leia-me` explica cada campo. Entre as colunas estão o ID canônico e o ID EV.G,
+o eixo original, as grandes áreas e assuntos candidatos, o público-alvo, o tipo de oferta, um
+sinal de elegibilidade e a evidência textual que justifica a classificação.
 
-A matriz contempla os 1.030 cursos canônicos identificados no catálogo e apresenta uma classificação temática preliminar, com o objetivo de ampliar a organização das informações e apoiar o desenvolvimento do sistema de recomendação.
-
-### Informações contempladas
-
-A classificação considera informações disponíveis no catálogo original, incluindo:
-
-- Identificação dos cursos por ID canônico e ID da EV.G;
-- Nome dos cursos;
-- Eixos temáticos;
-- Grandes áreas de conhecimento;
-- Assuntos e temas relacionados;
-- Público-alvo;
-- Tipo de oferta;
-- Critérios de elegibilidade;
-- Evidências utilizadas para fundamentar a classificação.
-
-### Metodologia
-
-A classificação preliminar foi elaborada a partir da análise dos nomes dos cursos, eixos temáticos, apresentações e conteúdos programáticos disponíveis.
-
-Um mesmo curso pode estar associado a mais de uma grande área ou assunto, considerando a possibilidade de abrangência temática e interdisciplinaridade.
-
-As informações de público-alvo e elegibilidade são tratadas separadamente, evitando interpretar automaticamente o público indicado como uma restrição obrigatória de acesso.
-
-### Finalidade no projeto
-
-A matriz tem como finalidade apoiar:
-
-- A identificação dos temas e áreas de conhecimento presentes no catálogo;
-- A estruturação de perfis e interesses dos usuários;
-- A elaboração das perguntas do questionário de perfil;
-- A definição de critérios e regras para o sistema de recomendação;
-- A validação e interpretação das recomendações geradas.
-
-### Observações
-
-Esta matriz possui caráter preliminar e complementar. Ela não substitui nem altera o arquivo `catalogo_canonico.parquet`, que permanece como referência estruturada do catálogo para as análises e cruzamentos de dados.
-
-As classificações estão sujeitas a revisões e validações posteriores, especialmente quanto à coerência temática, elegibilidade e adequação das categorias utilizadas.
-
-A matriz deve ser considerada um instrumento auxiliar de trabalho e documentação metodológica do projeto.
+Esta matriz tem caráter **preliminar**. Depois, a classificação foi revisada curso a curso por duas
+integrantes do grupo (relatório, seção 3.9) e passou a ter 5 grandes áreas, 17 áreas e 37 assuntos.
+A **versão final, usada pelo aplicativo,** está em
+[`arquivos_do_modelo/matriz_cursos_resumida.csv`](../arquivos_do_modelo/matriz_cursos_resumida.csv).
+A matriz não substitui o `catalogo_canonico.parquet`, que continua sendo a referência do catálogo
+para as análises e os modelos.

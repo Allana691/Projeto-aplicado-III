@@ -1,15 +1,25 @@
-# Documentação do Projeto
+# Documentação do projeto
 
-Esta pasta reúne os documentos acadêmicos produzidos durante as etapas do Projeto Aplicado III.
+Documentos acadêmicos entregues em cada etapa do Projeto Aplicado III, especificações da aplicação
+e cronograma.
 
-## Etapa 1 – Introdução e concepção do projeto
+## Documentos das etapas
 
-- **Etapa 1 – Versão entregue:** documento originalmente submetido para avaliação.
-- **Etapa 1 – Versão corrigida:** documento revisado após o feedback da professora, incluindo a adequação do objetivo extensionista aos Objetivos de Desenvolvimento Sustentável (ODS) da ONU.
+| Etapa | Arquivo | Conteúdo |
+|---|---|---|
+| 1 – Concepção | `Etapa_1_Versao_Entregue.pdf` | Versão submetida: contexto, motivação, justificativa e objetivos. |
+| 1 – Concepção | `Etapa_1_Versao_Corrigida.pdf` | Versão revisada após o feedback da professora, com o objetivo extensionista ligado aos ODS 4 e 8. |
+| 2 – Fundamentação teórica | `Etapa_2_Versao_Entregue.pdf` | Referencial teórico sobre sistemas de recomendação, abordagens e avaliação. Recebeu nota máxima, sem correções. |
+| 3 – Metodologia | `Etapa_3_Versao_Entregue.pdf` | Metodologia, preparação dos dados, modelos e avaliação offline. |
+| **4 – Aplicação e finalização** | **`Etapa_4_Versao_Entregue.pdf`** | **Relatório final** (entregue em 19/11/2026): metodologia completa, resultados offline, aplicação na comunidade, avaliação por especialistas e conclusão. |
 
-## Etapa 2 - Fundamentação Teórica
+## Especificações da aplicação
 
-- **Etapa 2 – Versão entregue:** documento acadêmico contendo a introdução consolidada, os objetivos do projeto e o referencial teórico sobre sistemas de recomendação, abordagens baseadas em conteúdo, filtragem colaborativa, sistemas híbridos e métodos de avaliação.
-- **Etapa 2 – Feedback da professora:** trabalho avaliado com nota máxima, sem necessidade de correções. A professora destacou a boa estruturação do projeto, o alinhamento dos objetivos e a qualidade do referencial teórico. As orientações recebidas serão consideradas no desenvolvimento da Etapa 3 (Metodologia).
+- `Especificação funcional do questionário e do fluxo de recomendação.pdf`: perguntas, opções e
+  regras de navegação do questionário.
+- `Especificação técnica consolidada — Recomendador de cursos da EV.G (2).pdf`: decisões técnicas
+  do aplicativo e do motor de recomendação.
 
-Os documentos serão adicionados conforme o desenvolvimento das próximas etapas do projeto.
+## Acompanhamento
+
+- `Cronograma_Projeto.md`: cronograma planejado e cronograma real, com responsáveis e datas.

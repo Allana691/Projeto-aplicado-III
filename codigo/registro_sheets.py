@@ -1,7 +1,19 @@
-"""Registro de respostas e recomendações no Google Sheets.
+"""Registro anônimo das participações no Google Sheets (etapa extensionista).
 
-A planilha deve conter as abas Respostas, Recomendacoes e Avaliacoes.
-Os cabeçalhos são inicializados apenas quando a primeira linha está vazia.
+A planilha privada do projeto tem três abas, ligadas pelo id_participacao
+(um UUID aleatório gerado a cada lista de recomendações):
+
+- Respostas:      respostas do questionário (P01 a P06);
+- Recomendacoes:  os cinco cursos apresentados e o "Me interessou"/"Não me interessou";
+- Avaliacoes:     as duas notas opcionais de 1 a 5 (P07 e P09).
+
+Colunas mantidas só por compatibilidade com a planilha já em uso:
+"nome_opcional" (o app não pede nome; fica vazia) e "avaliacao_p08"
+(pergunta retirada; fica vazia).
+
+As credenciais ficam nos Secrets do Streamlit Cloud, nunca no GitHub:
+    google_service_account_json = '...JSON da conta de serviço...'
+    google_sheets_id = '...ID da planilha...'
 """
 import json
 from datetime import datetime, timezone
@@ -29,21 +41,17 @@ COLUNAS = {
 
 
 def _abrir_planilha():
-    """Usa credenciais privadas dos Secrets (não pertencem ao GitHub)."""
     credenciais = json.loads(st.secrets["google_service_account_json"])
     cliente = gspread.service_account_from_dict(credenciais)
     return cliente.open_by_key(st.secrets["google_sheets_id"])
 
 
 def _aba(planilha, nome):
+    """Abre a aba; cria o cabeçalho se estiver vazia e recusa cabeçalhos diferentes."""
     aba = planilha.worksheet(nome)
     atual = aba.row_values(1)
     if not atual:
         aba.update([COLUNAS[nome]], "A1", value_input_option="RAW")
-    elif nome == "Recomendacoes" and atual == COLUNAS[nome][:-1]:
-        # Migração compatível: acrescenta somente o novo título na coluna F.
-        # Todas as participações e recomendações anteriores ficam intactas.
-        aba.update([["interesse_individual"]], "F1", value_input_option="RAW")
     elif atual != COLUNAS[nome]:
         raise ValueError(f"Cabeçalhos inesperados na aba {nome}; nenhuma linha foi sobrescrita.")
     return aba
