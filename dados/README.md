@@ -78,7 +78,30 @@ sinal de elegibilidade e a evidência textual que justifica a classificação.
 
 Esta matriz tem caráter **preliminar**. Depois, a classificação foi revisada curso a curso por duas
 integrantes do grupo (relatório, seção 3.9) e passou a ter 5 grandes áreas, 17 áreas e 37 assuntos.
-A **versão final, usada pelo aplicativo,** está em
+A **versão final** está em `processados/classificacao_final_catalogo_EVG.xlsx` (abaixo), e a tabela
+usada pelo aplicativo, em
 [`arquivos_do_modelo/matriz_cursos_resumida.csv`](../arquivos_do_modelo/matriz_cursos_resumida.csv).
 A matriz não substitui o `catalogo_canonico.parquet`, que continua sendo a referência do catálogo
 para as análises e os modelos.
+
+## Classificação final do catálogo (`processados/classificacao_final_catalogo_EVG.xlsx`)
+
+Classificação usada pelo aplicativo, elaborada por Tawany. A área principal de cada curso é igual
+à do `matriz_cursos_resumida.csv`.
+
+- `Catálogo simplificado`: uma linha por curso (1.030), com área principal, até 3 áreas
+  complementares, até 3 assuntos, idioma, link e indicação de acesso restrito.
+- `Áreas do questionário`: as 17 áreas de curso, organizadas nas 5 grandes áreas.
+- `Experiência profissional`: o nome exibido na P02 e as áreas do catálogo correspondentes.
+
+## Assuntos da P05 (`processados/assuntos_P05_verificados.xlsx`)
+
+- `Opções P05`: os 37 assuntos mostrados na P05, com o número de cursos em português e um exemplo
+  de curso de cada um.
+- `Vínculos com cursos`: os assuntos da P05 associados a cada um dos 1.030 cursos.
+
+## Registros da aplicação na comunidade (`aplicacao_comunidade/`)
+
+Cópia anônima das respostas, recomendações e avaliações registradas pelo aplicativo. O
+[README da pasta](aplicacao_comunidade/README.md) descreve os arquivos e como reproduzir as
+tabelas do relatório.

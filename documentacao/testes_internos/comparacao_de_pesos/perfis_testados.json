@@ -1,0 +1,197 @@
+{
+  "01_seu_perfil_impostos": {
+    "situacao": "estudo",
+    "experiencia": [],
+    "formacao": [
+      "Finanças e contabilidade",
+      "Impostos e tributação"
+    ],
+    "formacao_opcao": "areas",
+    "interesses": [
+      "Impostos e tributos"
+    ],
+    "nao_sei": false,
+    "objetivo": "novo"
+  },
+  "02_seu_perfil_reforma": {
+    "situacao": "estudo",
+    "experiencia": [],
+    "formacao": [
+      "Finanças e contabilidade",
+      "Impostos e tributação"
+    ],
+    "formacao_opcao": "areas",
+    "interesses": [
+      "Reforma tributária"
+    ],
+    "nao_sei": false,
+    "objetivo": "novo"
+  },
+  "03_primeiro_emprego_python": {
+    "situacao": "primeiro",
+    "experiencia": [],
+    "formacao": [
+      "Tecnologia e informática"
+    ],
+    "formacao_opcao": "areas",
+    "interesses": [
+      "Python"
+    ],
+    "nao_sei": false,
+    "objetivo": "emprego"
+  },
+  "04_mudar_financas_para_dados": {
+    "situacao": "transicao",
+    "experiencia": [
+      "Finanças e contabilidade"
+    ],
+    "formacao": [
+      "Finanças e contabilidade"
+    ],
+    "formacao_opcao": "areas",
+    "interesses": [
+      "Python",
+      "Análise de dados"
+    ],
+    "nao_sei": false,
+    "objetivo": "mudar"
+  },
+  "05_lideranca_profissional": {
+    "situacao": "trabalho",
+    "experiencia": [
+      "Recursos humanos"
+    ],
+    "formacao": [
+      "Recursos humanos"
+    ],
+    "formacao_opcao": "areas",
+    "interesses": [
+      "Liderança e trabalho em equipe"
+    ],
+    "nao_sei": false,
+    "objetivo": "crescer"
+  },
+  "06_protecao_de_dados": {
+    "situacao": "trabalho",
+    "experiencia": [
+      "Tecnologia e informática"
+    ],
+    "formacao": [],
+    "formacao_opcao": "areas",
+    "interesses": [
+      "Segurança digital e proteção de dados"
+    ],
+    "nao_sei": false,
+    "objetivo": "melhorar"
+  },
+  "07_defesa_civil": {
+    "situacao": "trabalho",
+    "experiencia": [
+      "Segurança e emergências"
+    ],
+    "formacao": [],
+    "formacao_opcao": "areas",
+    "interesses": [
+      "Defesa civil e prevenção de desastres"
+    ],
+    "nao_sei": false,
+    "objetivo": "melhorar"
+  },
+  "08_inovacao": {
+    "situacao": "trabalho",
+    "experiencia": [
+      "Administração e escritório"
+    ],
+    "formacao": [],
+    "formacao_opcao": "areas",
+    "interesses": [
+      "Inovação e criatividade"
+    ],
+    "nao_sei": false,
+    "objetivo": "novo"
+  },
+  "09_duas_areas_distintas": {
+    "situacao": "trabalho",
+    "experiencia": [],
+    "formacao": [
+      "Educação e ensino"
+    ],
+    "formacao_opcao": "areas",
+    "interesses": [
+      "Python",
+      "Reforma tributária"
+    ],
+    "nao_sei": false,
+    "objetivo": "pessoal"
+  },
+  "10_tres_interesses": {
+    "situacao": "trabalho",
+    "experiencia": [
+      "Comunicação e atendimento"
+    ],
+    "formacao": [],
+    "formacao_opcao": "areas",
+    "interesses": [
+      "Inteligência artificial",
+      "Gestão de pessoas",
+      "Métodos ágeis para projetos"
+    ],
+    "nao_sei": false,
+    "objetivo": "novo"
+  },
+  "11_ainda_nao_sei_com_formacao": {
+    "situacao": "estudo",
+    "experiencia": [],
+    "formacao": [
+      "Finanças e contabilidade"
+    ],
+    "formacao_opcao": "areas",
+    "interesses": [],
+    "nao_sei": true,
+    "objetivo": "indefinido"
+  },
+  "12_ainda_nao_sei_sem_perfil": {
+    "situacao": "primeiro",
+    "experiencia": [],
+    "formacao": [],
+    "formacao_opcao": "areas",
+    "interesses": [],
+    "nao_sei": true,
+    "objetivo": "indefinido"
+  },
+  "13_interesse_orcamento": {
+    "situacao": "trabalho",
+    "experiencia": [],
+    "formacao": [
+      "Impostos e tributação"
+    ],
+    "formacao_opcao": "areas",
+    "interesses": [
+      "Orçamento e finanças públicas"
+    ],
+    "nao_sei": false,
+    "objetivo": "crescer"
+  },
+  "14_emprego_saude": {
+    "situacao": "primeiro",
+    "experiencia": [],
+    "formacao": [],
+    "formacao_opcao": "areas",
+    "interesses": [
+      "Saúde pública e assistência social"
+    ],
+    "nao_sei": false,
+    "objetivo": "emprego"
+  },
+  "15_so_python_sem_base": {
+    "situacao": "estudo",
+    "experiencia": [],
+    "formacao": [],
+    "formacao_opcao": "areas",
+    "interesses": [
+      "Python"
+    ],
+    "nao_sei": false,
+    "objetivo": "novo"
+  }
+}

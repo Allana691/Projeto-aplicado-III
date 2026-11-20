@@ -45,7 +45,9 @@ estatística (ver seção 4.2.1 do relatório).
 **Aplicação na comunidade (13 a 17/11/2026).** Foram 47 participações, 235 recomendações e
 26 avaliações gerais. Na escala de 1 a 5, a utilidade da lista teve média de **3,77** (61,5% deram
 nota 4 ou 5) e a compatibilidade com os interesses, média de **3,58**. Das 88 avaliações individuais
-de cursos, **71,6%** foram "Me interessou". A amostra é voluntária e não probabilística.
+de cursos, **71,6%** foram "Me interessou". A amostra é voluntária e não probabilística. Os registros anônimos estão em
+[`dados/aplicacao_comunidade/`](dados/aplicacao_comunidade/README.md), e
+`python codigo/resumo_aplicacao_comunidade.py` reproduz essas tabelas.
 
 ## Estrutura do repositório
 
@@ -59,10 +61,12 @@ de cursos, **71,6%** foram "Me interessou". A amostra é voluntária e não prob
 │   ├── streamlit_app.py                  interface web
 │   ├── estilo.css                        identidade visual do app
 │   ├── registro_sheets.py                registro anônimo das participações (Google Sheets)
-│   └── teste_motor.py                    teste rápido do motor com perfis aleatórios
+│   ├── teste_motor.py                    teste rápido do motor com perfis aleatórios
+│   └── resumo_aplicacao_comunidade.py    recalcula as tabelas da aplicação na comunidade
 ├── arquivos_do_modelo/      matrizes pré-calculadas e opções do questionário (lidas pelo app)
-├── dados/                   descrição das fontes e bases processadas (Parquet via Git LFS)
-├── documentacao/            documentos das Etapas 1 a 4, especificações e cronograma
+├── dados/                   bases processadas (Parquet via Git LFS), classificação do catálogo
+│                            e registros anônimos da aplicação na comunidade
+├── documentacao/            documentos das Etapas 1 a 4, especificações, cronograma e testes internos
 ├── apresentacoes/           slides de acompanhamento
 ├── .streamlit/config.toml   tema do aplicativo
 ├── requirements.txt         dependências do aplicativo (usadas pelo Streamlit Cloud)

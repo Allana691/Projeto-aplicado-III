@@ -1,0 +1,191 @@
+﻿AVALIAÇÃO QUALITATIVA — CATÁLOGO REAL EV.G
+As notas não são avaliações humanas de qualidade. Julgue pertinência e utilidade.
+Parâmetros e regras ainda são provisórios.
+
+==============================================================================
+PERFIL: 01_CRESCIMENTO_FISCAL | P06=C
+P02 experiência: ['Tributário e Fiscal']
+P04 formação: {'areas': ['Orçamento, Contabilidade e Finanças Públicas'], 'assuntos': ['Contabilidade']}
+P05 interesses: {'areas': ['Tributário e Fiscal'], 'assuntos': ['Reforma tributária', 'Planejamento tributário']}
+Estratégia: perfil | Quantidade: 5
+Pontes aprovadas: 0
+
+PARA APROFUNDAR
+  1. ID 1009 | Educação Fiscal - Orçamento e Coesão Social
+     Nota: 0.7594 | Principal: Tributário e Fiscal
+     Complementares: Orçamento, Contabilidade e Finanças Públicas | Educação e Aprendizagem | Políticas Públicas, Cidadania e Direitos
+     Assuntos: Educação fiscal | Orçamento público | Coesão social
+     Motivos do algoritmo: afinidade com a trajetória
+     Idioma: Português | Acesso restrito: False
+     Link: https://www.escolavirtual.gov.br/curso/184
+  2. ID 117 | Ampliação das Receitas Municipais
+     Nota: 0.7450 | Principal: Tributário e Fiscal
+     Complementares: Orçamento, Contabilidade e Finanças Públicas
+     Assuntos: Receitas municipais | Tributos municipais
+     Motivos do algoritmo: afinidade com a trajetória
+     Idioma: Português | Acesso restrito: False
+     Link: https://www.escolavirtual.gov.br/curso/494
+  3. ID 307 | Equilíbrio Fiscal
+     Nota: 0.7035 | Principal: Orçamento, Contabilidade e Finanças Públicas
+     Complementares: Tributário e Fiscal
+     Assuntos: Equilíbrio fiscal | Finanças públicas
+     Motivos do algoritmo: afinidade com a trajetória
+     Idioma: Português | Acesso restrito: False
+     Link: https://www.escolavirtual.gov.br/curso/261
+  4. ID 825 | Introdução ao Federalismo Fiscal no Brasil
+     Nota: 0.6961 | Principal: Orçamento, Contabilidade e Finanças Públicas
+     Complementares: Tributário e Fiscal | Planejamento e Gestão Pública
+     Assuntos: Federalismo fiscal | Federalismo | Transferências intergovernamentais
+     Motivos do algoritmo: afinidade com a trajetória
+     Idioma: Português | Acesso restrito: False
+     Link: https://www.escolavirtual.gov.br/curso/339
+
+PARA EXPLORAR
+  1. ID 459 | Reforma Tributária do Consumo
+     Nota: 0.7282 | Principal: Tributário e Fiscal
+     Complementares: —
+     Assuntos: Reforma tributária | Tributação do consumo | IBS
+     Motivos do algoritmo: afinidade com interesses declarados
+     Idioma: Português | Acesso restrito: False
+     Link: https://www.escolavirtual.gov.br/curso/1425
+
+==============================================================================
+PERFIL: 02_TRANSICAO_PARA_DADOS | P06=D
+P02 experiência: ['Tributário e Fiscal']
+P04 formação: {'areas': ['Orçamento, Contabilidade e Finanças Públicas', 'Dados e Inteligência Artificial'], 'assuntos': ['Contabilidade']}
+P05 interesses: {'areas': ['Dados e Inteligência Artificial'], 'assuntos': ['Python', 'Análise de dados']}
+Estratégia: perfil | Quantidade: 5
+Pontes aprovadas: 0
+
+PARA EXPLORAR
+  1. ID 792 | Soluções Preditivas Baseadas em Dados com o Uso do R e do Python
+     Nota: 0.8925 | Principal: Dados e Inteligência Artificial
+     Complementares: —
+     Assuntos: Aprendizado de máquina | Python | Linguagem R
+     Motivos do algoritmo: afinidade com interesses declarados
+     Idioma: Português | Acesso restrito: False
+     Link: https://www.escolavirtual.gov.br/curso/1049
+  2. ID 54 | Eixo 2 - Fundamentos de Ciência de Dados Programa - Engenharia de Dados e IA Aplicada para Gestores de TIC
+     Nota: 0.9948 | Principal: Dados e Inteligência Artificial
+     Complementares: Tecnologia e Transformação Digital
+     Assuntos: Fundamentos de ciência de dados | Análise de dados | Visualização de dados
+     Motivos do algoritmo: afinidade com interesses declarados
+     Idioma: Português | Acesso restrito: False
+     Link: https://www.escolavirtual.gov.br/curso/1434
+  3. ID 7 | Eixo 4 - Inteligência Artificial, Machine Learning e Aplicações Éticas Programa - Engenharia de Dados e IA Aplicada para Gestores de TIC
+     Nota: 0.9957 | Principal: Dados e Inteligência Artificial
+     Complementares: —
+     Assuntos: Inteligência artificial | Ética em IA | Aprendizado de máquina
+     Motivos do algoritmo: afinidade com interesses declarados
+     Idioma: Português | Acesso restrito: False
+     Link: https://www.escolavirtual.gov.br/curso/1436
+  4. ID 154 | Introdução à Ciência de Dados - Modelos de Agrupamento
+     Nota: 0.9877 | Principal: Dados e Inteligência Artificial
+     Complementares: —
+     Assuntos: Agrupamento | K-means | Aprendizado não supervisionado
+     Motivos do algoritmo: afinidade com interesses declarados
+     Idioma: Português | Acesso restrito: False
+     Link: https://www.escolavirtual.gov.br/curso/1174
+
+PARA APROFUNDAR
+  1. ID 76 | Introdução ao Orçamento Público
+     Nota: 0.5755 | Principal: Orçamento, Contabilidade e Finanças Públicas
+     Complementares: —
+     Assuntos: Orçamento público | Finanças públicas | Lei de Responsabilidade Fiscal
+     Motivos do algoritmo: afinidade com a trajetória
+     Idioma: Português | Acesso restrito: False
+     Link: https://www.escolavirtual.gov.br/curso/116
+
+==============================================================================
+PERFIL: 03_EXPLORACAO_SEM_EXPERIENCIA | P06=G
+P02 experiência: []
+P04 formação: {'areas': []}
+P05 interesses: {'areas': [], 'assuntos': []}
+Estratégia: popularidade | Quantidade: 5
+Pontes aprovadas: não aplicável
+
+CURSOS POPULARES
+  1. ID 568 | Introdução à Libras
+     Nota: 646093.0000 | Principal: Políticas Públicas, Cidadania e Direitos
+     Complementares: Educação e Aprendizagem
+     Assuntos: Libras | Acessibilidade
+     Motivos do algoritmo: popularidade entre os participantes
+     Idioma: Português | Acesso restrito: False
+     Link: https://www.escolavirtual.gov.br/curso/11
+  2. ID 89 | Sistema Eletrônico de Informações - SEI! USAR
+     Nota: 638755.0000 | Principal: Comunicação, Informação e Atendimento ao Cidadão
+     Complementares: Tecnologia e Transformação Digital
+     Assuntos: SEI | Processo eletrônico
+     Motivos do algoritmo: popularidade entre os participantes
+     Idioma: Português | Acesso restrito: False
+     Link: https://www.escolavirtual.gov.br/curso/74
+  3. ID 1023 | Boas Práticas de Manipulação em Serviços de Alimentação
+     Nota: 529283.0000 | Principal: Políticas Públicas, Cidadania e Direitos
+     Complementares: —
+     Assuntos: Alimentação | Boas práticas de manipulação
+     Motivos do algoritmo: popularidade entre os participantes
+     Idioma: Português | Acesso restrito: False
+     Link: https://www.escolavirtual.gov.br/curso/287
+  4. ID 606 | Ética e Serviço Público
+     Nota: 266394.0000 | Principal: Direito, Integridade e Controle
+     Complementares: Gestão de Pessoas e Liderança
+     Assuntos: Ética pública | Conduta do servidor
+     Motivos do algoritmo: popularidade entre os participantes
+     Idioma: Português | Acesso restrito: False
+     Link: https://www.escolavirtual.gov.br/curso/4
+  5. ID 807 | Gestão Pessoal - Base da Liderança
+     Nota: 223944.0000 | Principal: Gestão de Pessoas e Liderança
+     Complementares: Desenvolvimento Pessoal e Produtividade
+     Assuntos: Liderança | Autogestão
+     Motivos do algoritmo: popularidade entre os participantes
+     Idioma: Português | Acesso restrito: False
+     Link: https://www.escolavirtual.gov.br/curso/163
+
+==============================================================================
+PERFIL: 04_INTERESSE_FISCAL_EXPLICITO_NA_TRANSICAO | P06=D
+P02 experiência: ['Tributário e Fiscal']
+P04 formação: {'areas': ['Orçamento, Contabilidade e Finanças Públicas']}
+P05 interesses: {'areas': ['Dados e Inteligência Artificial'], 'assuntos': ['Reforma tributária']}
+Estratégia: perfil | Quantidade: 5
+Pontes aprovadas: 14
+
+PARA EXPLORAR
+  1. ID 7 | Eixo 4 - Inteligência Artificial, Machine Learning e Aplicações Éticas Programa - Engenharia de Dados e IA Aplicada para Gestores de TIC
+     Nota: 0.9959 | Principal: Dados e Inteligência Artificial
+     Complementares: —
+     Assuntos: Inteligência artificial | Ética em IA | Aprendizado de máquina
+     Motivos do algoritmo: afinidade com interesses declarados
+     Idioma: Português | Acesso restrito: False
+     Link: https://www.escolavirtual.gov.br/curso/1436
+  2. ID 54 | Eixo 2 - Fundamentos de Ciência de Dados Programa - Engenharia de Dados e IA Aplicada para Gestores de TIC
+     Nota: 0.9949 | Principal: Dados e Inteligência Artificial
+     Complementares: Tecnologia e Transformação Digital
+     Assuntos: Fundamentos de ciência de dados | Análise de dados | Visualização de dados
+     Motivos do algoritmo: afinidade com interesses declarados
+     Idioma: Português | Acesso restrito: False
+     Link: https://www.escolavirtual.gov.br/curso/1434
+  3. ID 154 | Introdução à Ciência de Dados - Modelos de Agrupamento
+     Nota: 0.9884 | Principal: Dados e Inteligência Artificial
+     Complementares: —
+     Assuntos: Agrupamento | K-means | Aprendizado não supervisionado
+     Motivos do algoritmo: afinidade com interesses declarados
+     Idioma: Português | Acesso restrito: False
+     Link: https://www.escolavirtual.gov.br/curso/1174
+
+PARA CONECTAR CONHECIMENTOS
+  1. ID 329 | Eixo 5 - Analisando as finanças públicas - Orçamento e Finanças
+     Nota: 0.6158 | Principal: Orçamento, Contabilidade e Finanças Públicas
+     Complementares: Dados e Inteligência Artificial
+     Assuntos: Finanças públicas | Análise de dados fiscais
+     Motivos do algoritmo: áreas de ambos os lados; proximidade com ambos os lados no modelo; termos dos dois lados no texto
+     Idioma: Português | Acesso restrito: False
+     Link: https://www.escolavirtual.gov.br/curso/1457
+
+PARA APROFUNDAR
+  1. ID 459 | Reforma Tributária do Consumo
+     Nota: 0.5597 | Principal: Tributário e Fiscal
+     Complementares: —
+     Assuntos: Reforma tributária | Tributação do consumo | IBS
+     Motivos do algoritmo: afinidade com a trajetória
+     Idioma: Português | Acesso restrito: False
+     Link: https://www.escolavirtual.gov.br/curso/1425

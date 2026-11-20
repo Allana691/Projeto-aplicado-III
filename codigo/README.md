@@ -49,6 +49,7 @@ tela de resultados ──registra──► registro_sheets.py ──► Google S
 | `preparar_arquivos_do_modelo.py` | Refaz os cálculos do notebook 03 com todo o histórico e salva as matrizes em `arquivos_do_modelo/`. |
 | `registro_sheets.py` | Grava respostas, recomendações e avaliações, anônimas, em três abas do Google Sheets. |
 | `teste_motor.py` | Teste rápido: gera perfis aleatórios válidos e confere se o motor sempre devolve cinco cursos distintos, em português e com link (`python codigo/teste_motor.py 1000`). |
+| `resumo_aplicacao_comunidade.py` | Recalcula as Tabelas 6, 7 e 8 do relatório a partir dos registros em `dados/aplicacao_comunidade/`. |
 
 ### Como o motor escolhe os cinco cursos
 

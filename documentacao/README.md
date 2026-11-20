@@ -23,3 +23,8 @@ e cronograma.
 ## Acompanhamento
 
 - `Cronograma_Projeto.md`: cronograma planejado e cronograma real, com responsáveis e datas.
+
+## Testes internos
+
+- `testes_internos/`: testes com perfis simulados feitos antes da liberação do aplicativo, que
+  basearam os pesos do questionário. Veja o README da pasta.

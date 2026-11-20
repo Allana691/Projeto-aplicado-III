@@ -1,0 +1,31 @@
+﻿Perfil;Versão;Objetivo P06;Assuntos P05;Total de cursos;Cursos ligados à P05;Assuntos P05 cobertos;Áreas principais distintas;Links e acesso OK
+01_seu_perfil_impostos;Atual;novo;Impostos e tributos;5;1;1;1;Sim
+01_seu_perfil_impostos;Experimental;novo;Impostos e tributos;5;5;1;1;Sim
+02_seu_perfil_reforma;Atual;novo;Reforma tributária;5;1;1;2;Sim
+02_seu_perfil_reforma;Experimental;novo;Reforma tributária;5;1;1;1;Sim
+03_primeiro_emprego_python;Atual;emprego;Python;5;3;1;2;Sim
+03_primeiro_emprego_python;Experimental;emprego;Python;5;3;1;2;Sim
+04_mudar_financas_para_dados;Atual;mudar;Python | Análise de dados;5;5;2;1;Sim
+04_mudar_financas_para_dados;Experimental;mudar;Python | Análise de dados;5;5;2;1;Sim
+05_lideranca_profissional;Atual;crescer;Liderança e trabalho em equipe;5;4;1;1;Sim
+05_lideranca_profissional;Experimental;crescer;Liderança e trabalho em equipe;5;5;1;1;Sim
+06_protecao_de_dados;Atual;melhorar;Segurança digital e proteção de dados;5;4;1;2;Sim
+06_protecao_de_dados;Experimental;melhorar;Segurança digital e proteção de dados;5;5;1;1;Sim
+07_defesa_civil;Atual;melhorar;Defesa civil e prevenção de desastres;5;5;1;2;Sim
+07_defesa_civil;Experimental;melhorar;Defesa civil e prevenção de desastres;5;5;1;1;Sim
+08_inovacao;Atual;novo;Inovação e criatividade;5;5;1;3;Sim
+08_inovacao;Experimental;novo;Inovação e criatividade;5;5;1;2;Sim
+09_duas_areas_distintas;Atual;pessoal;Python | Reforma tributária;5;4;2;4;Sim
+09_duas_areas_distintas;Experimental;pessoal;Python | Reforma tributária;5;4;2;3;Sim
+10_tres_interesses;Atual;novo;Inteligência artificial | Gestão de pessoas | Métodos ágeis para projetos;5;4;3;4;Sim
+10_tres_interesses;Experimental;novo;Inteligência artificial | Gestão de pessoas | Métodos ágeis para projetos;5;5;3;3;Sim
+11_ainda_nao_sei_com_formacao;Atual;indefinido;Ainda não sei;5;0;0;3;Sim
+11_ainda_nao_sei_com_formacao;Experimental;indefinido;Ainda não sei;5;0;0;1;Sim
+12_ainda_nao_sei_sem_perfil;Atual;indefinido;Ainda não sei;5;0;0;4;Sim
+12_ainda_nao_sei_sem_perfil;Experimental;indefinido;Ainda não sei;5;0;0;4;Sim
+13_interesse_orcamento;Atual;crescer;Orçamento e finanças públicas;5;1;1;2;Sim
+13_interesse_orcamento;Experimental;crescer;Orçamento e finanças públicas;5;5;1;1;Sim
+14_emprego_saude;Atual;emprego;Saúde pública e assistência social;5;5;1;1;Sim
+14_emprego_saude;Experimental;emprego;Saúde pública e assistência social;5;5;1;1;Sim
+15_so_python_sem_base;Atual;novo;Python;5;3;1;2;Sim
+15_so_python_sem_base;Experimental;novo;Python;5;3;1;2;Sim
