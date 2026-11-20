@@ -1,7 +1,7 @@
 
     @import url('https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap');
 
-    /* Tipografia geral: mesma família em textos e widgets do Streamlit,
+    /* Tipografia geral: mesma família em textos e campos do Streamlit,
        sem substituir a fonte usada por ícones e componentes internos. */
     body, .stApp,
     .stApp button, .stApp input, .stApp textarea,
@@ -34,7 +34,7 @@
         font-weight: 700;
     }
 
-    /* Titulos da pagina: cor roxa no claro, lilas no escuro. */
+    /* Títulos da página: cor roxa no tema claro, lilás no escuro. */
     .stApp h1, .stApp h2,
     .stApp [data-testid="stMarkdownContainer"] h1,
     .stApp [data-testid="stMarkdownContainer"] h2 {
@@ -71,7 +71,7 @@
         font-weight: 700 !important;
     }
     /* No tema escuro, garantir texto branco nos links dos cinco cursos,
-       inclusive no conteúdo interno e no hover/foco. */
+       inclusive no conteúdo interno, ao passar o mouse e no foco. */
     html.evg-tema-escuro .stApp
     :is(.st-key-evg_curso_card_1, .st-key-evg_curso_card_2,
         .st-key-evg_curso_card_3, .st-key-evg_curso_card_4,
@@ -193,7 +193,7 @@
     }
     .evg-orientacao strong {color: inherit; font-weight: 700;}
 
-    /* Os elementos nativos usam primaryColor do tema; mantemos hover definido. */
+    /* Os elementos nativos usam primaryColor do tema; mantemos definido o efeito ao passar o mouse. */
     .stButton > button[kind="primary"],
     .stButton > button[data-testid="stBaseButton-primary"],
     .stDownloadButton > button[kind="primary"],
@@ -241,7 +241,7 @@
         line-height: 1.6;
     }
     /* Fundo exclusivo do aviso academico. A sincronizacao com o tema ativo
-       do Streamlit e feita pelo script do proprio aviso, nao pelo tema do SO. */
+       do Streamlit e feita pelo código JavaScript do próprio aviso, não pelo tema do sistema operacional. */
     .evg-aviso-academico {
         background: #EEE2F2;
         box-shadow: 0 6px 18px rgba(0, 0, 0, 0.10),
@@ -288,7 +288,7 @@
     div[data-testid="stRadio"] label, div[data-testid="stCheckbox"] label {
         line-height: 1.5;
     }
-    /* P01/P06: o botão é um bloco, não grid nem flex. O texto nativo
+    /* P01/P06: o botão é um bloco, não grade nem flex. O texto nativo
        ocupa toda a largura disponível e o ícone fica posicionado à esquerda.
        Isso evita colunas implícitas do Streamlit que espremem o título. */
     :is([class*="st-key-evg_card_p01_"], [class*="st-key-evg_card_p06_"])
@@ -430,7 +430,7 @@
         :is([class*="st-key-evg_card_p01_"], [class*="st-key-evg_card_p06_"])
         button {transition: none; transform: none !important;}
     }
-    /* Hover usa a variante mais profunda; o tema escuro ajusta o tom. */
+    /* O efeito ao passar o mouse usa a variante mais profunda; o tema escuro ajusta o tom. */
     :root {--evg-hover: #5F1E74;}
     @media (prefers-color-scheme: dark) {
         :root {--evg-hover: #6D2584;}
@@ -538,7 +538,7 @@
         color: inherit !important;
     }
 
-    /* A nota antes da avaliacao precisa ser secundaria, mas nao desbotada. */
+    /* A nota antes da avaliação precisa ser secundária, mas não desbotada. */
     .evg-nota-avaliacao {
         color: inherit;
         opacity: 0.9;
@@ -710,14 +710,14 @@
         color: #FFFFFF;
     }
 
-    /* Cinco cards dos cursos: no tema claro, o mesmo fundo lavanda do
+    /* Cinco cartões dos cursos: no tema claro, o mesmo fundo lavanda do
        convite "Antes de finalizar". Manter o tom anterior no tema escuro. */
     :is(.st-key-evg_curso_card_1, .st-key-evg_curso_card_2,
         .st-key-evg_curso_card_3, .st-key-evg_curso_card_4,
         .st-key-evg_curso_card_5) {
         background: rgba(116, 37, 143, 0.09);
         border-radius: 12px;
-        /* Altura sincronizada com o maior dos cinco cards pelo script abaixo.
+        /* Altura sincronizada com o maior dos cinco cartões pelo código JavaScript abaixo.
            min-height permite crescimento sem cortar conteúdo. */
         box-sizing: border-box;
     }
@@ -729,7 +729,7 @@
             var(--secondary-background-color, color-mix(in srgb, currentColor 2%, transparent)));
     }
 
-    /* Elevação discreta somente nos cinco cards dos cursos.
+    /* Elevação discreta somente nos cinco cartões dos cursos.
        Os seletores st-key são gerados pelo key= do st.container. */
     @media (hover: hover) and (pointer: fine) {
         :is(.st-key-evg_curso_card_1, .st-key-evg_curso_card_2,

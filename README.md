@@ -3,7 +3,7 @@
 Projeto Aplicado III · Universidade Presbiteriana Mackenzie
 Curso de Banco de Dados – Análise, Mineração e Engenharia de Dados · 2º semestre de 2026
 
-**Status:** concluído. Relatório final entregue em 19/11/2026.
+**Situação:** concluído. Relatório final entregue em 19/11/2026.
 
 | | |
 |---|---|
@@ -17,10 +17,10 @@ Com centenas de cursos gratuitos disponíveis, escolher o que estudar virou um p
 desenvolveu um **sistema híbrido de recomendação** para o catálogo da **Escola Virtual de Governo
 (EV.G/Enap)**. Ele combina:
 
-- **Recomendação baseada em conteúdo:** TF-IDF sobre nome, eixos temáticos, competências,
+- **Recomendação baseada em conteúdo (Content-Based):** TF-IDF sobre nome, eixos temáticos, competências,
   apresentação, público-alvo e conteúdo programático dos cursos, com similaridade do cosseno;
-- **Filtragem colaborativa item-based:** similaridade do cosseno entre cursos, calculada a partir de
-  21,4 milhões de matrículas reais (feedback implícito binário);
+- **Filtragem colaborativa baseada em itens (item-based):** similaridade do cosseno entre cursos, calculada a partir de
+  21,4 milhões de matrículas reais (feedback implícito binário: a matrícula indica interesse);
 - **Combinação ponderada:** `S = α · conteúdo + (1 − α) · colaborativo`, com escores normalizados
   por usuário e **α = 0,55** escolhido na validação.
 
@@ -29,13 +29,13 @@ de perfil e recebe cinco cursos da EV.G.
 
 ## Principais resultados
 
-**Avaliação offline.** A divisão foi temporal: treino até 2024, validação em 2025 e teste de
+**Avaliação com dados históricos (offline).** A divisão foi temporal: treino até 2024, validação em 2025 e teste de
 01/01 a 02/09/2026. O teste avaliou 617.448 usuários com histórico prévio:
 
-| Modelo | Recall@10 | Hit Rate@10 | NDCG@10 | Ganho de NDCG@10 sobre o baseline |
+| Modelo | Recall@10 | Hit Rate@10 | NDCG@10 | Ganho de NDCG@10 sobre a referência |
 |---|---|---|---|---|
-| Popularidade (baseline) | 0,0830 | 0,1481 | 0,0515 | — |
-| Content-Based | 0,0957 | 0,1649 | 0,0655 | +27,3% |
+| Popularidade (referência, ou baseline) | 0,0830 | 0,1481 | 0,0515 | — |
+| Baseado em conteúdo | 0,0957 | 0,1649 | 0,0655 | +27,3% |
 | Filtragem colaborativa | 0,1139 | 0,1893 | 0,0761 | +47,9% |
 | **Híbrido (α = 0,55)** | **0,1151** | **0,1914** | **0,0780** | **+51,6%** |
 
@@ -55,7 +55,7 @@ de cursos, **71,6%** foram "Me interessou". A amostra é voluntária e não prob
 ├── codigo/                  notebooks da pesquisa e código do aplicativo
 │   ├── 01_preparacao_de_dados.ipynb      integração catálogo × matrículas (ID canônico)
 │   ├── 02_analise_exploratoria.ipynb     análise exploratória
-│   ├── 03_modelo_recomendacao.ipynb      modelos, divisão temporal, α e avaliação offline
+│   ├── 03_modelo_recomendacao.ipynb      modelos, divisão temporal, α e avaliação com dados históricos
 │   ├── preparar_arquivos_do_modelo.py    gera as matrizes usadas pelo app
 │   ├── motor_recomendador.py             regras de recomendação do app (questionário → 5 cursos)
 │   ├── streamlit_app.py                  interface web
@@ -77,7 +77,7 @@ Cada pasta tem um README com mais detalhes.
 
 ## Como reproduzir
 
-**Pré-requisitos:** Python 3.11 ou superior e [Git LFS](https://git-lfs.com). O Git LFS é
+**Requisitos:** Python 3.11 ou superior e [Git LFS](https://git-lfs.com). O Git LFS é
 necessário para baixar os arquivos Parquet.
 
 ```bash
@@ -94,7 +94,7 @@ streamlit run codigo/streamlit_app.py
 ```
 
 As recomendações funcionam sem configuração extra. O registro na planilha só funciona com as
-credenciais do Google nos *Secrets* do Streamlit; veja [`codigo/README.md`](codigo/README.md).
+credenciais do Google na área de credenciais do Streamlit (*Secrets*); veja [`codigo/README.md`](codigo/README.md).
 Sem elas, o app avisa que não conseguiu salvar e continua funcionando.
 
 **Reproduzir a pesquisa**

@@ -2,7 +2,7 @@
 
 Esta pasta guarda a cópia dos registros que o aplicativo gravou no Google Sheets durante a etapa
 extensionista. Os registros são **anônimos**: cada lista de recomendações recebe um
-`id_participacao` aleatório (UUID). O aplicativo não pede nome, e-mail, login ou CPF. Foram
+`id_participacao` aleatório (um código no formato UUID). O aplicativo não pede nome, e-mail, login ou CPF. Foram
 retiradas da cópia duas colunas que estavam sempre vazias: `nome_opcional` e `avaliacao_p08`
 (pergunta retirada).
 
@@ -32,7 +32,7 @@ análise e estão em `documentacao/testes_internos/`.
 python codigo/resumo_aplicacao_comunidade.py
 ```
 
-O script recalcula as Tabelas 6, 7 e 8 da seção 4.4.1 do relatório. São 47 participações, 235
+O programa recalcula as Tabelas 6, 7 e 8 da seção 4.4.1 do relatório. São 47 participações, 235
 recomendações, 121 cursos distintos e 26 avaliações gerais, com médias de 3,58 para
 compatibilidade e 3,77 para utilidade; das 88 opiniões individuais, 71,6% foram "Me interessou".
 Com `--todos`, o cálculo inclui todos os registros.

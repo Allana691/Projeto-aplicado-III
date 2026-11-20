@@ -8,10 +8,10 @@ e cronograma.
 | Etapa | Arquivo | Conteúdo |
 |---|---|---|
 | 1 – Concepção | `Etapa_1_Versao_Entregue.pdf` | Versão submetida: contexto, motivação, justificativa e objetivos. |
-| 1 – Concepção | `Etapa_1_Versao_Corrigida.pdf` | Versão revisada após o feedback da professora, com o objetivo extensionista ligado aos ODS 4 e 8. |
+| 1 – Concepção | `Etapa_1_Versao_Corrigida.pdf` | Versão revisada após as correções da professora, com o objetivo extensionista ligado aos ODS 4 e 8. |
 | 2 – Fundamentação teórica | `Etapa_2_Versao_Entregue.pdf` | Referencial teórico sobre sistemas de recomendação, abordagens e avaliação. Recebeu nota máxima, sem correções. |
-| 3 – Metodologia | `Etapa_3_Versao_Entregue.pdf` | Metodologia, preparação dos dados, modelos e avaliação offline. |
-| **4 – Aplicação e finalização** | **`Etapa_4_Versao_Entregue.pdf`** | **Relatório final** (entregue em 19/11/2026): metodologia completa, resultados offline, aplicação na comunidade, avaliação por especialistas e conclusão. |
+| 3 – Metodologia | `Etapa_3_Versao_Entregue.pdf` | Metodologia, preparação dos dados, modelos e avaliação com dados históricos. |
+| **4 – Aplicação e finalização** | **`Etapa_4_Versao_Entregue.pdf`** | **Relatório final** (entregue em 19/11/2026): metodologia completa, resultados com dados históricos, aplicação na comunidade, avaliação por especialistas e conclusão. |
 
 ## Especificações da aplicação
 

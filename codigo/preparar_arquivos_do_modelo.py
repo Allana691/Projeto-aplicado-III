@@ -1,7 +1,7 @@
 """
 Gera as matrizes pré-calculadas que o aplicativo usa (pasta arquivos_do_modelo/).
 
-O que este script faz:
+O que este programa faz:
   1. Lê os arquivos processados pelo notebook 01 (dados/processados/).
   2. Refaz os cálculos do notebook 03 com TODO o histórico disponível:
      TF-IDF + cosseno (conteúdo) e cosseno item-item (matrículas).

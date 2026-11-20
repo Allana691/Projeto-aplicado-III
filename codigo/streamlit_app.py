@@ -48,7 +48,7 @@ st.set_page_config(
     initial_sidebar_state="collapsed",
 )
 
-# Identidade visual (fonte, cores, cards, tema escuro) fica em estilo.css.
+# Identidade visual (fonte, cores, cartões, tema escuro) fica em estilo.css.
 st.markdown("\n<style>" + (PASTA_CODIGO / "estilo.css").read_text(encoding="utf-8") + "</style>\n",
             unsafe_allow_html=True)
 
@@ -126,8 +126,8 @@ GRUPOS = OPCOES["grupos"]
 ROTULOS_P01 = {item["codigo"]: item["texto"] for item in OPCOES["situacoes_p01"]}
 OBJETIVOS = {item["codigo"]: item["texto"] for item in OPCOES["objetivos_p06"]}
 
-# P01 e P06 são de escolha única e aparecem como cards clicáveis.
-# Cada card: (ícone do Material Symbols, descrição curta).
+# P01 e P06 são de escolha única e aparecem como cartões clicáveis.
+# Cada cartão: (ícone do Material Symbols, descrição curta).
 CARDS_P01 = {
     "trabalho": ("work", "Atualmente exerço uma atividade profissional."),
     "trabalho_estudo": ("menu_book", "Divido meu tempo entre trabalho e estudos."),
@@ -157,14 +157,14 @@ def selecionar_card(etapa, codigo):
 
 
 def mostrar_cards_escolha_unica(etapa):
-    """Mostra P01 ou P06 como cards clicáveis, dois por linha."""
+    """Mostra P01 ou P06 como cartões clicáveis, dois por linha."""
     if etapa == "p01":
         opcoes, metadados = ROTULOS_P01, CARDS_P01
     else:
         opcoes, metadados = OBJETIVOS, CARDS_P06
     selecionado = valor(f"evg_{etapa}")
 
-    # A descrição de cada card entra como variável CSS (o st.button só aceita o título).
+    # A descrição de cada cartão entra como variável CSS (o st.button só aceita o título).
     estilos = []
     for codigo, (_, descricao) in metadados.items():
         seletor = f".st-key-evg_card_{etapa}_{codigo} button"
@@ -182,7 +182,7 @@ def mostrar_cards_escolha_unica(etapa):
     st.markdown("<style>" + "".join(estilos) + "</style>", unsafe_allow_html=True)
 
     # Duas opções por linha no desktop; no celular o Streamlit
-    # empilha as colunas, exibindo um card por linha.
+    # empilha as colunas, exibindo um cartão por linha.
     itens = list(opcoes.items())
     for inicio in range(0, len(itens), 2):
         colunas = st.columns(2, gap="medium")
@@ -198,7 +198,7 @@ def mostrar_cards_escolha_unica(etapa):
                     args=(etapa, codigo),
                 )
 
-    # P01 e P06: igualar a altura de TODOS os cards à maior altura natural
+    # P01 e P06: igualar a altura de TODOS os cartões à maior altura natural
     # da pergunta, inclusive após mudança de seleção ou largura da tela.
     # Usar min-height, sem valores fixos nem cortes em títulos/descrições.
     st.html(
@@ -422,14 +422,14 @@ fins de pesquisa e aprendizagem. Não é um serviço oficial da EV.G.
 # ====================================================================
 
 def valor(chave, padrao=None):
-    """Lê a resposta guardada mesmo após o Streamlit ocultar o widget."""
+    """Lê a resposta guardada mesmo após o Streamlit ocultar o campo."""
     return st.session_state.get(
         chave, st.session_state.get("evg_valores", {}).get(chave, padrao)
     )
 
 
 def guardar_respostas():
-    """Os widgets ocultos são limpos pelo Streamlit: guardar cópia separada."""
+    """Os campos ocultos são limpos pelo Streamlit: guardar cópia separada."""
     guardadas = st.session_state.setdefault("evg_valores", {})
     for chave in list(st.session_state):
         if chave.startswith("evg_p"):
@@ -437,7 +437,7 @@ def guardar_respostas():
 
 
 def restaurar_etapa(etapa):
-    """Preenche os widgets quando a pessoa volta para corrigir uma pergunta."""
+    """Preenche os campos quando a pessoa volta para corrigir uma pergunta."""
     guardadas = st.session_state.get("evg_valores", {})
     for chave, resposta in guardadas.items():
         if chave.startswith("evg_" + etapa) and chave not in st.session_state:
@@ -485,7 +485,7 @@ def ao_alterar_opcao_exclusiva_p04(chave):
     st.session_state[outra] = False
     guardadas[outra] = False
 
-    # Limpa tanto os widgets atuais quanto cópias de respostas já guardadas.
+    # Limpa tanto os campos atuais quanto cópias de respostas já guardadas.
     # Os callbacks executam antes da nova renderização do Streamlit.
     chaves = set(st.session_state) | set(guardadas)
     for campo in chaves:
@@ -581,7 +581,7 @@ def validar_etapa(etapa):
 
 
 def solicitar_rolagem_topo():
-    """Marca uma mudança real de etapa, não uma simples interação com widgets."""
+    """Marca uma mudança real de etapa, não uma simples interação com campos."""
     st.session_state["evg_rolagem_pendente"] = True
     st.session_state["evg_rolagem_versao"] = (
         st.session_state.get("evg_rolagem_versao", 0) + 1
@@ -589,9 +589,9 @@ def solicitar_rolagem_topo():
 
 
 def aplicar_rolagem_topo():
-    """Volta ao topo após mudança de tela, sem rolar nos reruns dos widgets.
+    """Volta ao topo após mudança de tela, sem rolar nos recarregamentos dos campos.
 
-    O script confiável usa as superfícies de rolagem do Streamlit e repete
+    O código JavaScript confiável usa as superfícies de rolagem do Streamlit e repete
     o ajuste brevemente para contornar a restauração tardia da posição.
     """
     if not st.session_state.pop("evg_rolagem_pendente", False):
@@ -885,7 +885,7 @@ def mostrar_curso(posicao, curso, matriz, respostas):
             st.caption("Opinião registrada.")
 
         # Preservar as versões em outros idiomas, quando existirem,
-        # sem mostrar um menu de detalhes em todos os cards.
+        # sem mostrar um menu de detalhes em todos os cartões.
         idiomas = idiomas_alternativos(curso, matriz)
         if idiomas:
             links = " · ".join(f"[{idioma}]({url})" for idioma, url in idiomas)
@@ -977,7 +977,7 @@ def main():
     st.session_state.setdefault("evg_tela", "inicio")
     tela = st.session_state["evg_tela"]
     if tela == "inicio":
-        # Abertura um pouco mais larga para três cards com ícone ao lado do título.
+        # Abertura um pouco mais larga para três cartões com ícone ao lado do título.
         st.markdown("<style>.block-container {max-width: 960px;}</style>", unsafe_allow_html=True)
         st.title("Encontre cursos para você")
         st.markdown(
@@ -1130,7 +1130,7 @@ def main():
         tentar_registrar_participacao()
         st.write("Compare os cursos e marque, se quiser, quais sugestões despertaram seu interesse. As escolhas são salvas automaticamente.")
         matriz, *_ = carregar_modelo()
-        # A página de resultados é mais larga para acomodar os cards.
+        # A página de resultados é mais larga para acomodar os cartões.
         st.markdown(
             "<style>.block-container {max-width: 1180px;}"
             "@media (max-width: 900px) {.block-container {padding-left: 1rem; padding-right: 1rem;}}</style>",
@@ -1169,7 +1169,7 @@ def main():
             )
 
         # A primeira e a segunda linha são blocos Streamlit independentes.
-        # Sincronizar os cinco cards de cursos e o convite com a maior
+        # Sincronizar os cinco cartões de cursos e o convite com a maior
         # altura natural evita cortes e mantém as duas linhas alinhadas.
         st.html(
             """

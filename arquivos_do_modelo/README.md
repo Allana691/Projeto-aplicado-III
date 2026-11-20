@@ -21,5 +21,5 @@ são tabelas e matrizes sobre os 1.030 cursos canônicos.
   na posição *i* de `ids_dos_cursos.npy` e à linha *i* de `matriz_cursos_resumida.csv`. Se um
   deles for regenerado, todos devem ser regenerados juntos. O app confere esse alinhamento ao
   iniciar e para com um erro se algo não bater.
-- As matrizes do app usam **todo o histórico** (até 02/09/2026). Já a avaliação offline do
+- As matrizes do app usam **todo o histórico** (até 02/09/2026). Já a avaliação com dados históricos do
   relatório usou cortes temporais, para evitar vazamento de dados.

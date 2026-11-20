@@ -34,7 +34,7 @@ Os arquivos Parquet são armazenados com o **Git LFS**. Para baixá-los corretam
 
 ### `interacoes_cursos_atuais.parquet`
 
-Contém as matrículas do histórico que puderam ser associadas a cursos do catálogo atual: **21.363.002 interações**, de **6.444.712 usuários**, em **1.030 cursos**. Todos os status de matrícula são preservados, e as interações repetidas entre um mesmo usuário e um mesmo curso não são consolidadas nesta etapa.
+Contém as matrículas do histórico que puderam ser associadas a cursos do catálogo atual: **21.363.002 interações**, de **6.444.712 usuários**, em **1.030 cursos**. Todas as situações de matrícula são preservadas, e as interações repetidas entre um mesmo usuário e um mesmo curso não são consolidadas nesta etapa.
 
 | Coluna | Descrição |
 |---|---|

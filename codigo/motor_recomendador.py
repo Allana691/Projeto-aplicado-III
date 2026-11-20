@@ -7,7 +7,7 @@ das respostas ao questionário. A lista de cinco cursos combina três notas
 1. **Interesses** - o curso ensina os assuntos escolhidos na P05?
 2. **Trajetória** - o curso é da área de experiência (P02) ou de
    formação (P04) informada? Experiência vale 60% e formação 40%.
-3. **Similaridade entre cursos** - modelo híbrido do experimento offline,
+3. **Similaridade entre cursos** - modelo híbrido do experimento com dados históricos,
    com α = 0,55 (55% conteúdo / 45% matrículas).
 
 Os pesos de cada nota dependem do objetivo escolhido na P06
@@ -371,7 +371,7 @@ def _excluir_profissao_anterior(perfil, cursos):
 
 
 # ====================================================================
-# 4. Similaridade entre cursos (modelo híbrido do experimento offline)
+# 4. Similaridade entre cursos (modelo híbrido do experimento com dados históricos)
 # ====================================================================
 
 def _normalizar_pelo_maximo(vetor):
@@ -630,7 +630,7 @@ def _recomendar_sem_assuntos(objetivo, matriz, ids, permitido, restritos, pop, t
     """P05 = 'Ainda não sei': o objetivo não altera os pesos.
 
     Com trajetória: 50% trajetória + 50% similaridade entre cursos.
-    Sem trajetória: popularidade histórica (baseline).
+    Sem trajetória: popularidade histórica (referência).
     """
     elegiveis = np.flatnonzero(permitido)
     if not np.any(trajetoria):
